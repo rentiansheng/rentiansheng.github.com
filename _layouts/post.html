@@ -1,0 +1,48 @@
+---
+layout: default
+---
+<div class="post">
+  <h1 class="post-title">{{ page.title }}</h1>
+  <div class="post-date">
+  <span><i class="fa fa-clock-o"></i> {{ page.date | date: "%Y-%m-%d"  }}</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> {{ page.tags | array_to_sentence_string }}
+</span>
+  </div>
+  {{ content }}
+</div>
+{% if site.related_posts.size %}
+    <div class="read-more">
+      {% for post in site.related_posts limit:1 %}
+        <div class="read-more-header">
+          <a href="{{ page.previous.url }}" class="read-more-btn">Read More</a>
+        </div><!-- /.read-more-header -->
+        <div class="read-more-content">
+          <h3><a href="{{ site.url }}{{ post.url }}" title="{{ post.title }}">{{ post.title}}</a></h3>          
+        </div><!-- /.read-more-content -->
+      {% endfor %}
+      <div class="read-more-list">
+        {% for post in site.related_posts limit:2 offset:1 %}
+          <div class="list-item">
+            <h4><a href="{{ post.url }}" title="{{ post.title }}">{{post.title}}</a></h4>
+            <span><i class="fa fa-clock-o"></i>  {{ post.date | date: "%Y-%m-%d" }}</span>
+          </div><!-- /.list-item -->
+        {% endfor %}
+      </div><!-- /.read-more-list -->
+      {% endif %}
+    </div><!-- /.read-more -->
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="{{ page.title }}" data-title="{{ page.title }}" data-url="{{ site.baseurl }}{{ page.url }}"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- 多说公共JS代码 end -->
