@@ -5,10 +5,6 @@ category: [php]
 tags: [php,开源]
 ---
  
-
-codeigniter rabbitmq library
-===============
-
 简介
 ___________________
 

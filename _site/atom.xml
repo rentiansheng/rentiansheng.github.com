@@ -4,7 +4,7 @@
  <title>Reage</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2015-03-25T19:51:28+08:00</updated>
+ <updated>2015-03-25T20:29:22+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -17,9 +17,7 @@
    <link href="http://www.ireage.com/php/2014/11/28/codeigniter%20rabbitmq%20library/"/>
    <updated>2014-11-28T00:00:00+08:00</updated>
    <id>http://www.ireage.com/php/2014/11/28/codeigniter rabbitmq library</id>
-   <content type="html">&lt;h1&gt;codeigniter rabbitmq library&lt;/h1&gt;
-
-&lt;p&gt;简介&lt;/p&gt;
+   <content type="html">&lt;p&gt;简介&lt;/p&gt;
 
 &lt;hr&gt;
 
