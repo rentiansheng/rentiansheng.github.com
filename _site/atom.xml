@@ -4,13 +4,100 @@
  <title>Reage</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2015-03-25T00:17:08+08:00</updated>
+ <updated>2015-03-25T19:51:28+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>codeigniter rabbitmq lirary</title>
+   <link href="http://www.ireage.com/php/2014/11/28/codeigniter%20rabbitmq%20library/"/>
+   <updated>2014-11-28T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/php/2014/11/28/codeigniter rabbitmq library</id>
+   <content type="html">&lt;h1&gt;codeigniter rabbitmq library&lt;/h1&gt;
+
+&lt;p&gt;简介&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;针对CI 封装的一个简单的rabbitmq，只有基本功能的&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng//ci-rabbitmq&quot;&gt;项目地址：https://github.com/rentiansheng//ci-rabbitmq&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;代码结构&lt;/h2&gt;
+
+&lt;p&gt;1.文件介绍&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;  1.src/src/libraries/rabbitmq.php  rabbitmq操作代码
+  2.src/src/config/rabbitmq.php     rabbitmq配置文件
+  3.src/src/models/rabbitmqmodel.php   consume回调函数代码
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2.将需要的PHP代码文件放到制定位置&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;  1. cp src/src/libraries/rabbitmq.php   项目代码/application/libraries/
+  2. cp src/src/config/rabbitmq.php   项目代码/application/config/
+  3. cp src/src/models/rabbitmqmodel.php   项目代码/application/models/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;函数&lt;/h2&gt;
+
+&lt;p&gt;1.queue  declare一个queue&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   参数
+       name 队列的名字
+       durable queue是否持久化，true，是，false 否 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2.sendMsg 向队列中add内容&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    参数
+        msg 消息的内容
+        exchangeName 发送消息使用的exchangeName
+        queueName 接受消息的queue
+        durable   queueName队列是否持久话，要与declare queue保持一直，负责回出错的
+        exchangeType exchage type 我一般用直接写入，
+                      你可以选择一下模式， AMQP_EX_TYPE_DIRECT,
+                      AMQP_EX_TYPE_FANOUT,
+                      AMQP_EX_TYPE_HEADER or AMQP_EX_TYPE_TOPIC
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;3.getMsg 获取消息&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   参数 
+        queueName 获取内容的queue的name
+        autoack   是否自动ack，autoack ＝ true，消息将从队列删除，
+                  autoack ＝ false；时，需要用ack或者nack来回应给rabbitmq，否则，队列将无法工作
+        durable   queueName队列是否持久话，要与declare queue保持一直，负责回出错的
+    备注
+        从队列中的下一个可用的消息。如果没有消息存在于队列中，该函数将立即返回FALSE，
+        这种方式比较消耗CPU,不建议使用的。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;4.consume 获取消息，推荐&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    参数
+        queueName 获取内容的queue的name
+        callback  回调函数的名字，注意这个是函数名字的，对应名字的函数必须在models/rabbitmqmodel.php中实现的
+        autoack   是否自动ack，autoack ＝ true，消息将从队列删除，
+                  autoack ＝ false；时，需要用ack或者nack来回应给rabbitmq，否则，队列将无法工作
+        durable   queueName队列是否持久话，要与declare queue保持一直，负责回出错的
+    备注
+        callback回调函数的名字，注意这个是函数名字的，对应名字的函数必须在models/rabbitmqmodel.php中实现的
+        回调函数将会有两个参数，
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;5.consume回调函数格式&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   function test(envelope, $queue) {}
+    参数
+       envelope  与消息相关的对象，具体的查看&amp;lt;a href=&amp;quot;http://php.net/manual/pl/class.amqpenvelope.php&amp;quot;&amp;gt;http://php.net/manual/pl/class.amqpenvelope.php&amp;lt;/a&amp;gt;
+       queue  queue的对象
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;demo 目录下是示例代码&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;1. 将demo/controllers/taskqueue.php 项目代码/application/controllers/taskqueue.php
+2.  运行例子，最好可以terminal运行,首先转到项目文件所在的路径
+    已发送消息作为例子
+    sudo [可选择加上php env]  php所在位置 index.php taskqueue   sendMsg 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;我遇到的问题&lt;/h2&gt;
+
+&lt;p&gt;1.在执行一段时间后无法从redis获取内容&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    我使用的是ci的cache库操作redis，由于cache 初始化是在controller开始的位置，时间久了，会自动断开链接请注意。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2.请不要在浏览器中运行consume， php-fpm有可会出现问题，&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>览器桌面通知（notifications）</title>
