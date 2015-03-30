@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="览器桌面通知（notifications）">
+  <meta name="keywords" content="mysql 优化基础知识（-）">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      览器桌面通知（notifications） &middot; Reage
+      mysql 优化基础知识（-） &middot; Reage
     
   </title>
   <!-- CSS -->
@@ -118,99 +118,42 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">览器桌面通知（notifications）</h1>
+  <h1 class="post-title">mysql 优化基础知识（-）</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2014-05-28</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> JS and 开源
+    <span><i class="fa fa-clock-o"></i> 2015-03-30</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> mysql
 </span>
   </div>
-  <h1>chrome 浏览器桌面通知</h1>
+  <h4>1. primary key</h4>
 
-<p>最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
-这样就很难看到通知了。经过查找发现有些浏览器可以使用noitfications，
-可以在桌面的通知区域内显示一个提示框，并且显示在桌面的最前面，很方便就能看到了。我就将它简单的封装一下，使其符合常用的使用场景。
-功能效果类似webQQ的消息提示通知。</p>
+<p>primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
+  综上所述，在使用primary key列一般都是用int类型auto<em>increment，这样保证所有的值都是顺序插入的，auto</em>increment在高并发的应用下肯定会有争用问题。
+  主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快</p>
 
-<p><a href="https://github.com/rentiansheng/notification">项目地址：https://github.com/rentiansheng/notification</a></p>
+<h4>2.索引在存储时都是正序存储</h4>
 
-<h2>简介</h2>
+<p>因此，就算建立 index idx<em>score</em>course(score,course) 索引，使用explain &quot;select * from test order by score desc, course asc&quot;你就会发现并没有到idx<em>score</em>course索引，在Extra现实这Using filesort</p>
 
-<p>用于其余B/S下的网络办公提醒功能。
-页面最小化的状态下发送通知
-依然显示在屏幕的右下角，马上可以看到内容</p>
+<h4>3. where in</h4>
 
-<h2>依赖</h2>
-
-<ol>
-<li>PC chrome浏览器。</li>
-<li>手机android 海豚浏览器</li>
-</ol>
-
-<h2>注意事项</h2>
-
-<p>通知权限是基于网站（或者域名），同一个网站下面的页面只需要获取一次权限即可。
-如果别禁用了。将不会显示通知的，也无法再次获取权限了。
-可以同浏览器的菜单查看权限。
-<code>HTML
-设置-》隐私设选下面的 “内容设置”-》通知
-</code>
-如果你关闭或者刷新页面了。之前的通知就没法控制了 。</p>
-
-<h2>使用</h2>
-
-<ol>
-<li><p>引用notify.js文件</p>
-<div class="highlight"><pre><code class="language-HTML" data-lang="HTML"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;notifiy.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre></div></li>
-<li><p>浏览器配置</p>
-
-<p>检查浏览器是否支持桌面通知功能
-<code>HTML
-Notifier.HasSupport();
-</code></p>
-
-<p>获取允许桌面通知权限
-<code>HTML
-Notifier.RequestPermission();
-</code></p></li>
-<li><p>设置通知显示方式（可选。不设置采用默认模式）</p>
-<div class="highlight"><pre><code class="language-HTML" data-lang="HTML"> Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
- Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
- Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
- NOtifier.ModelTimeout(ct); //超时消失模式。显示一定时间自动消失。
-</code></pre></div></li>
-<li><p>发送通知</p>
-<div class="highlight"><pre><code class="language-HTML" data-lang="HTML">Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
-</code></pre></div></li>
-<li><p>关闭的方法</p>
-<div class="highlight"><pre><code class="language-HTML" data-lang="HTML"> Notifier.Clse(type);    //type=1 关闭上一个 其他值 关闭最早打开的
- Notifier.ClosePre();    //关闭最近个打开的通知
- Notifier.CloseLast();   //关闭最早显示的通知
- NOtifier.CloseAll();    //关闭所有通知
-</code></pre></div></li>
-<li><p>其他方法</p>
-<div class="highlight"><pre><code class="language-HTML" data-lang="HTML">Notifier.GetPermission();   //获取关于通知使用权限，0，已经得到权限 1，需要获取权限 2，禁止使用
-Notifier.IsGetPermission(); //是否已经获取通知的使用权限
-Notifier.Disable();         //是否禁用通知
-</code></pre></div></li>
-</ol>
+<p>mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)  </p>
 
 </div>
 
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/c/2012/09/06/c%20sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5/" class="read-more-btn">Read More</a>
+    <a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/" title="mysql 优化基础知识（-）">mysql 优化基础知识（-）</a></h3>
+    <h3><a href="http://www.ireage.com/php/2014/11/28/codeigniter%20rabbitmq%20library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2014-11-28</span>
+      <h4><a href="/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5%EF%BC%88notifications%EF%BC%89/" title="览器桌面通知（notifications）">览器桌面通知（notifications）</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2014-05-28</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
@@ -222,7 +165,7 @@ Notifier.Disable();         //是否禁用通知
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="览器桌面通知（notifications）" data-title="览器桌面通知（notifications）" data-url="//js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5%EF%BC%88notifications%EF%BC%89/"></div>
+<div class="ds-thread" data-thread-key="mysql 优化基础知识（-）" data-title="mysql 优化基础知识（-）" data-url="//mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

@@ -1,0 +1,11 @@
+<h4 id="primary-key">1. primary key</h4>
+<p>primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
+  综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
+  主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快</p>
+
+<h4 id="section">2.索引在存储时都是正序存储</h4>
+<p>因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra现实这Using filesort</p>
+
+<h4 id="where-in">3. where in</h4>
+<p>mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)</p>
+

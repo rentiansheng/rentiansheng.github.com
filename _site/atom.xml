@@ -4,13 +4,34 @@
  <title>Reage</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2015-03-28T09:13:37+08:00</updated>
+ <updated>2015-03-30T20:47:33+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>mysql 优化基础知识（-）</title>
+   <link href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/"/>
+   <updated>2015-03-30T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/mysql/2015/03/30/mysql优化基础知识(-)</id>
+   <content type="html">&lt;h4&gt;1. primary key&lt;/h4&gt;
+
+&lt;p&gt;primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
+  综上所述，在使用primary key列一般都是用int类型auto&lt;em&gt;increment，这样保证所有的值都是顺序插入的，auto&lt;/em&gt;increment在高并发的应用下肯定会有争用问题。
+  主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快&lt;/p&gt;
+
+&lt;h4&gt;2.索引在存储时都是正序存储&lt;/h4&gt;
+
+&lt;p&gt;因此，就算建立 index idx&lt;em&gt;score&lt;/em&gt;course(score,course) 索引，使用explain &amp;quot;select * from test order by score desc, course asc&amp;quot;你就会发现并没有到idx&lt;em&gt;score&lt;/em&gt;course索引，在Extra现实这Using filesort&lt;/p&gt;
+
+&lt;h4&gt;3. where in&lt;/h4&gt;
+
+&lt;p&gt;mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)  &lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>codeigniter rabbitmq lirary</title>
