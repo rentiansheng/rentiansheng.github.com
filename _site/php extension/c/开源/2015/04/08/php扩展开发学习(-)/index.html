@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="php extensions(-) 代码目录结构">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      php extensions(-) 代码目录结构 &middot; Reage
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories/">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message/">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+            
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">php extensions(-) 代码目录结构</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2015-04-08</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> php extension, c, and 开源
+</span>
+  </div>
+  <h3>php extensions(-) 代码目录结构</h3>
+
+<h5>引言</h5>
+
+<p>每一个php extension的目录中最少要包含config.m4、config.w32、php<em>extension.h、extension.c。php</em>extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。</p>
+
+<h4>1. 扩展的配置文件config.m4和config.w32</h4>
+
+<p>config.m4用户Unix、Linux等系统。config.m4文件告诉 UNIX 构建系统哪些扩展 configure 选项是支持的，你需要哪些扩展库，以及哪些源文件要编译成它的一部分。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  config.m4配置函数PHP_ARG_WITH()和 PHP_ARG_ENABLE()的区别在于编译的时候使用 --with-* 选项还是 --enable-* 。
+</code></pre></div>
+<p><a href="http://php.net/manual/zh/internals2.structure.files.php">关于配置文件的详细内容</a></p>
+
+<p>下面是我的一个例子</p>
+
+<p>dnl在config.m4是注释的意思 </p>
+
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">PHP_ARG_WITH(reage, for reage support,</span>
+<span class="x">Make sure that the comment is aligned:</span>
+<span class="x">[  --with-reage             Include reage support])</span>
+<span class="x">dnl 检测扩展是否已启用</span>
+<span class="x">if test $PHP_REAGE != &quot;no&quot;; then</span>
+<span class="x">    PHP_SUBST(REAGE_SHARED_LIBADD)</span>
+<span class="x">    PHP_NEW_EXTENSION(reage, reage.c, $ext_shared)</span>
+<span class="x">fi</span></code></pre></div>
+
+<p>config.w32 是windows下的扩展的配置文件的，<a href="http://php.net/manual/zh/internals2.structure.files.php">具体使用查看</a></p>
+
+<h4>2. php_reage.h</h4>
+
+<p>php_reage.h其实不是必须的，但是一般的都C语言项目都是包含.h和.c文件的。为了让代码看起来更加的正规，我们也使用.h文件。.h文件一般只包含函数的定义、结构体的定义。</p>
+
+<p>下面是我的一个例子：</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#ifndef REAGE_H</span>
+<span class="cp">#define REAGE_H</span>
+
+
+<span class="cp">#include &quot;php.h&quot;</span>
+<span class="cp">#define phpext_reage_ptr &amp;reage_module_entry;</span>
+<span class="k">extern</span> <span class="n">zend_module_entry</span> <span class="n">reage_module_entry</span><span class="p">;</span>
+
+<span class="cp">#endif</span></code></pre></div>
+
+<h4>3. reage.c</h4>
+
+<p>reage.c是具体的代码文件的。
+下面是我的一个例子：</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &quot;php_reage.h&quot;</span>
+<span class="cp">#include &quot;ext/standard/info.h&quot;</span>
+
+<span class="c1">//加载config.h,如果有配置项</span>
+<span class="cp">#ifdef HAVE_CONFIG_H</span>
+<span class="cp">#include &quot;config.h&quot;</span>
+<span class="cp">#endif</span>
+
+
+<span class="c1">//module entry</span>
+<span class="n">zend_module_entry</span> <span class="n">reage_module_entry</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">STANDARD_MODULE_HEADER</span><span class="p">,</span>
+    <span class="s">&quot;reage&quot;</span><span class="p">,</span><span class="c1">//扩展的名字</span>
+    <span class="nb">NULL</span><span class="p">,</span> <span class="c1">// functions</span>
+    <span class="nb">NULL</span><span class="p">,</span> <span class="c1">// minit</span>
+    <span class="nb">NULL</span><span class="p">,</span> <span class="c1">//mshutdown</span>
+    <span class="nb">NULL</span><span class="p">,</span> <span class="c1">//rinit</span>
+    <span class="nb">NULL</span><span class="p">,</span> <span class="c1">//rshutdown</span>
+    <span class="nb">NULL</span><span class="p">,</span>
+    <span class="s">&quot;0.0.1&quot;</span><span class="p">,</span> <span class="c1">//版本号</span>
+    <span class="n">STANDARD_MODULE_PROPERTIES</span>
+<span class="p">};</span>
+
+<span class="cp">#ifdef COMPILE_DL_REAGE</span>
+<span class="n">ZEND_GET_MODULE</span><span class="p">(</span><span class="n">reage</span><span class="p">)</span>
+<span class="cp">#endif</span></code></pre></div>
+
+<h4>4. 编译php extension</h4>
+
+<p>在php extension的目录下，执行一下命名:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">   1. phpize
+   2. ./configrue
+   3. make
+   4. make test
+</code></pre></div>
+<h4>5. test</h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。
+</code></pre></div>
+<h4>6. ext_skel</h4>
+
+<p>ext<em>skel工具是专门用来生成php extension 目录结构的。ext</em>skel在php源码下的ext目录下。
+  使用ext<em>skel工具生成目录结构后，需要修改config.m4中大约10-20行，是关于PHP</em>ARG<em>WITH和PHP</em>ARG_ENABLE的。根据自己的需要将前面的注释符号（dnl）去掉</p>
+
+<h4>7. 源代码</h4>
+
+<p><a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learm1">https://github.com/rentiansheng/php-extension-learn/tree/master/learm1</a>  </p>
+
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/" title="mysql 优化基础知识（-）">mysql 优化基础知识（-）</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2014-11-28</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5%EF%BC%88notifications%EF%BC%89/" title="览器桌面通知（notifications）">览器桌面通知（notifications）</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2014-05-28</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="php extensions(-) 代码目录结构" data-title="php extensions(-) 代码目录结构" data-url="//php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-)/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- 多说公共JS代码 end -->
+<!-- 百度统计代码 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
