@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2015-04-26T15:58:03+08:00</updated>
+ <updated>2015-04-26T16:14:45+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -52,15 +52,16 @@
 
 &lt;h4&gt;使用到的函数&lt;/h4&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;php_info_print_table_start();
-
-
-php_info_print_table_start();
 php_info_print_table_header();
 php_info_print_table_row();
 php_info_print_table_end();
 
 除了这些函数，还有很多函数，需要的话请自行查阅
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;####  源代码&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)&lt;/a&gt;&lt;/p&gt;
+
 &lt;h4&gt;特别说明&lt;/h4&gt;
 
 &lt;p&gt;在搜索资料时，发现一个写的特别好的php扩展开发系列文章，希望对大家有用&lt;/p&gt;
@@ -168,7 +169,7 @@ php_info_print_table_end();
 
 &lt;h4&gt;7. 源代码&lt;/h4&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learm1&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learm1&lt;/a&gt;  &lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learn1&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learn1&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
  

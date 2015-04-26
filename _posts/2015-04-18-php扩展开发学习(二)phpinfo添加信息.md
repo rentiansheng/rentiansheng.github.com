@@ -44,8 +44,6 @@ tags: [php extension,c,开源]
    {% endhighlight %}
 
 #### 使用到的函数
-    php_info_print_table_start();
-
 
     php_info_print_table_start();
     php_info_print_table_header();
@@ -53,6 +51,10 @@ tags: [php extension,c,开源]
     php_info_print_table_end();
 
     除了这些函数，还有很多函数，需要的话请自行查阅
+
+ ####  源代码
+
+ [https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)](https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo))
 
 #### 特别说明
 
