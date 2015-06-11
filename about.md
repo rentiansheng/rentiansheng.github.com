@@ -67,10 +67,9 @@ class tianshengren {
 ---
 #简历详情
 ---
-
 #任天胜
 ---
-####联系方式 手机:15083128577 邮箱:reage521@gmail.com
+####联系方式 手机:15083128577 [邮箱:reage521@gmail.com](reage521@gmail.com)
 ####技术相关  [www.ireage.com](www.ireage.com) [csdn博客](http://blog.csdn.net/reage11) [github](https://github.com/rentiansheng)
 
 ---
