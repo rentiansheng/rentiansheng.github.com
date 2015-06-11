@@ -134,7 +134,7 @@ class tianshengren {
 ####个人技能
 * 熟悉LNMP环境下开发；
 * 熟悉Redis、RabbitMQ开发；
-* 熟悉PHPCI框架
+* 熟悉PHP CI框架
 * 熟悉.Net平台下winform项目开发，具备项目开发经验，了解ASP.NET开发过程。
 * 了解使用gcc，gdb，vim
 * 了解C语言网络编程
