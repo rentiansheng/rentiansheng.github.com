@@ -129,18 +129,18 @@
   <span class="extra-right"><i class="fa fa-tags"></i> php extension, c, and 开源
 </span>
   </div>
-  <h3>php extensions(二)  phpinfo输出内容</h3>
+  <h3 id="php-extensions--phpinfo">php extensions(二)  phpinfo输出内容</h3>
 
-<h4>引言</h4>
+<h4 id="section">引言</h4>
 
 <p>我们在使用一个PHP扩展的时候，首先，将编译后的扩展放到PHP的扩展加载目录下，使用phpinfo函数来查看插件是否已经加载。</p>
 
-<h4>代码实现</h4>
+<h4 id="section-1">代码实现</h4>
 
 <p>在phpinfo函数添加内容特别简单的。
    1.首先修改module entry</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">zend_module_entry reage_module_entry = {</span>
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">         zend_module_entry reage_module_entry = {</span>
 <span class="x">             STANDARD_MODULE_HEADER,</span>
 <span class="x">             &quot;reage&quot;,//扩展的名字</span>
 <span class="x">             NULL, // functions</span>
@@ -151,30 +151,34 @@
 <span class="x">             PHP_MINFO(reage_info), //注册在phpinfo函数中输出内容的函数,reage_info</span>
 <span class="x">             &quot;0.0.1&quot;, //版本号</span>
 <span class="x">             STANDARD_MODULE_PROPERTIES</span>
-<span class="x">         };</span></code></pre></div>
+<span class="x">         };</span>
+<span class="x">   </span></code></pre></figure>
 
 <p>2.输出内容函数的实现</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">PHP_MINFO_FUNCTION(reage_info) {</span>
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">        PHP_MINFO_FUNCTION(reage_info) {</span>
 <span class="x">           php_info_print_table_start();</span>
 <span class="x">           php_info_print_table_header(2, &quot;key&quot;, &quot;value&quot;);</span>
 <span class="x">           php_info_print_table_row(2, &quot;author&quot;, &quot;Reage&quot;);</span>
 <span class="x">           php_info_print_table_end();</span>
-<span class="x">        }</span></code></pre></div>
+<span class="x">        }</span>
+<span class="x">   </span></code></pre></figure>
 
-<h4>使用到的函数</h4>
-<div class="highlight"><pre><code class="language-text" data-lang="text">php_info_print_table_start();
+<h4 id="section-2">使用到的函数</h4>
+
+<pre><code>php_info_print_table_start();
 php_info_print_table_header();
 php_info_print_table_row();
 php_info_print_table_end();
 
 除了这些函数，还有很多函数，需要的话请自行查阅
-</code></pre></div>
+</code></pre>
+
 <p>####  源代码</p>
 
 <p><a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)">https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)</a></p>
 
-<h4>特别说明</h4>
+<h4 id="section-3">特别说明</h4>
 
 <p>在搜索资料时，发现一个写的特别好的php扩展开发系列文章，希望对大家有用</p>
 
@@ -199,7 +203,7 @@ php_info_print_table_end();
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
+      <h4><a href="/php/2014/11/28/codeigniter-rabbitmq-library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
       <span><i class="fa fa-clock-o"></i>  2014-11-28</span>
     </div><!-- /.list-item -->
     

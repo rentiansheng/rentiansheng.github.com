@@ -129,41 +129,42 @@
   <span class="extra-right"><i class="fa fa-tags"></i> php extension, c, and 开源
 </span>
   </div>
-  <h3>php extensions(-) 代码目录结构</h3>
+  <h3 id="php-extensions--">php extensions(-) 代码目录结构</h3>
 
-<h4>引言</h4>
+<h4 id="section">引言</h4>
+<p>每一个php extension的目录中最少要包含config.m4、config.w32、php_extension.h、extension.c。php_extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。</p>
 
-<p>每一个php extension的目录中最少要包含config.m4、config.w32、php<em>extension.h、extension.c。php</em>extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。</p>
-
-<h4>1. 扩展的配置文件config.m4和config.w32</h4>
+<h4 id="configm4configw32">1. 扩展的配置文件config.m4和config.w32</h4>
 
 <p>config.m4用户Unix、Linux等系统。config.m4文件告诉 UNIX 构建系统哪些扩展 configure 选项是支持的，你需要哪些扩展库，以及哪些源文件要编译成它的一部分。</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">  config.m4配置函数PHP_ARG_WITH()和 PHP_ARG_ENABLE()的区别在于编译的时候使用 --with-* 选项还是 --enable-* 。
-</code></pre></div>
+
+<pre><code>  config.m4配置函数PHP_ARG_WITH()和 PHP_ARG_ENABLE()的区别在于编译的时候使用 --with-* 选项还是 --enable-* 。
+</code></pre>
+
 <p><a href="http://php.net/manual/zh/internals2.structure.files.php">关于配置文件的详细内容</a></p>
 
 <p>下面是我的一个例子</p>
 
-<p>dnl在config.m4是注释的意思 </p>
+<p>dnl在config.m4是注释的意思</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">PHP_ARG_WITH(reage, for reage support,</span>
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="x">PHP_ARG_WITH(reage, for reage support,</span>
 <span class="x">Make sure that the comment is aligned:</span>
 <span class="x">[  --with-reage             Include reage support])</span>
 <span class="x">dnl 检测扩展是否已启用</span>
 <span class="x">if test $PHP_REAGE != &quot;no&quot;; then</span>
 <span class="x">    PHP_SUBST(REAGE_SHARED_LIBADD)</span>
 <span class="x">    PHP_NEW_EXTENSION(reage, reage.c, $ext_shared)</span>
-<span class="x">fi</span></code></pre></div>
+<span class="x">fi</span></code></pre></figure>
 
 <p>config.w32 是windows下的扩展的配置文件的，<a href="http://php.net/manual/zh/internals2.structure.files.php">具体使用查看</a></p>
 
-<h4>2. php_reage.h</h4>
+<p>####2. php_reage.h</p>
 
 <p>php_reage.h其实不是必须的，但是一般的都C语言项目都是包含.h和.c文件的。为了让代码看起来更加的正规，我们也使用.h文件。.h文件一般只包含函数的定义、结构体的定义。</p>
 
 <p>下面是我的一个例子：</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#ifndef REAGE_H</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#ifndef REAGE_H</span>
 <span class="cp">#define REAGE_H</span>
 
 
@@ -171,14 +172,13 @@
 <span class="cp">#define phpext_reage_ptr &amp;reage_module_entry;</span>
 <span class="k">extern</span> <span class="n">zend_module_entry</span> <span class="n">reage_module_entry</span><span class="p">;</span>
 
-<span class="cp">#endif</span></code></pre></div>
+<span class="cp">#endif</span></code></pre></figure>
 
-<h4>3. reage.c</h4>
-
-<p>reage.c是具体的代码文件的。
+<p>####3. reage.c
+reage.c是具体的代码文件的。
 下面是我的一个例子：</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &quot;php_reage.h&quot;</span>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &quot;php_reage.h&quot;</span>
 <span class="cp">#include &quot;ext/standard/info.h&quot;</span>
 
 <span class="c1">//加载config.h,如果有配置项</span>
@@ -203,27 +203,27 @@
 
 <span class="cp">#ifdef COMPILE_DL_REAGE</span>
 <span class="n">ZEND_GET_MODULE</span><span class="p">(</span><span class="n">reage</span><span class="p">)</span>
-<span class="cp">#endif</span></code></pre></div>
+<span class="cp">#endif</span></code></pre></figure>
 
-<h4>4. 编译php extension</h4>
+<p>####4. 编译php extension
+   在php extension的目录下，执行一下命名:</p>
 
-<p>在php extension的目录下，执行一下命名:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">   1. phpize
+<p><code>
+   1. phpize
    2. ./configure
    3. make
    4. make test
-</code></pre></div>
-<h4>5. test</h4>
-<div class="highlight"><pre><code class="language-text" data-lang="text">将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。
-</code></pre></div>
-<h4>6. ext_skel</h4>
+  </code></p>
 
-<p>ext<em>skel工具是专门用来生成php extension 目录结构的。ext</em>skel在php源码下的ext目录下。
-  使用ext<em>skel工具生成目录结构后，需要修改config.m4中大约10-20行，是关于PHP</em>ARG<em>WITH和PHP</em>ARG_ENABLE的。根据自己的需要将前面的注释符号（dnl）去掉</p>
+<p>####5. test 
+    将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。</p>
 
-<h4>7. 源代码</h4>
+<p>####6. ext_skel
+  ext_skel工具是专门用来生成php extension 目录结构的。ext_skel在php源码下的ext目录下。
+  使用ext_skel工具生成目录结构后，需要修改config.m4中大约10-20行，是关于PHP_ARG_WITH和PHP_ARG_ENABLE的。根据自己的需要将前面的注释符号（dnl）去掉</p>
 
-<p><a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learn1">https://github.com/rentiansheng/php-extension-learn/tree/master/learn1</a></p>
+<p>####7. 源代码
+<a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learn1">https://github.com/rentiansheng/php-extension-learn/tree/master/learn1</a></p>
 
 </div>
 
@@ -244,7 +244,7 @@
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
+      <h4><a href="/php/2014/11/28/codeigniter-rabbitmq-library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
       <span><i class="fa fa-clock-o"></i>  2014-11-28</span>
     </div><!-- /.list-item -->
     
