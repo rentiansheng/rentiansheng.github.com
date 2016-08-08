@@ -4,13 +4,44 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-08T16:39:45+08:00</updated>
+ <updated>2016-08-08T16:45:24+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>json_decode解析失败</title>
+   <link href="http://www.ireage.com/paginate"/>
+   <updated>2016-02-24T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/json_decode</id>
+   <content type="html">&lt;p&gt;最近，一直在使用的系统突然出现一个奇怪的问题。一个商户信息总是没法展示的，两个系统采用json做的数据交换，
+线上日志记录到模块是接受导数据，但是在后面的日志中，发现数据为空。经过在线上加log发现json_decode失败的返回值为NULL。
+随后把log中的日志拿出来，json_decode没有问题的。&lt;/p&gt;
+
+&lt;p&gt;首先想到的问题是：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;json格式的问题&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;内存限制&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;编码问题&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上面的问题，很容就可以检查结果了。到底是不是这些原因的。不幸的事情发生了。这些都不是的，太奇葩了。&lt;/p&gt;
+
+&lt;p&gt;虽有用json_decode解码失败搜索发现，有人说是因为json串有\t等特殊字符的问题的（之所以copy后解析成功，是因为不同的编辑器和编码格式会对特殊字符做处理）。&lt;/p&gt;
+
+&lt;p&gt;在不同的终端下查看数据，发现数据中有特符符号。但是并不是\t,而是编码格式为\u0014\u0017数据。最好建议大家不要对数据进行解码查看，要看查看最原始的数据。因为不同的编码会对特殊符号做处理，在不同的编码下，特殊符号可能会显示为空白，不显示，显示为不同的符号等。&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>php extensions(二) phpinfo输出内容</title>

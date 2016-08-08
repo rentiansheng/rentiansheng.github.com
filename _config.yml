@@ -1,12 +1,20 @@
 #
 #Dependencies
+<<<<<<< HEAD
 markdown:            kramdown
 highlighter:         Rouge
+=======
+highlighter:         pygments
+gems: [jekyll-paginate]
+paginate: 5
+paginate_path: "page:num"
+>>>>>>> 07f84f1afce4daffccf4152613ed65cde750879e
 
 
 # Permalinks
 #
 # Use of `relative_permalinks` ensures post links from the index work properly.
+<<<<<<< HEAD
 permalink:           paginate
 relative_permalinks: false
 
@@ -14,6 +22,10 @@ relative_permalinks: false
 gems: [jekyll-paginate]
 
 
+=======
+permalink:           pretty
+#relative_permalinks: true
+>>>>>>> 07f84f1afce4daffccf4152613ed65cde750879e
 
 # Setup
 title:               'Reage blog'
