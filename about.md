@@ -43,7 +43,6 @@ class tianshengren {
 
     private function company() {
         return array(
-<<<<<<< HEAD
             '百度外卖' => array(
                         'start' => '2015',
                         'work' => 'PHP,Mysql,Redis,NMQ商户菜品、信息及审核'
@@ -51,15 +50,6 @@ class tianshengren {
             '北京景行致界科技有限公司' => array(
                 'start' => '2013,11',
                 'end' => '2015,03',
-=======
-            '美丽说网络科技有限公司' => array(
-                        'start' => '2015-02',
-                        'work' => 'PHP,Mysql商家活动'
-                    ),
-            '北京景行致界科技有限公司' => array(
-                'start' => '2013-11',
-                'end' => '2015-02',
->>>>>>> 07f84f1afce4daffccf4152613ed65cde750879e
                 'project' => '小声APP(匿名社交)，疯拍(阅后即焚)',
                 'work' => 'PHP,Mysql,Redis实现后台管理系统及APP接口'
             )
