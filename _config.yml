@@ -1,14 +1,19 @@
 #
 #Dependencies
-markdown:            redcarpet
-highlighter:         pygments
+markdown:            kramdown
+highlighter:         Rouge
 
 
 # Permalinks
 #
 # Use of `relative_permalinks` ensures post links from the index work properly.
-permalink:           pretty
-relative_permalinks: true
+permalink:           paginate
+relative_permalinks: false
+
+# Gems
+gems: [jekyll-paginate]
+
+
 
 # Setup
 title:               'Reage blog'
@@ -18,6 +23,7 @@ description:         ''
 url:                 http://www.ireage.com
 baseurl:             /
 paginate:            5
+paginate_path:       "page:num"
 github:				 https://github.com/rentiansheng
 rss:				 /atom.xml
 # Custom vars

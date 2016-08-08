@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="Home">
+  <meta name="keywords" content="关于">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      Reage blog &middot; 
+      关于 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -62,7 +62,7 @@
     
       
         
-          <a class="sidebar-nav-item" href="/about">关于</a>
+          <a class="sidebar-nav-item active" href="/about">关于</a>
         
       
     
@@ -122,47 +122,65 @@
           
         </ul>            
       <div class="container content" style="margin-top:2rem">
-        <div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/paginate">
-        c语言 sizeof函数认知
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2012-09-06</span>
-    下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。
+        <div class="page">
+  <h1 class="page-title">关于</h1>
+  <p>个人简介!</p>
 
-## 首先
- —
- sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后...
-  </div>
-  
+<figure class="highlight"><pre><code class="language-php" data-lang="php">&lt;?php
+
+new tianshengren();
+
+class tianshengren {
+
+    function  __construct() {
+        $me = array(
+            &#39;owner&#39; =&gt; $this-&gt;owner(),
+            &#39;education&#39; =&gt; $this-&gt;education(),
+            &#39;company&#39; =&gt; $this-&gt;company()
+        );
+        print_r($me);
+    }
+
+    private function owner() {
+        return array(
+            &#39;name&#39; =&gt; &#39;tianshengren&#39;,
+            &#39;english name&#39; =&gt; &#39;Reage&#39;,
+            &#39;email&#39; =&gt; &#39;reage521@gmail.com&#39;
+        );
+    }
+
+    private function education() {
+        return array(
+            &#39;bachelor degree&#39; =&gt; array(
+                &#39;name&#39; =&gt; &#39;河南科技学院&#39;,
+                &#39;start&#39; =&gt; &#39;2009-09-13&#39;,
+                &#39;end&#39; =&gt; &#39;2014-07-01&#39;
+            )
+        );
+    }
+
+    private function company() {
+        return array(
+            &#39;百度外卖&#39; =&gt; array(
+                        &#39;start&#39; =&gt; &#39;2015&#39;,
+                        &#39;work&#39; =&gt; &#39;PHP,Mysql,Redis,NMQ商户菜品、信息及审核&#39;
+                    ),
+            &#39;北京景行致界科技有限公司&#39; =&gt; array(
+                &#39;start&#39; =&gt; &#39;2013,11&#39;,
+                &#39;end&#39; =&gt; &#39;2015,03&#39;,
+                &#39;project&#39; =&gt; &#39;小声APP(匿名社交)，疯拍(阅后即焚)&#39;,
+                &#39;work&#39; =&gt; &#39;PHP,Mysql,Redis实现后台管理系统及APP接口&#39;
+            )
+
+        );
+    }
+
+}
+
+?&gt;</code></pre></figure>
+
+
 </div>
-<div id="post-pagination" class="paginator">
-      
-      <a href="/">1</a>
-      
-
-    
-      
-      <span class="current-page">2</span>
-      
-    
-  (共6篇)
-</div>
-
-<!--div class="pagination">
-  
-    <span class="pagination-item older"><-</span>
-  
-  
-    
-  <a class="pagination-item newer" href="/">-></a>
-    
-  
-</div-->
 
       </div>
     </div>

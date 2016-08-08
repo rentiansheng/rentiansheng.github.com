@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2015-07-23T16:45:19+08:00</updated>
+ <updated>2016-08-08T16:39:45+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -14,55 +14,57 @@
  
  <entry>
    <title>php extensions(二) phpinfo输出内容</title>
-   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF/"/>
+   <link href="http://www.ireage.com/paginate"/>
    <updated>2015-04-18T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php扩展开发学习(二)phpinfo添加信息</id>
-   <content type="html">&lt;h3&gt;php extensions(二)  phpinfo输出内容&lt;/h3&gt;
+   <id>http://www.ireage.com/php扩展开发学习(二)phpinfo添加信息</id>
+   <content type="html">&lt;h3 id=&quot;php-extensions--phpinfo&quot;&gt;php extensions(二)  phpinfo输出内容&lt;/h3&gt;
 
-&lt;h4&gt;引言&lt;/h4&gt;
+&lt;h4 id=&quot;section&quot;&gt;引言&lt;/h4&gt;
 
 &lt;p&gt;我们在使用一个PHP扩展的时候，首先，将编译后的扩展放到PHP的扩展加载目录下，使用phpinfo函数来查看插件是否已经加载。&lt;/p&gt;
 
-&lt;h4&gt;代码实现&lt;/h4&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;代码实现&lt;/h4&gt;
 
 &lt;p&gt;在phpinfo函数添加内容特别简单的。
    1.首先修改module entry&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;x&quot;&gt;zend_module_entry reage_module_entry = {&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             STANDARD_MODULE_HEADER,&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             &amp;quot;reage&amp;quot;,//扩展的名字&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             NULL, // functions&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             NULL, // minit&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             NULL, //mshutdown&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             NULL, //rinit&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             NULL, //rshutdown&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             PHP_MINFO(reage_info), //注册在phpinfo函数中输出内容的函数,reage_info&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             &amp;quot;0.0.1&amp;quot;, //版本号&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;             STANDARD_MODULE_PROPERTIES&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;         };&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;zend_module_entry reage_module_entry = {
+             STANDARD_MODULE_HEADER,
+             &amp;quot;reage&amp;quot;,//扩展的名字
+             NULL, // functions
+             NULL, // minit
+             NULL, //mshutdown
+             NULL, //rinit
+             NULL, //rshutdown
+             PHP_MINFO(reage_info), //注册在phpinfo函数中输出内容的函数,reage_info
+             &amp;quot;0.0.1&amp;quot;, //版本号
+             STANDARD_MODULE_PROPERTIES
+         };&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;2.输出内容函数的实现&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;x&quot;&gt;PHP_MINFO_FUNCTION(reage_info) {&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;           php_info_print_table_start();&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;           php_info_print_table_header(2, &amp;quot;key&amp;quot;, &amp;quot;value&amp;quot;);&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;           php_info_print_table_row(2, &amp;quot;author&amp;quot;, &amp;quot;Reage&amp;quot;);&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;           php_info_print_table_end();&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;        }&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;PHP_MINFO_FUNCTION(reage_info) {
+           php_info_print_table_start();
+           php_info_print_table_header(2, &amp;quot;key&amp;quot;, &amp;quot;value&amp;quot;);
+           php_info_print_table_row(2, &amp;quot;author&amp;quot;, &amp;quot;Reage&amp;quot;);
+           php_info_print_table_end();
+        }&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h4&gt;使用到的函数&lt;/h4&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;php_info_print_table_start();
+&lt;h4 id=&quot;section-2&quot;&gt;使用到的函数&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;php_info_print_table_start();
 php_info_print_table_header();
 php_info_print_table_row();
 php_info_print_table_end();
 
 除了这些函数，还有很多函数，需要的话请自行查阅
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;####  源代码&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)&lt;/a&gt;&lt;/p&gt;
 
-&lt;h4&gt;特别说明&lt;/h4&gt;
+&lt;h4 id=&quot;section-3&quot;&gt;特别说明&lt;/h4&gt;
 
 &lt;p&gt;在搜索资料时，发现一个写的特别好的php扩展开发系列文章，希望对大家有用&lt;/p&gt;
 
@@ -72,162 +74,164 @@ php_info_print_table_end();
  
  <entry>
    <title>php extensions(-) 代码目录结构</title>
-   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-)/"/>
+   <link href="http://www.ireage.com/paginate"/>
    <updated>2015-04-08T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php扩展开发学习(-)</id>
-   <content type="html">&lt;h3&gt;php extensions(-) 代码目录结构&lt;/h3&gt;
+   <id>http://www.ireage.com/php扩展开发学习(-)</id>
+   <content type="html">&lt;h3 id=&quot;php-extensions--&quot;&gt;php extensions(-) 代码目录结构&lt;/h3&gt;
 
-&lt;h4&gt;引言&lt;/h4&gt;
+&lt;h4 id=&quot;section&quot;&gt;引言&lt;/h4&gt;
+&lt;p&gt;每一个php extension的目录中最少要包含config.m4、config.w32、php_extension.h、extension.c。php_extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。&lt;/p&gt;
 
-&lt;p&gt;每一个php extension的目录中最少要包含config.m4、config.w32、php&lt;em&gt;extension.h、extension.c。php&lt;/em&gt;extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。&lt;/p&gt;
-
-&lt;h4&gt;1. 扩展的配置文件config.m4和config.w32&lt;/h4&gt;
+&lt;h4 id=&quot;configm4configw32&quot;&gt;1. 扩展的配置文件config.m4和config.w32&lt;/h4&gt;
 
 &lt;p&gt;config.m4用户Unix、Linux等系统。config.m4文件告诉 UNIX 构建系统哪些扩展 configure 选项是支持的，你需要哪些扩展库，以及哪些源文件要编译成它的一部分。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;  config.m4配置函数PHP_ARG_WITH()和 PHP_ARG_ENABLE()的区别在于编译的时候使用 --with-* 选项还是 --enable-* 。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;pre&gt;&lt;code&gt;  config.m4配置函数PHP_ARG_WITH()和 PHP_ARG_ENABLE()的区别在于编译的时候使用 --with-* 选项还是 --enable-* 。
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;&lt;a href=&quot;http://php.net/manual/zh/internals2.structure.files.php&quot;&gt;关于配置文件的详细内容&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;下面是我的一个例子&lt;/p&gt;
 
-&lt;p&gt;dnl在config.m4是注释的意思 &lt;/p&gt;
+&lt;p&gt;dnl在config.m4是注释的意思&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;x&quot;&gt;PHP_ARG_WITH(reage, for reage support,&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;Make sure that the comment is aligned:&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;[  --with-reage             Include reage support])&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;dnl 检测扩展是否已启用&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;if test $PHP_REAGE != &amp;quot;no&amp;quot;; then&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;    PHP_SUBST(REAGE_SHARED_LIBADD)&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;    PHP_NEW_EXTENSION(reage, reage.c, $ext_shared)&lt;/span&gt;
-&lt;span class=&quot;x&quot;&gt;fi&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;PHP_ARG_WITH(reage, for reage support,
+Make sure that the comment is aligned:
+[  --with-reage             Include reage support])
+dnl 检测扩展是否已启用
+if test $PHP_REAGE != &amp;quot;no&amp;quot;; then
+    PHP_SUBST(REAGE_SHARED_LIBADD)
+    PHP_NEW_EXTENSION(reage, reage.c, $ext_shared)
+fi&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;config.w32 是windows下的扩展的配置文件的，&lt;a href=&quot;http://php.net/manual/zh/internals2.structure.files.php&quot;&gt;具体使用查看&lt;/a&gt;&lt;/p&gt;
 
-&lt;h4&gt;2. php_reage.h&lt;/h4&gt;
+&lt;p&gt;####2. php_reage.h&lt;/p&gt;
 
 &lt;p&gt;php_reage.h其实不是必须的，但是一般的都C语言项目都是包含.h和.c文件的。为了让代码看起来更加的正规，我们也使用.h文件。.h文件一般只包含函数的定义、结构体的定义。&lt;/p&gt;
 
 &lt;p&gt;下面是我的一个例子：&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#ifndef REAGE_H&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#define REAGE_H&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;#ifndef REAGE_H
+#define REAGE_H
 
 
-&lt;span class=&quot;cp&quot;&gt;#include &amp;quot;php.h&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#define phpext_reage_ptr &amp;amp;reage_module_entry;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zend_module_entry&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reage_module_entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+#include &amp;quot;php.h&amp;quot;
+#define phpext_reage_ptr &amp;amp;reage_module_entry;
+extern zend_module_entry reage_module_entry;
 
-&lt;span class=&quot;cp&quot;&gt;#endif&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+#endif&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h4&gt;3. reage.c&lt;/h4&gt;
-
-&lt;p&gt;reage.c是具体的代码文件的。
+&lt;p&gt;####3. reage.c
+reage.c是具体的代码文件的。
 下面是我的一个例子：&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;quot;php_reage.h&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#include &amp;quot;ext/standard/info.h&amp;quot;&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;#include &amp;quot;php_reage.h&amp;quot;
+#include &amp;quot;ext/standard/info.h&amp;quot;
 
-&lt;span class=&quot;c1&quot;&gt;//加载config.h,如果有配置项&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#ifdef HAVE_CONFIG_H&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#include &amp;quot;config.h&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#endif&lt;/span&gt;
+//加载config.h,如果有配置项
+#ifdef HAVE_CONFIG_H
+#include &amp;quot;config.h&amp;quot;
+#endif
 
 
-&lt;span class=&quot;c1&quot;&gt;//module entry&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;zend_module_entry&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reage_module_entry&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;STANDARD_MODULE_HEADER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&amp;quot;reage&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//扩展的名字&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// functions&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// minit&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//mshutdown&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//rinit&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//rshutdown&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&amp;quot;0.0.1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//版本号&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;STANDARD_MODULE_PROPERTIES&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+//module entry
+zend_module_entry reage_module_entry = {
+    STANDARD_MODULE_HEADER,
+    &amp;quot;reage&amp;quot;,//扩展的名字
+    NULL, // functions
+    NULL, // minit
+    NULL, //mshutdown
+    NULL, //rinit
+    NULL, //rshutdown
+    NULL,
+    &amp;quot;0.0.1&amp;quot;, //版本号
+    STANDARD_MODULE_PROPERTIES
+};
 
-&lt;span class=&quot;cp&quot;&gt;#ifdef COMPILE_DL_REAGE&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ZEND_GET_MODULE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#endif&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+#ifdef COMPILE_DL_REAGE
+ZEND_GET_MODULE(reage)
+#endif&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h4&gt;4. 编译php extension&lt;/h4&gt;
+&lt;p&gt;####4. 编译php extension
+   在php extension的目录下，执行一下命名:&lt;/p&gt;
 
-&lt;p&gt;在php extension的目录下，执行一下命名:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   1. phpize
+&lt;p&gt;&lt;code&gt;
+   1. phpize
    2. ./configure
    3. make
    4. make test
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h4&gt;5. test&lt;/h4&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h4&gt;6. ext_skel&lt;/h4&gt;
+  &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;ext&lt;em&gt;skel工具是专门用来生成php extension 目录结构的。ext&lt;/em&gt;skel在php源码下的ext目录下。
-  使用ext&lt;em&gt;skel工具生成目录结构后，需要修改config.m4中大约10-20行，是关于PHP&lt;/em&gt;ARG&lt;em&gt;WITH和PHP&lt;/em&gt;ARG_ENABLE的。根据自己的需要将前面的注释符号（dnl）去掉&lt;/p&gt;
+&lt;p&gt;####5. test 
+    将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。&lt;/p&gt;
 
-&lt;h4&gt;7. 源代码&lt;/h4&gt;
+&lt;p&gt;####6. ext_skel
+  ext_skel工具是专门用来生成php extension 目录结构的。ext_skel在php源码下的ext目录下。
+  使用ext_skel工具生成目录结构后，需要修改config.m4中大约10-20行，是关于PHP_ARG_WITH和PHP_ARG_ENABLE的。根据自己的需要将前面的注释符号（dnl）去掉&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learn1&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learn1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;####7. 源代码
+&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learn1&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learn1&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
  
  <entry>
    <title>mysql 优化基础知识（-）</title>
-   <link href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/"/>
+   <link href="http://www.ireage.com/paginate"/>
    <updated>2015-03-30T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/mysql/2015/03/30/mysql优化基础知识(-)</id>
-   <content type="html">&lt;h4&gt;1. primary key&lt;/h4&gt;
-
+   <id>http://www.ireage.com/mysql优化基础知识(-)</id>
+   <content type="html">&lt;h4 id=&quot;primary-key&quot;&gt;1. primary key&lt;/h4&gt;
 &lt;p&gt;primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
-  综上所述，在使用primary key列一般都是用int类型auto&lt;em&gt;increment，这样保证所有的值都是顺序插入的，auto&lt;/em&gt;increment在高并发的应用下肯定会有争用问题。
+  综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
   主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快&lt;/p&gt;
 
-&lt;h4&gt;2.索引在存储时都是正序存储&lt;/h4&gt;
+&lt;h4 id=&quot;section&quot;&gt;2.索引在存储时都是正序存储&lt;/h4&gt;
+&lt;p&gt;因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra现实这Using filesort&lt;/p&gt;
 
-&lt;p&gt;因此，就算建立 index idx&lt;em&gt;score&lt;/em&gt;course(score,course) 索引，使用explain &amp;quot;select * from test order by score desc, course asc&amp;quot;你就会发现并没有到idx&lt;em&gt;score&lt;/em&gt;course索引，在Extra现实这Using filesort&lt;/p&gt;
+&lt;h4 id=&quot;where-in&quot;&gt;3. where in&lt;/h4&gt;
+&lt;p&gt;mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)&lt;/p&gt;
 
-&lt;h4&gt;3. where in&lt;/h4&gt;
-
-&lt;p&gt;mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)  &lt;/p&gt;
 </content>
  </entry>
  
  <entry>
    <title>codeigniter rabbitmq lirary</title>
-   <link href="http://www.ireage.com/php/2014/11/28/codeigniter%20rabbitmq%20library/"/>
+   <link href="http://www.ireage.com/paginate"/>
    <updated>2014-11-28T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php/2014/11/28/codeigniter rabbitmq library</id>
-   <content type="html">&lt;p&gt;简介&lt;/p&gt;
-
-&lt;hr&gt;
+   <id>http://www.ireage.com/codeigniter rabbitmq library</id>
+   <content type="html">&lt;p&gt;简介
+&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;_&lt;/p&gt;
 
 &lt;p&gt;针对CI 封装的一个简单的rabbitmq，只有基本功能的&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng//ci-rabbitmq&quot;&gt;项目地址：https://github.com/rentiansheng//ci-rabbitmq&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2&gt;代码结构&lt;/h2&gt;
-
+&lt;h2 id=&quot;section&quot;&gt;代码结构&lt;/h2&gt;
 &lt;p&gt;1.文件介绍&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;  1.src/src/libraries/rabbitmq.php  rabbitmq操作代码
+
+&lt;pre&gt;&lt;code&gt;  1.src/src/libraries/rabbitmq.php  rabbitmq操作代码
   2.src/src/config/rabbitmq.php     rabbitmq配置文件
   3.src/src/models/rabbitmqmodel.php   consume回调函数代码
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;2.将需要的PHP代码文件放到制定位置&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;  1. cp src/src/libraries/rabbitmq.php   项目代码/application/libraries/
+
+&lt;pre&gt;&lt;code&gt;  1. cp src/src/libraries/rabbitmq.php   项目代码/application/libraries/
   2. cp src/src/config/rabbitmq.php   项目代码/application/config/
   3. cp src/src/models/rabbitmqmodel.php   项目代码/application/models/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;函数&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;函数&lt;/h2&gt;
 
 &lt;p&gt;1.queue  declare一个queue&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   参数
+
+&lt;pre&gt;&lt;code&gt;   参数
        name 队列的名字
        durable queue是否持久化，true，是，false 否 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;2.sendMsg 向队列中add内容&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    参数
+
+&lt;pre&gt;&lt;code&gt;    参数
         msg 消息的内容
         exchangeName 发送消息使用的exchangeName
         queueName 接受消息的queue
@@ -236,9 +240,11 @@ php_info_print_table_end();
                       你可以选择一下模式， AMQP_EX_TYPE_DIRECT,
                       AMQP_EX_TYPE_FANOUT,
                       AMQP_EX_TYPE_HEADER or AMQP_EX_TYPE_TOPIC
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;3.getMsg 获取消息&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   参数 
+
+&lt;pre&gt;&lt;code&gt;   参数 
         queueName 获取内容的queue的name
         autoack   是否自动ack，autoack ＝ true，消息将从队列删除，
                   autoack ＝ false；时，需要用ack或者nack来回应给rabbitmq，否则，队列将无法工作
@@ -246,9 +252,11 @@ php_info_print_table_end();
     备注
         从队列中的下一个可用的消息。如果没有消息存在于队列中，该函数将立即返回FALSE，
         这种方式比较消耗CPU,不建议使用的。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;4.consume 获取消息，推荐&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    参数
+
+&lt;pre&gt;&lt;code&gt;    参数
         queueName 获取内容的queue的name
         callback  回调函数的名字，注意这个是函数名字的，对应名字的函数必须在models/rabbitmqmodel.php中实现的
         autoack   是否自动ack，autoack ＝ true，消息将从队列删除，
@@ -257,34 +265,41 @@ php_info_print_table_end();
     备注
         callback回调函数的名字，注意这个是函数名字的，对应名字的函数必须在models/rabbitmqmodel.php中实现的
         回调函数将会有两个参数，
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;5.consume回调函数格式&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;   function test(envelope, $queue) {}
+
+&lt;pre&gt;&lt;code&gt;
+   function test(envelope, $queue) {}
     参数
-       envelope  与消息相关的对象，具体的查看&amp;lt;a href=&amp;quot;http://php.net/manual/pl/class.amqpenvelope.php&amp;quot;&amp;gt;http://php.net/manual/pl/class.amqpenvelope.php&amp;lt;/a&amp;gt;
+       envelope  与消息相关的对象，具体的查看&amp;lt;a href=&quot;http://php.net/manual/pl/class.amqpenvelope.php&quot;&amp;gt;http://php.net/manual/pl/class.amqpenvelope.php&amp;lt;/a&amp;gt;
        queue  queue的对象
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;demo 目录下是示例代码&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;1. 将demo/controllers/taskqueue.php 项目代码/application/controllers/taskqueue.php
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;demo-&quot;&gt;demo 目录下是示例代码&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;1. 将demo/controllers/taskqueue.php 项目代码/application/controllers/taskqueue.php
 2.  运行例子，最好可以terminal运行,首先转到项目文件所在的路径
     已发送消息作为例子
     sudo [可选择加上php env]  php所在位置 index.php taskqueue   sendMsg 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;我遇到的问题&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
+&lt;h2 id=&quot;section-2&quot;&gt;我遇到的问题&lt;/h2&gt;
 &lt;p&gt;1.在执行一段时间后无法从redis获取内容&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    我使用的是ci的cache库操作redis，由于cache 初始化是在controller开始的位置，时间久了，会自动断开链接请注意。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;pre&gt;&lt;code&gt;    我使用的是ci的cache库操作redis，由于cache 初始化是在controller开始的位置，时间久了，会自动断开链接请注意。
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;p&gt;2.请不要在浏览器中运行consume， php-fpm有可会出现问题，&lt;/p&gt;
 </content>
  </entry>
  
  <entry>
    <title>览器桌面通知（notifications）</title>
-   <link href="http://www.ireage.com/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5%EF%BC%88notifications%EF%BC%89/"/>
+   <link href="http://www.ireage.com/paginate"/>
    <updated>2014-05-28T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/js/2014/05/28/浏览器桌面通知（notifications）</id>
-   <content type="html">&lt;h1&gt;chrome 浏览器桌面通知&lt;/h1&gt;
+   <id>http://www.ireage.com/浏览器桌面通知（notifications）</id>
+   <content type="html">&lt;h1 id=&quot;chrome-&quot;&gt;chrome 浏览器桌面通知&lt;/h1&gt;
 
 &lt;p&gt;最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
 这样就很难看到通知了。经过查找发现有些浏览器可以使用noitfications，
@@ -293,20 +308,20 @@ php_info_print_table_end();
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/notification&quot;&gt;项目地址：https://github.com/rentiansheng/notification&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2&gt;简介&lt;/h2&gt;
+&lt;h2 id=&quot;section&quot;&gt;简介&lt;/h2&gt;
 
 &lt;p&gt;用于其余B/S下的网络办公提醒功能。
 页面最小化的状态下发送通知
 依然显示在屏幕的右下角，马上可以看到内容&lt;/p&gt;
 
-&lt;h2&gt;依赖&lt;/h2&gt;
+&lt;h2 id=&quot;section-1&quot;&gt;依赖&lt;/h2&gt;
 
 &lt;ol&gt;
-&lt;li&gt;PC chrome浏览器。&lt;/li&gt;
-&lt;li&gt;手机android 海豚浏览器&lt;/li&gt;
+  &lt;li&gt;PC chrome浏览器。&lt;/li&gt;
+  &lt;li&gt;手机android 海豚浏览器&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2&gt;注意事项&lt;/h2&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;注意事项&lt;/h2&gt;
 
 &lt;p&gt;通知权限是基于网站（或者域名），同一个网站下面的页面只需要获取一次权限即可。
 如果别禁用了。将不会显示通知的，也无法再次获取权限了。
@@ -316,81 +331,104 @@ php_info_print_table_end();
 &lt;/code&gt;
 如果你关闭或者刷新页面了。之前的通知就没法控制了 。&lt;/p&gt;
 
-&lt;h2&gt;使用&lt;/h2&gt;
+&lt;h2 id=&quot;section-3&quot;&gt;使用&lt;/h2&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;引用notify.js文件&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-HTML&quot; data-lang=&quot;HTML&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;notifiy.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;浏览器配置&lt;/p&gt;
+  &lt;li&gt;
+    &lt;p&gt;引用notify.js文件&lt;/p&gt;
 
-&lt;p&gt;检查浏览器是否支持桌面通知功能
-&lt;code&gt;HTML
-Notifier.HasSupport();
+    &lt;p&gt;&lt;code&gt;HTML
+ &amp;lt;script src=&quot;notifiy.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;浏览器配置&lt;/p&gt;
+
+    &lt;p&gt;检查浏览器是否支持桌面通知功能
+ &lt;code&gt;HTML
+ Notifier.HasSupport();
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;获取允许桌面通知权限
-&lt;code&gt;HTML
-Notifier.RequestPermission();
-&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;设置通知显示方式（可选。不设置采用默认模式）&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-HTML&quot; data-lang=&quot;HTML&quot;&gt; Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
- Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
- Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
- NOtifier.ModelTimeout(ct); //超时消失模式。显示一定时间自动消失。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;发送通知&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-HTML&quot; data-lang=&quot;HTML&quot;&gt;Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;关闭的方法&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-HTML&quot; data-lang=&quot;HTML&quot;&gt; Notifier.Clse(type);    //type=1 关闭上一个 其他值 关闭最早打开的
- Notifier.ClosePre();    //关闭最近个打开的通知
- Notifier.CloseLast();   //关闭最早显示的通知
- NOtifier.CloseAll();    //关闭所有通知
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;其他方法&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-HTML&quot; data-lang=&quot;HTML&quot;&gt;Notifier.GetPermission();   //获取关于通知使用权限，0，已经得到权限 1，需要获取权限 2，禁止使用
-Notifier.IsGetPermission(); //是否已经获取通知的使用权限
-Notifier.Disable();         //是否禁用通知
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+    &lt;p&gt;获取允许桌面通知权限
+ &lt;code&gt;HTML
+ Notifier.RequestPermission();
+&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;设置通知显示方式（可选。不设置采用默认模式）&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;HTML
+  Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
+  Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
+  Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
+  NOtifier.ModelTimeout(ct); //超时消失模式。显示一定时间自动消失。
+ &lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;发送通知&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;HTML
+ Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
+&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;关闭的方法&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;HTML
+  Notifier.Clse(type);    //type=1 关闭上一个 其他值 关闭最早打开的
+  Notifier.ClosePre();    //关闭最近个打开的通知
+  Notifier.CloseLast();   //关闭最早显示的通知
+  NOtifier.CloseAll();    //关闭所有通知
+ &lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;其他方法&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;HTML
+ Notifier.GetPermission();   //获取关于通知使用权限，0，已经得到权限 1，需要获取权限 2，禁止使用
+ Notifier.IsGetPermission(); //是否已经获取通知的使用权限
+ Notifier.Disable();         //是否禁用通知
+&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
+
 </content>
  </entry>
  
  <entry>
    <title>c语言 sizeof函数认知</title>
-   <link href="http://www.ireage.com/c/2012/09/06/c%20sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5/"/>
+   <link href="http://www.ireage.com/paginate"/>
    <updated>2012-09-06T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/c/2012/09/06/c sizeof函数的认知</id>
+   <id>http://www.ireage.com/c sizeof函数的认知</id>
    <content type="html">&lt;p&gt;下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。&lt;/p&gt;
 
-&lt;p&gt;## 首先&lt;/p&gt;
+&lt;p&gt;## 首先
+ —
+ sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后面操作对象都加上括号哪？原因如下。&lt;/p&gt;
 
-&lt;hr&gt;
-
-&lt;p&gt;sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后面操作对象都加上括号哪？原因如下。&lt;/p&gt;
-
-&lt;h2&gt;sizeof函数证明&lt;/h2&gt;
-
-&lt;hr&gt;
-
+&lt;h2 id=&quot;sizeof&quot;&gt;sizeof函数证明&lt;/h2&gt;
+&lt;hr /&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;sizeof int ，结果为4，说明 sizeof说明他不是一个函数。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;siezof(int )是关键字，为什么分开标记，比方 int i；int i，j；使用空格、逗号区分关键字和操作对象， 请测试 int(i)，你很惊
+  &lt;li&gt;
+    &lt;p&gt;sizeof int ，结果为4，说明 sizeof说明他不是一个函数。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;siezof(int )是关键字，为什么分开标记，比方 int i；int i，j；使用空格、逗号区分关键字和操作对象， 请测试 int(i)，你很惊
 奇的发现这句话竟然可以编译通过没有报错，这句话的作用是相当于 int i，原因如下，int i，我们从原理上分析这句话，空格起
-的是一个分割的作用，有用区分变量和变量类型。 int(i)同样也起到了区分变量和变量类型的，由于()的优先级别高，所以括号里边、外边成为两部分，这样与 int i；的功能相同&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;sizeof后面为什么一直有括号
+的是一个分割的作用，有用区分变量和变量类型。 int(i)同样也起到了区分变量和变量类型的，由于()的优先级别高，所以括号里边、外边成为两部分，这样与 int i；的功能相同&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;sizeof后面为什么一直有括号
 sizeof struct  student；这一句话将会，编译失败，因为 sizeof 将 struct作为操作数，而并非将整个 struct  student 作为操作数，
 这是因为优先级别的问题，
 int a；sizeof a+1；结果值为5； 原因如下 sizeof(a)+1;
-在sizeof后面加上括号，很容易区分操作对象，不容易出现歧义，去除优先级别错误&lt;/p&gt;&lt;/li&gt;
+在sizeof后面加上括号，很容易区分操作对象，不容易出现歧义，去除优先级别错误&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2&gt;sizeof容易出差的地方&lt;/h2&gt;
-
-&lt;hr&gt;
-
-&lt;p&gt;char a[100]=&amp;quot;三月软件工作室----Reage&amp;quot;;
+&lt;h2 id=&quot;sizeof-1&quot;&gt;sizeof容易出差的地方&lt;/h2&gt;
+&lt;hr /&gt;
+&lt;p&gt;char a[100]=”三月软件工作室—-Reage”;
 char &lt;em&gt;p，&lt;/em&gt;p1=a；&lt;/p&gt;
 
 &lt;p&gt;sizeof p；或许你认为结果为1，可是错了，结果是一个4,因为p是一个指针，是一个地址，地址一个unsigned long型的变量，&lt;/p&gt;
@@ -398,15 +436,27 @@ char &lt;em&gt;p，&lt;/em&gt;p1=a；&lt;/p&gt;
 &lt;p&gt;所以结果为4；&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;sizeof p1;  值为4， 这个你或许认为没有意义，但是我是为下面一个做铺垫的&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;sizeof(a) =100；  ？？为什么 sizeof(p1)为4，这里面涉及到汇编知识，a[100]在汇编中应该定义为  a .fill 100 0；所以测试a的值是一个应该是一个100，而p1的值不是&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;sizeof( &amp;amp;a)  vc= 100 ，gcc= 4； 我个人认为gcc的值是正确的，应为&amp;amp;a的地址得到的是一个地址的地址，还是地址 所以值
-　　应该为4&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;sizeof(&amp;amp;a[0])  4；没有疑问&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;del&gt;struct b{}；sizeof(b) ；vc=1，gcc=0；//应b是一个变量类型，定义一个b类型的数据，虽然他什么也没有但是他是存在
+  &lt;li&gt;
+    &lt;p&gt;sizeof p1;  值为4， 这个你或许认为没有意义，但是我是为下面一个做铺垫的&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;sizeof(a) =100；  ？？为什么 sizeof(p1)为4，这里面涉及到汇编知识，a[100]在汇编中应该定义为  a .fill 100 0；所以测试a的值是一个应该是一个100，而p1的值不是&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;sizeof( &amp;amp;a)  vc= 100 ，gcc= 4； 我个人认为gcc的值是正确的，应为&amp;amp;a的地址得到的是一个地址的地址，还是地址 所以值
+　　应该为4&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;sizeof(&amp;amp;a[0])  4；没有疑问&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;del&gt;struct b{}；sizeof(b) ；vc=1，gcc=0；//应b是一个变量类型，定义一个b类型的数据，虽然他什么也没有但是他是存在
 不能不占内存吧，所以编译器设置大小为1；gcc中为0是实际大小，但是我觉是错误的，因为这个变量占用了内存,
-虽然是在代码段，而不是数据段；（这个是错误的。请大家谅解) &lt;/del&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;struct b{char c};sizeof(b)=1;&lt;/p&gt;&lt;/li&gt;
+虽然是在代码段，而不是数据段；（这个是错误的。请大家谅解) &lt;/del&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;struct b{char c};sizeof(b)=1;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
 </content>
  </entry>

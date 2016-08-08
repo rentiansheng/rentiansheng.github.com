@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="mysql 优化基础知识（-）">
+  <meta name="keywords" content="php extensions(二) phpinfo输出内容">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      mysql 优化基础知识（-） &middot; Reage blog
+      php extensions(二) phpinfo输出内容 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -62,7 +62,7 @@
     
       
         
-          <a class="sidebar-nav-item" href="/about/">关于</a>
+          <a class="sidebar-nav-item" href="/about">关于</a>
         
       
     
@@ -70,13 +70,13 @@
     
       
         
-          <a class="sidebar-nav-item" href="/categories/">分类</a>
+          <a class="sidebar-nav-item" href="/categories">分类</a>
         
       
     
       
         
-          <a class="sidebar-nav-item" href="/message/">留言</a>
+          <a class="sidebar-nav-item" href="/message">留言</a>
         
       
     
@@ -123,46 +123,85 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">mysql 优化基础知识（-）</h1>
+  <h1 class="post-title">php extensions(二) phpinfo输出内容</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2015-03-30</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> mysql
+    <span><i class="fa fa-clock-o"></i> 2015-04-18</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> php extension, c, and 开源
 </span>
   </div>
-  <h4>1. primary key</h4>
+  <h3 id="php-extensions--phpinfo">php extensions(二)  phpinfo输出内容</h3>
 
-<p>primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
-  综上所述，在使用primary key列一般都是用int类型auto<em>increment，这样保证所有的值都是顺序插入的，auto</em>increment在高并发的应用下肯定会有争用问题。
-  主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快</p>
+<h4 id="section">引言</h4>
 
-<h4>2.索引在存储时都是正序存储</h4>
+<p>我们在使用一个PHP扩展的时候，首先，将编译后的扩展放到PHP的扩展加载目录下，使用phpinfo函数来查看插件是否已经加载。</p>
 
-<p>因此，就算建立 index idx<em>score</em>course(score,course) 索引，使用explain &quot;select * from test order by score desc, course asc&quot;你就会发现并没有到idx<em>score</em>course索引，在Extra现实这Using filesort</p>
+<h4 id="section-1">代码实现</h4>
 
-<h4>3. where in</h4>
+<p>在phpinfo函数添加内容特别简单的。
+   1.首先修改module entry</p>
 
-<p>mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)  </p>
+<figure class="highlight"><pre><code class="language-php" data-lang="php">zend_module_entry reage_module_entry = {
+             STANDARD_MODULE_HEADER,
+             &quot;reage&quot;,//扩展的名字
+             NULL, // functions
+             NULL, // minit
+             NULL, //mshutdown
+             NULL, //rinit
+             NULL, //rshutdown
+             PHP_MINFO(reage_info), //注册在phpinfo函数中输出内容的函数,reage_info
+             &quot;0.0.1&quot;, //版本号
+             STANDARD_MODULE_PROPERTIES
+         };</code></pre></figure>
+
+<p>2.输出内容函数的实现</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php">PHP_MINFO_FUNCTION(reage_info) {
+           php_info_print_table_start();
+           php_info_print_table_header(2, &quot;key&quot;, &quot;value&quot;);
+           php_info_print_table_row(2, &quot;author&quot;, &quot;Reage&quot;);
+           php_info_print_table_end();
+        }</code></pre></figure>
+
+<h4 id="section-2">使用到的函数</h4>
+
+<pre><code>php_info_print_table_start();
+php_info_print_table_header();
+php_info_print_table_row();
+php_info_print_table_end();
+
+除了这些函数，还有很多函数，需要的话请自行查阅
+</code></pre>
+
+<p>####  源代码</p>
+
+<p><a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)">https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)</a></p>
+
+<h4 id="section-3">特别说明</h4>
+
+<p>在搜索资料时，发现一个写的特别好的php扩展开发系列文章，希望对大家有用</p>
+
+<p><a href="http://www.walu.cc/phpbook/index.md">PHP扩展开发及内核应用</a></p>
 
 </div>
 
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" class="read-more-btn">Read More</a>
+    <a href="/paginate" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF/" title="php extensions(二) phpinfo输出内容">php extensions(二) phpinfo输出内容</a></h3>
+    <h3><a href="http://www.ireage.com/paginate" title="php extensions(-) 代码目录结构">php extensions(-) 代码目录结构</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-)/" title="php extensions(-) 代码目录结构">php extensions(-) 代码目录结构</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2015-04-08</span>
+      <h4><a href="/paginate" title="mysql 优化基础知识（-）">mysql 优化基础知识（-）</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2015-03-30</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/php/2014/11/28/codeigniter%20rabbitmq%20library/" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
+      <h4><a href="/paginate" title="codeigniter rabbitmq lirary">codeigniter rabbitmq lirary</a></h4>
       <span><i class="fa fa-clock-o"></i>  2014-11-28</span>
     </div><!-- /.list-item -->
     
@@ -170,7 +209,7 @@
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="mysql 优化基础知识（-）" data-title="mysql 优化基础知识（-）" data-url="//mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-)/"></div>
+<div class="ds-thread" data-thread-key="php extensions(二) phpinfo输出内容" data-title="php extensions(二) phpinfo输出内容" data-url="//paginate"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
