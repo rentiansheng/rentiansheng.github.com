@@ -629,7 +629,7 @@ article {
      -moz-border-radius: 3px;
           border-radius: 3px;
   box-shadow: 0 0 0 0, 0 6px 12px rgba(34, 34, 34, 0.1);
-  border-top:6px solid rgb(38, 139, 210);
+  border-top:6px solid rgb(0, 0, 0);
   -webkit-box-shadow: 0 0 10px 0 #cfcfcf;
 }
 
