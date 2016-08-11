@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-11T12:28:01+08:00</updated>
+ <updated>2016-08-11T12:42:20+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -13,15 +13,16 @@
 
  
  <entry>
-   <title>iterm2快捷键</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <title>iterm2keys</title>
+   <link href="http://www.ireage.com/iterm2/2016/08/11/iterm2keys.html"/>
    <updated>2016-08-11T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/iterm2keys</id>
+   <id>http://www.ireage.com/iterm2/2016/08/11/iterm2keys</id>
    <content type="html">&lt;p&gt;最近买了一个键盘，操作触控就不方便了，只能在键盘下功夫了。&lt;/p&gt;
 
 &lt;p&gt;本人系统shell是zsh&lt;/p&gt;
 
-&lt;h2 id=&quot;section&quot;&gt;####光标操作&lt;/h2&gt;
+&lt;h4 id=&quot;section&quot;&gt;光标操作&lt;/h4&gt;
+&lt;hr /&gt;
 
 &lt;p&gt;ctrl + a: 到行首&lt;/p&gt;
 
@@ -49,7 +50,8 @@
 
 &lt;p&gt;command + r:清屏，其实是滚到新的一屏，并没有清空。ctrl + l 也可以做到。对 ⌘ + f没有影响&lt;/p&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;###窗口操作&lt;/h2&gt;
+&lt;h3 id=&quot;section-1&quot;&gt;窗口操作&lt;/h3&gt;
+&lt;hr /&gt;
 
 &lt;p&gt;shift + command + d: 水平拆分窗口&lt;/p&gt;
 
@@ -73,7 +75,8 @@
 
 &lt;p&gt;command + option + +: 进入/退出铺满屏幕&lt;/p&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;####其他&lt;/h2&gt;
+&lt;h4 id=&quot;section-2&quot;&gt;其他&lt;/h4&gt;
+&lt;hr /&gt;
 
 &lt;p&gt;command + shift + m: 新建书签&lt;/p&gt;
 
@@ -90,9 +93,9 @@
  
  <entry>
    <title>json_decode解析失败</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/php/2016/02/24/json_decode.html"/>
    <updated>2016-02-24T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/json_decode</id>
+   <id>http://www.ireage.com/php/2016/02/24/json_decode</id>
    <content type="html">&lt;p&gt;最近，一直在使用的系统突然出现一个奇怪的问题。一个商户信息总是没法展示的，两个系统采用json做的数据交换，
 线上日志记录到模块是接受导数据，但是在后面的日志中，发现数据为空。经过在线上加log发现json_decode失败的返回值为NULL。
 随后把log中的日志拿出来，json_decode没有问题的。&lt;/p&gt;
@@ -121,9 +124,9 @@
  
  <entry>
    <title>php extensions(二) phpinfo输出内容</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html"/>
    <updated>2015-04-18T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php扩展开发学习(二)phpinfo添加信息</id>
+   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php扩展开发学习(二)phpinfo添加信息</id>
    <content type="html">&lt;h3 id=&quot;php-extensions--phpinfo&quot;&gt;php extensions(二)  phpinfo输出内容&lt;/h3&gt;
 
 &lt;h4 id=&quot;section&quot;&gt;引言&lt;/h4&gt;
@@ -181,9 +184,9 @@ php_info_print_table_end();
  
  <entry>
    <title>php extensions(-) 代码目录结构</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html"/>
    <updated>2015-04-08T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php扩展开发学习(-)</id>
+   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php扩展开发学习(-)</id>
    <content type="html">&lt;h3 id=&quot;php-extensions--&quot;&gt;php extensions(-) 代码目录结构&lt;/h3&gt;
 
 &lt;h4 id=&quot;section&quot;&gt;引言&lt;/h4&gt;
@@ -284,9 +287,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>mysql 优化基础知识（-）</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"/>
    <updated>2015-03-30T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/mysql优化基础知识(-)</id>
+   <id>http://www.ireage.com/mysql/2015/03/30/mysql优化基础知识(-)</id>
    <content type="html">&lt;h4 id=&quot;primary-key&quot;&gt;1. primary key&lt;/h4&gt;
 &lt;p&gt;primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
   综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
@@ -303,9 +306,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>codeigniter rabbitmq lirary</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/php/2014/11/28/codeigniter-rabbitmq-library.html"/>
    <updated>2014-11-28T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/codeigniter rabbitmq library</id>
+   <id>http://www.ireage.com/php/2014/11/28/codeigniter rabbitmq library</id>
    <content type="html">&lt;p&gt;简介
 &lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;_&lt;/p&gt;
 
@@ -403,9 +406,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>览器桌面通知（notifications）</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html"/>
    <updated>2014-05-28T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/浏览器桌面通知（notifications）</id>
+   <id>http://www.ireage.com/js/2014/05/28/浏览器桌面通知（notifications）</id>
    <content type="html">&lt;h1 id=&quot;chrome-&quot;&gt;chrome 浏览器桌面通知&lt;/h1&gt;
 
 &lt;p&gt;最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
@@ -504,9 +507,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>c语言 sizeof函数认知</title>
-   <link href="http://www.ireage.com/paginate"/>
+   <link href="http://www.ireage.com/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html"/>
    <updated>2012-09-06T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/c sizeof函数的认知</id>
+   <id>http://www.ireage.com/c/2012/09/06/c sizeof函数的认知</id>
    <content type="html">&lt;p&gt;下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。&lt;/p&gt;
 
 &lt;p&gt;## 首先

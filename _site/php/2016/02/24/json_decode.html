@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="Home">
+  <meta name="keywords" content="json_decode解析失败">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      Reage blog &middot; 
+      json_decode解析失败 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -126,79 +126,90 @@
           
         </ul>            
       <div class="container content" style="margin-top:2rem">
-        <div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/php/2014/11/28/codeigniter-rabbitmq-library.html">
-        codeigniter rabbitmq lirary
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2014-11-28</span>
-    简介
-_______
-
-针对CI 封装的一个简单的rabbitmq，只有基本功能的
-
-项目地址：https://github.com/rentiansheng//ci-rabbitmq
-
-代码结...
+        <div class="post">
+  <h1 class="post-title">json_decode解析失败</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2016-02-24</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> php
+</span>
   </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html">
-        览器桌面通知（notifications）
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2014-05-28</span>
-    chrome 浏览器桌面通知
+  <p>最近，一直在使用的系统突然出现一个奇怪的问题。一个商户信息总是没法展示的，两个系统采用json做的数据交换，
+线上日志记录到模块是接受导数据，但是在后面的日志中，发现数据为空。经过在线上加log发现json_decode失败的返回值为NULL。
+随后把log中的日志拿出来，json_decode没有问题的。</p>
 
-最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
-这样就很难看到通知了。经过查找发现有...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html">
-        c语言 sizeof函数认知
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2012-09-06</span>
-    下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。
+<p>首先想到的问题是：</p>
 
-## 首先
- —
- sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后...
-  </div>
-  
-</div>
-<div id="post-pagination" class="paginator">
-      
-      <a href="/">1</a>
-      
+<ol>
+  <li>
+    <p>json格式的问题</p>
+  </li>
+  <li>
+    <p>内存限制</p>
+  </li>
+  <li>
+    <p>编码问题</p>
+  </li>
+</ol>
 
-    
-      
-      <span class="current-page">2</span>
-      
-    
-  (共8篇)
+<p>上面的问题，很容就可以检查结果了。到底是不是这些原因的。不幸的事情发生了。这些都不是的，太奇葩了。</p>
+
+<p>虽有用json_decode解码失败搜索发现，有人说是因为json串有\t等特殊字符的问题的（之所以copy后解析成功，是因为不同的编辑器和编码格式会对特殊字符做处理）。</p>
+
+<p>在不同的终端下查看数据，发现数据中有特符符号。但是并不是\t,而是编码格式为\u0014\u0017数据。最好建议大家不要对数据进行解码查看，要看查看最原始的数据。因为不同的编码会对特殊符号做处理，在不同的编码下，特殊符号可能会显示为空白，不显示，显示为不同的符号等。</p>
+
 </div>
 
-<!--div class="pagination">
+<div class="read-more">
   
-    <span class="pagination-item older"><-</span>
+  <div class="read-more-header">
+    <a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/iterm2/2016/08/11/iterm2keys.html" title="iterm2keys">iterm2keys</a></h3>
+  </div><!-- /.read-more-content -->
   
-  
+  <div class="read-more-list">
     
-  <a class="pagination-item newer" href="/">-></a>
+    <div class="list-item">
+      <h4><a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html" title="php extensions(二) phpinfo输出内容">php extensions(二) phpinfo输出内容</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2015-04-18</span>
+    </div><!-- /.list-item -->
     
+    <div class="list-item">
+      <h4><a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html" title="php extensions(-) 代码目录结构">php extensions(-) 代码目录结构</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2015-04-08</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
   
-</div-->
+</div><!-- /.read-more -->
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="json_decode解析失败" data-title="json_decode解析失败" data-url="//php/2016/02/24/json_decode.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- 多说公共JS代码 end -->
+<!-- 百度统计代码 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
 
       </div>
     </div>

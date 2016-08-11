@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="iterm2快捷键">
+  <meta name="keywords" content="c语言 sizeof函数认知">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      iterm2快捷键 &middot; Reage blog
+      c语言 sizeof函数认知 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -62,7 +62,7 @@
     
       
         
-          <a class="sidebar-nav-item" href="/about">关于</a>
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
         
       
     
@@ -70,13 +70,13 @@
     
       
         
-          <a class="sidebar-nav-item" href="/categories">分类</a>
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
     
       
         
-          <a class="sidebar-nav-item" href="/message">留言</a>
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
         
       
     
@@ -127,109 +127,99 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">iterm2快捷键</h1>
+  <h1 class="post-title">c语言 sizeof函数认知</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2016-08-11</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> iterm2
+    <span><i class="fa fa-clock-o"></i> 2012-09-06</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> c
 </span>
   </div>
-  <p>最近买了一个键盘，操作触控就不方便了，只能在键盘下功夫了。</p>
+  <p>下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。</p>
 
-<p>本人系统shell是zsh</p>
+<p>## 首先
+ —
+ sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后面操作对象都加上括号哪？原因如下。</p>
 
-<h2 id="section">####光标操作</h2>
+<h2 id="sizeof">sizeof函数证明</h2>
+<hr />
+<ol>
+  <li>
+    <p>sizeof int ，结果为4，说明 sizeof说明他不是一个函数。</p>
+  </li>
+  <li>
+    <p>siezof(int )是关键字，为什么分开标记，比方 int i；int i，j；使用空格、逗号区分关键字和操作对象， 请测试 int(i)，你很惊
+奇的发现这句话竟然可以编译通过没有报错，这句话的作用是相当于 int i，原因如下，int i，我们从原理上分析这句话，空格起
+的是一个分割的作用，有用区分变量和变量类型。 int(i)同样也起到了区分变量和变量类型的，由于()的优先级别高，所以括号里边、外边成为两部分，这样与 int i；的功能相同</p>
+  </li>
+  <li>
+    <p>sizeof后面为什么一直有括号
+sizeof struct  student；这一句话将会，编译失败，因为 sizeof 将 struct作为操作数，而并非将整个 struct  student 作为操作数，
+这是因为优先级别的问题，
+int a；sizeof a+1；结果值为5； 原因如下 sizeof(a)+1;
+在sizeof后面加上括号，很容易区分操作对象，不容易出现歧义，去除优先级别错误</p>
+  </li>
+</ol>
 
-<p>ctrl + a: 到行首</p>
+<h2 id="sizeof-1">sizeof容易出差的地方</h2>
+<hr />
+<p>char a[100]=”三月软件工作室—-Reage”;
+char <em>p，</em>p1=a；</p>
 
-<p>ctrl + e: 行末</p>
+<p>sizeof p；或许你认为结果为1，可是错了，结果是一个4,因为p是一个指针，是一个地址，地址一个unsigned long型的变量，</p>
 
-<p>ctrl + f/b: 前进后退，相当于左右方向键。</p>
+<p>所以结果为4；</p>
 
-<p>ctrl + p: 上一条命令，相当于方向键上</p>
-
-<p>ctrl + r: 搜索命令历史，这个大家都应该很熟悉了</p>
-
-<p>ctrl + d: 删除当前字符</p>
-
-<p>ctrl + h: 删除之前的字符</p>
-
-<p>ctrl + w: 删除光标前的单词</p>
-
-<p>ctrl + k: 删除到文本末尾</p>
-
-<p>ctrl + t: 交换光标处文本</p>
-
-<p>ctrl + u: 删除一行</p>
-
-<p>command + —/+/0: +字体变大，-字体变小， 0 恢复到默认值，如果分屏了只调整活动窗口字体大小</p>
-
-<p>command + r:清屏，其实是滚到新的一屏，并没有清空。ctrl + l 也可以做到。对 ⌘ + f没有影响</p>
-
-<h2 id="section-1">###窗口操作</h2>
-
-<p>shift + command + d: 水平拆分窗口</p>
-
-<p>shift + d: 垂直拆分窗口</p>
-
-<p>command + shift + w: 关闭当前活动终端窗口</p>
-
-<p>command + `/~ : 前一个/后一个窗口, 这里的窗口不是tab页面，而是通过new window打开的多个终端窗口</p>
-
-<p>command + t: 在活动终端新建一个tab标签</p>
-
-<p>command + w: 关闭当前tab窗口</p>
-
-<p>command + option + 上下左右: 在当前活动的tab标签切换到上/下/左/右面板，面板指的是水平/垂直拆分的窗口</p>
-
-<p>command + enter: 进去/退出全屏木事</p>
-
-<p>Command + u: 开启/关闭背景透明</p>
-
-<p>shift + command + [/]: 前一个/后一个标签页</p>
-
-<p>command + option + +: 进入/退出铺满屏幕</p>
-
-<h2 id="section-2">####其他</h2>
-
-<p>command + shift + m: 新建书签</p>
-
-<p>command + shift + j: 回到最后一次简历书签的位置</p>
-
-<p>command + shift + h: 展示粘贴历史，支持模糊检索</p>
-
-<p>command + option + b: 打开即使回放</p>
-
-<p>command + /: 显示光标的位置</p>
-
+<ol>
+  <li>
+    <p>sizeof p1;  值为4， 这个你或许认为没有意义，但是我是为下面一个做铺垫的</p>
+  </li>
+  <li>
+    <p>sizeof(a) =100；  ？？为什么 sizeof(p1)为4，这里面涉及到汇编知识，a[100]在汇编中应该定义为  a .fill 100 0；所以测试a的值是一个应该是一个100，而p1的值不是</p>
+  </li>
+  <li>
+    <p>sizeof( &amp;a)  vc= 100 ，gcc= 4； 我个人认为gcc的值是正确的，应为&amp;a的地址得到的是一个地址的地址，还是地址 所以值
+　　应该为4</p>
+  </li>
+  <li>
+    <p>sizeof(&amp;a[0])  4；没有疑问</p>
+  </li>
+  <li>
+    <p><del>struct b{}；sizeof(b) ；vc=1，gcc=0；//应b是一个变量类型，定义一个b类型的数据，虽然他什么也没有但是他是存在
+不能不占内存吧，所以编译器设置大小为1；gcc中为0是实际大小，但是我觉是错误的，因为这个变量占用了内存,
+虽然是在代码段，而不是数据段；（这个是错误的。请大家谅解) </del></p>
+  </li>
+  <li>
+    <p>struct b{char c};sizeof(b)=1;</p>
+  </li>
+</ol>
 
 </div>
 
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/paginate" class="read-more-btn">Read More</a>
+    <a href="" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/paginate" title="json_decode解析失败">json_decode解析失败</a></h3>
+    <h3><a href="http://www.ireage.com/iterm2/2016/08/11/iterm2keys.html" title="iterm2keys">iterm2keys</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/paginate" title="php extensions(二) phpinfo输出内容">php extensions(二) phpinfo输出内容</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2015-04-18</span>
+      <h4><a href="/php/2016/02/24/json_decode.html" title="json_decode解析失败">json_decode解析失败</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-02-24</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/paginate" title="php extensions(-) 代码目录结构">php extensions(-) 代码目录结构</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2015-04-08</span>
+      <h4><a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html" title="php extensions(二) phpinfo输出内容">php extensions(二) phpinfo输出内容</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2015-04-18</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="iterm2快捷键" data-title="iterm2快捷键" data-url="//paginate"></div>
+<div class="ds-thread" data-thread-key="c语言 sizeof函数认知" data-title="c语言 sizeof函数认知" data-url="//c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

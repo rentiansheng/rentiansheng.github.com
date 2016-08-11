@@ -7,7 +7,7 @@ highlighter:         Rouge
 # Permalinks
 #
 # Use of `relative_permalinks` ensures post links from the index work properly.
-permalink:           paginate
+permalink:           redcarpet
 relative_permalinks: false
 
 # Gems
@@ -15,6 +15,7 @@ gems: [jekyll-paginate]
 
 
 # Setup
+permalink:            date
 title:               'Reage blog'
 author:              Reage
 tagline:             ''
