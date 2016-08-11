@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-11T12:46:27+08:00</updated>
+ <updated>2016-08-11T12:49:34+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -21,7 +21,7 @@
 
 &lt;p&gt;本人系统shell是zsh&lt;/p&gt;
 
-&lt;h4 id=&quot;section&quot;&gt;光标操作&lt;/h4&gt;
+&lt;h4 id=&quot;section&quot;&gt;&lt;strong&gt;光标操作&lt;/strong&gt;&lt;/h4&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;ctrl + a: 到行首&lt;/p&gt;
@@ -50,7 +50,7 @@
 
 &lt;p&gt;command + r:清屏，其实是滚到新的一屏，并没有清空。ctrl + l 也可以做到。对 ⌘ + f没有影响&lt;/p&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;窗口操作&lt;/h3&gt;
+&lt;h3 id=&quot;section-1&quot;&gt;&lt;strong&gt;窗口操作&lt;/strong&gt;&lt;/h3&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;shift + command + d: 水平拆分窗口&lt;/p&gt;
@@ -75,7 +75,7 @@
 
 &lt;p&gt;command + option + +: 进入/退出铺满屏幕&lt;/p&gt;
 
-&lt;h4 id=&quot;section-2&quot;&gt;其他&lt;/h4&gt;
+&lt;h4 id=&quot;section-2&quot;&gt;&lt;strong&gt;其他&lt;/strong&gt;&lt;/h4&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;command + shift + m: 新建书签&lt;/p&gt;
