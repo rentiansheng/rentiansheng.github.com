@@ -4,13 +4,89 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-09T16:12:47+08:00</updated>
+ <updated>2016-08-11T12:27:14+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>iterm2快捷键</title>
+   <link href="http://www.ireage.com/paginate"/>
+   <updated>2016-08-11T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/iterm2keys</id>
+   <content type="html">&lt;p&gt;最近买了一个键盘，操作触控就不方便了，只能在键盘下功夫了。&lt;/p&gt;
+
+&lt;p&gt;本人系统shell是zsh&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;####光标操作&lt;/h2&gt;
+
+&lt;p&gt;ctrl + a: 到行首&lt;/p&gt;
+
+&lt;p&gt;ctrl + e: 行末&lt;/p&gt;
+
+&lt;p&gt;ctrl + f/b: 前进后退，相当于左右方向键。&lt;/p&gt;
+
+&lt;p&gt;ctrl + p: 上一条命令，相当于方向键上&lt;/p&gt;
+
+&lt;p&gt;ctrl + r: 搜索命令历史，这个大家都应该很熟悉了&lt;/p&gt;
+
+&lt;p&gt;ctrl + d: 删除当前字符&lt;/p&gt;
+
+&lt;p&gt;ctrl + h: 删除之前的字符&lt;/p&gt;
+
+&lt;p&gt;ctrl + w: 删除光标前的单词&lt;/p&gt;
+
+&lt;p&gt;ctrl + k: 删除到文本末尾&lt;/p&gt;
+
+&lt;p&gt;ctrl + t: 交换光标处文本&lt;/p&gt;
+
+&lt;p&gt;ctrl + u: 删除一行&lt;/p&gt;
+
+&lt;p&gt;command + —/+/0: +字体变大，-字体变小， 0 恢复到默认值，如果分屏了只调整活动窗口字体大小&lt;/p&gt;
+
+&lt;p&gt;command + r:清屏，其实是滚到新的一屏，并没有清空。ctrl + l 也可以做到。对 ⌘ + f没有影响&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;###窗口操作&lt;/h2&gt;
+
+&lt;p&gt;shift + command + d: 水平拆分窗口&lt;/p&gt;
+
+&lt;p&gt;shift + d: 垂直拆分窗口&lt;/p&gt;
+
+&lt;p&gt;command + shift + w: 关闭当前活动终端窗口&lt;/p&gt;
+
+&lt;p&gt;command + `/~ : 前一个/后一个窗口, 这里的窗口不是tab页面，而是通过new window打开的多个终端窗口&lt;/p&gt;
+
+&lt;p&gt;command + t: 在活动终端新建一个tab标签&lt;/p&gt;
+
+&lt;p&gt;command + w: 关闭当前tab窗口&lt;/p&gt;
+
+&lt;p&gt;command + option + 上下左右: 在当前活动的tab标签切换到上/下/左/右面板，面板指的是水平/垂直拆分的窗口&lt;/p&gt;
+
+&lt;p&gt;command + enter: 进去/退出全屏木事&lt;/p&gt;
+
+&lt;p&gt;Command + u: 开启/关闭背景透明&lt;/p&gt;
+
+&lt;p&gt;shift + command + [/]: 前一个/后一个标签页&lt;/p&gt;
+
+&lt;p&gt;command + option + +: 进入/退出铺满屏幕&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;####其他&lt;/h2&gt;
+
+&lt;p&gt;command + shift + m: 新建书签&lt;/p&gt;
+
+&lt;p&gt;command + shift + j: 回到最后一次简历书签的位置&lt;/p&gt;
+
+&lt;p&gt;command + shift + h: 展示粘贴历史，支持模糊检索&lt;/p&gt;
+
+&lt;p&gt;command + option + b: 打开即使回放&lt;/p&gt;
+
+&lt;p&gt;command + /: 显示光标的位置&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>json_decode解析失败</title>
