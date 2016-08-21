@@ -9,6 +9,9 @@ layout: default
 </span>
   </div>
   {{ content }}
+  <div class="post-affix">
+    <a href="{{ site.url }}"> {{ site.post_affix }} -- {{ site.url }}</a>
+  </div>
 </div>
 {% if site.related_posts.size %}
 <div class="read-more">

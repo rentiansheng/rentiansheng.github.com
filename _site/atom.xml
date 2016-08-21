@@ -4,13 +4,44 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-11T12:51:47+08:00</updated>
+ <updated>2016-08-21T16:20:31+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>c pointer</title>
+   <link href="http://www.ireage.com/c/2016/08/21/cpointer.html"/>
+   <updated>2016-08-21T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/c/2016/08/21/cpointer</id>
+   <content type="html">&lt;h3 id=&quot;section&quot;&gt;指针相关&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;glibc-detected--19-munmapchunk-invalid-pointer-0x00007ffff5cc97b0-&quot;&gt;1.&lt;em&gt;** glibc detected **&lt;/em&gt; ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt; a) free释放内存出现，注意free只能释放malloc分配的内存，在function中看到是指针，这个指针有可能是定义的数组，无法释放
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;type--type-&quot;&gt;2. 二维数组和指针的指针区别( type [][]与 type **)&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;  虽然两种方式在使用的时候访问方式是通用的，差异主要在内存组织
+
+  二维数组是一个连续的区域，如char a[2][3] 实际上是一个连续的sizeof(char)*2*3的内存区域。在变量定义时候已经确立整数组存储数据集合容纳数据大小，
+  并且没一行数据的个数必须一样，无法扩容;
+
+
+  指针指针是是通过先分配type * 来存储二维数组中一维，然后在分配type 来维持二维数组二维。存储数据集合和动态调整，没一行的个数可以不同。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;eg:内存组织图，type标识数据类型&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/arrayandpointerpointer.png&quot; alt=&quot;内存组织图&quot; /&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>iterm2 快捷键</title>

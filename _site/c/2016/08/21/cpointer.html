@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="Home">
+  <meta name="keywords" content="c pointer">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      Reage blog &middot; 
+      c pointer &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -126,91 +126,93 @@
           
         </ul>            
       <div class="container content" style="margin-top:2rem">
-        <div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html">
-        mysql 优化基础知识（-）
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2015-03-30</span>
-    1. primary key
-primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入...
+        <div class="post">
+  <h1 class="post-title">c pointer</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2016-08-21</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> c语言 and pointer
+</span>
   </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/php/2014/11/28/codeigniter-rabbitmq-library.html">
-        codeigniter rabbitmq lirary
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2014-11-28</span>
-    简介
-_______
+  <h3 id="section">指针相关</h3>
+<hr />
 
-针对CI 封装的一个简单的rabbitmq，只有基本功能的
+<h4 id="glibc-detected--19-munmapchunk-invalid-pointer-0x00007ffff5cc97b0-">1.<em>** glibc detected **</em> ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***</h4>
 
-项目地址：https://github.com/rentiansheng//ci-rabbitmq
+<pre><code> a) free释放内存出现，注意free只能释放malloc分配的内存，在function中看到是指针，这个指针有可能是定义的数组，无法释放
+</code></pre>
 
-代码结...
+<h4 id="type--type-">2. 二维数组和指针的指针区别( type [][]与 type **)</h4>
+
+<pre><code>  虽然两种方式在使用的时候访问方式是通用的，差异主要在内存组织
+
+  二维数组是一个连续的区域，如char a[2][3] 实际上是一个连续的sizeof(char)*2*3的内存区域。在变量定义时候已经确立整数组存储数据集合容纳数据大小，
+  并且没一行数据的个数必须一样，无法扩容;
+
+
+  指针指针是是通过先分配type * 来存储二维数组中一维，然后在分配type 来维持二维数组二维。存储数据集合和动态调整，没一行的个数可以不同。
+</code></pre>
+
+<p>eg:内存组织图，type标识数据类型</p>
+
+<p><img src="/img/arrayandpointerpointer.png" alt="内存组织图" /></p>
+
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
   </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html">
-        览器桌面通知（notifications）
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2014-05-28</span>
-    chrome 浏览器桌面通知
-
-最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
-这样就很难看到通知了。经过查找发现有...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html">
-        c语言 sizeof函数认知
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2012-09-06</span>
-    下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。
-
-## 首先
- —
- sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后...
-  </div>
-  
-</div>
-<div id="post-pagination" class="paginator">
-      
-      <a href="/">1</a>
-      
-
-    
-      
-      <span class="current-page">2</span>
-      
-    
-  (共9篇)
 </div>
 
-<!--div class="pagination">
+<div class="read-more">
   
-    <span class="pagination-item older"><-</span>
+  <div class="read-more-header">
+    <a href="/iterm2/2016/08/11/iterm2keys.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/iterm2/2016/08/11/iterm2keys.html" title="iterm2 快捷键">iterm2 快捷键</a></h3>
+  </div><!-- /.read-more-content -->
   
-  
+  <div class="read-more-list">
     
-  <a class="pagination-item newer" href="/">-></a>
+    <div class="list-item">
+      <h4><a href="/php/2016/02/24/json_decode.html" title="json_decode解析失败">json_decode解析失败</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-02-24</span>
+    </div><!-- /.list-item -->
     
+    <div class="list-item">
+      <h4><a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html" title="php extensions(二) phpinfo输出内容">php extensions(二) phpinfo输出内容</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2015-04-18</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
   
-</div-->
+</div><!-- /.read-more -->
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="c pointer" data-title="c pointer" data-url="//c/2016/08/21/cpointer.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- 多说公共JS代码 end -->
+<!-- 百度统计代码 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
 
       </div>
     </div>

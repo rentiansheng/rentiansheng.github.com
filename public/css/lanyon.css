@@ -325,6 +325,14 @@ a.sidebar-nav-item:focus {
   color: #9a9a9a;
 }
 
+
+.post-affix {
+  padding-top:20px;
+  padding-left:10%;
+}
+
+
+
 /* Related posts */
 .related {
   padding-top: 2rem;

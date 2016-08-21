@@ -28,3 +28,9 @@ github:				 https://github.com/rentiansheng
 rss:				 /atom.xml
 # Custom vars
 version:             1.5.0
+
+# post
+
+post_affix:         'articles from reage blog'
+
+
