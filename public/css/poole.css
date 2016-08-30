@@ -170,7 +170,9 @@ pre {
   white-space: pre-wrap;
   word-break: break-all;
   word-wrap: break-word;
-  background-color: black;
+  border-radius: 6px;
+  background-color: #000000;
+  color:white;
 }
 pre code {
   padding: 0;

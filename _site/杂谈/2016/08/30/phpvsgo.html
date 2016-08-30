@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="iterm2 快捷键">
+  <meta name="keywords" content="PHP VS GO">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      iterm2 快捷键 &middot; Reage blog
+      PHP VS GO &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -127,86 +127,85 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">iterm2 快捷键</h1>
+  <h1 class="post-title">PHP VS GO</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2016-08-11</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> iterm2
+    <span><i class="fa fa-clock-o"></i> 2016-08-30</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 杂谈
 </span>
   </div>
-  <p>最近买了一个键盘，操作触控就不方便了，只能在键盘下功夫了。</p>
+  <h4 id="section">整体印象</h4>
+<p>PHP：</p>
 
-<p>本人系统shell是zsh</p>
-
-<h4 id="section"><strong>光标操作</strong></h4>
-<hr />
-
-<pre><code>ctrl + a: 到行首
-
-ctrl + e: 行末
-
-ctrl + f/b: 前进后退，相当于左右方向键。
-
-ctrl + p: 上一条命令，相当于方向键上
-
-ctrl + r: 搜索命令历史，这个大家都应该很熟悉了
-
-ctrl + d: 删除当前字符
-
-ctrl + h: 删除之前的字符
-
-ctrl + w: 删除光标前的单词
-
-ctrl + k: 删除到文本末尾
-
-ctrl + t: 交换光标处文本
-
-ctrl + u: 删除一行
-
-command + —/+/0: +字体变大，-字体变小， 0 恢复到默认值，如果分屏了只调整活动窗口字体大小
-
-command + r:清屏，其实是滚到新的一屏，并没有清空。ctrl + l 也可以做到。对 ⌘ + f没有影响
+<pre><code>1. 不用编译，写完代码就可以直接看
+2. 只要本次执行的代码没有fatal就可以执行，即使优点也是缺点。
+3. 弱类型超牛B，一个变量随便用，不用声明，数组随意递归没有格式限制。 即使优点也是缺点
+4. 特别讨厌$，
+5. 强大string，array操作
+6. 成熟访问权限控制public,private,protected
 </code></pre>
 
-<h3 id="section-1"><strong>窗口操作</strong></h3>
-<hr />
+<p>GO：</p>
 
-<pre><code>shift + command + d: 水平拆分窗口
-
-shift + d: 垂直拆分窗口
-
-command + shift + w: 关闭当前活动终端窗口
-
-command + `/~ : 前一个/后一个窗口, 这里的窗口不是tab页面，而是通过new window打开的多个终端窗口
-
-command + t: 在活动终端新建一个tab标签
-
-command + w: 关闭当前tab窗口
-
-command + option + 上下左右: 在当前活动的tab标签切换到上/下/左/右面板，面板指的是水平/垂直拆分的窗口
-
-command + enter: 进去/退出全屏木事
-
-Command + u: 开启/关闭背景透明
-
-shift + command + [/]: 前一个/后一个标签页
-
-command + option + +: 进入/退出铺满屏幕
+<pre><code>1. 每次写完都需要编译。 需要检查整个项目编译，整个项目没有错误。
+2. 严格的格式，强类型。 变量定义必须使用，代码格式etc
+3. 简介的格式
+4. 强大的协程
+5. 完善的网络库
 </code></pre>
 
-<h4 id="section-2"><strong>其他</strong></h4>
-<hr />
+<h4 id="section-1">语法相关</h4>
+<p>PHP：</p>
 
-<pre><code>command + shift + m: 新建书签
+<p>觉得自己不是一个合格PHPer,使用两年多了，竟然总结不出来。</p>
 
-command + shift + j: 回到最后一次简历书签的位置
-
-
-command + shift + h: 展示粘贴历史，支持模糊检索
-
-command + option + b: 打开即使回放
-
-command + /: 显示光标的位置
+<pre><code>1. 自由灵活，变量，命名，语法灵活
+2. 入门简单
 </code></pre>
+
+<p>GO:</p>
+
+<pre><code>1. 访问权限，通过大小写控制，小写内部函数，大写外部函数。（刚开始特别坑，让我一个经常使用驼峰命名的人很不习惯）
+2. defer个人感觉超级好用，可以用来做释放资源，后期处理。
+3. 变量，类型超级丰富，觉得虽然和接触的语言都不一样，但是感觉超级习惯，var xxx type
+4. 函数定义，丰富的数据传递参数，个人理解一个最完整 func (共有数据) 函数名(函数私有数据)（返回数据），
+5. 没有类，但是可以使用struct 和 interface 来完成。interface在GO里面很重要的
+6. channel，协程为并发而生。
+7. 把异步搞的和同步一样
+</code></pre>
+
+<h4 id="section-2">适用场景</h4>
+
+<p>PHP:</p>
+
+<pre><code>1. WEB开发
+</code></pre>
+
+<p>GO:</p>
+
+<pre><code> 1. WEB开发
+ 2. 服务开发
+</code></pre>
+
+<h4 id="section-3">题外话</h4>
+
+<p>######进程、线程、协程
+进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过），如果知道nginx原理相信会觉得似曾相识
+其实可以从调度、并发性、系统开销、拥有资源等发面作比较</p>
+
+<p>进程：</p>
+
+<p>进程被称为重量级别进程（HWP）。进程也可看做一个线程的集合，在我看来进程管理者是操作系统
+进程的调度是有OS来调度和管理。所以进程的调度，并发，系统开销、资源拥有都是系统层面。</p>
+
+<p>线程：</p>
+
+<p>线程被称为轻量级别的进程（LWP）是CPU调度和分配的基本单元。在我看来线程是一个CPU执行的实例。是一个进程获取到执行时内部调度，并发。</p>
+
+<p>进程和线程intel网站上有一份超级详细和全面的资料。<a href="https://software.intel.com/sites/default/files/m/5/7/f/a/b/12568-2.1.1_e7_ba_bf_e7_a8_8b_e4_b8_8e_e8_bf_9b_e7_a8_8b_e7_9a_84_e5_8c_ba_e5_88_ab.pdf">process vs threads.pdf</a></p>
+
+<p>协程:
+协程是一个不能被操作系统和CPU调度的玩意，全靠语言本身来控制。不关是进程，线程调度的时候都要进行上下文切换， 协程这玩意不涉及系统和CPU的上下文切换，协程个人感觉是就是异步和内存切换。
+附带一篇不错协程介绍<a href="http://blog.imisko.com/2017/08/02/golang-coroutine/">Golang协程之殇</a></p>
 
 
   <div class="post-affix">
@@ -217,17 +216,17 @@ command + /: 显示光标的位置
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/php/2016/02/24/json_decode.html" class="read-more-btn">Read More</a>
+    <a href="/c/2016/08/21/cpointer.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html" title="PHP VS GO">PHP VS GO</a></h3>
+    <h3><a href="http://www.ireage.com/c/2016/08/21/cpointer.html" title="c pointer">c pointer</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/c/2016/08/21/cpointer.html" title="c pointer">c pointer</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-08-21</span>
+      <h4><a href="/iterm2/2016/08/11/iterm2keys.html" title="iterm2 快捷键">iterm2 快捷键</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-08-11</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
@@ -239,7 +238,7 @@ command + /: 显示光标的位置
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="iterm2 快捷键" data-title="iterm2 快捷键" data-url="//iterm2/2016/08/11/iterm2keys.html"></div>
+<div class="ds-thread" data-thread-key="PHP VS GO" data-title="PHP VS GO" data-url="//%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

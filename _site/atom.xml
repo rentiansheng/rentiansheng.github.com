@@ -4,13 +4,95 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-21T16:22:59+08:00</updated>
+ <updated>2016-08-30T13:43:18+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>PHP VS GO</title>
+   <link href="http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html"/>
+   <updated>2016-08-30T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo</id>
+   <content type="html">&lt;h4 id=&quot;section&quot;&gt;整体印象&lt;/h4&gt;
+&lt;p&gt;PHP：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. 不用编译，写完代码就可以直接看
+2. 只要本次执行的代码没有fatal就可以执行，即使优点也是缺点。
+3. 弱类型超牛B，一个变量随便用，不用声明，数组随意递归没有格式限制。 即使优点也是缺点
+4. 特别讨厌$，
+5. 强大string，array操作
+6. 成熟访问权限控制public,private,protected
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;GO：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. 每次写完都需要编译。 需要检查整个项目编译，整个项目没有错误。
+2. 严格的格式，强类型。 变量定义必须使用，代码格式etc
+3. 简介的格式
+4. 强大的协程
+5. 完善的网络库
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;语法相关&lt;/h4&gt;
+&lt;p&gt;PHP：&lt;/p&gt;
+
+&lt;p&gt;觉得自己不是一个合格PHPer,使用两年多了，竟然总结不出来。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. 自由灵活，变量，命名，语法灵活
+2. 入门简单
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;GO:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. 访问权限，通过大小写控制，小写内部函数，大写外部函数。（刚开始特别坑，让我一个经常使用驼峰命名的人很不习惯）
+2. defer个人感觉超级好用，可以用来做释放资源，后期处理。
+3. 变量，类型超级丰富，觉得虽然和接触的语言都不一样，但是感觉超级习惯，var xxx type
+4. 函数定义，丰富的数据传递参数，个人理解一个最完整 func (共有数据) 函数名(函数私有数据)（返回数据），
+5. 没有类，但是可以使用struct 和 interface 来完成。interface在GO里面很重要的
+6. channel，协程为并发而生。
+7. 把异步搞的和同步一样
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;适用场景&lt;/h4&gt;
+
+&lt;p&gt;PHP:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. WEB开发
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;GO:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; 1. WEB开发
+ 2. 服务开发
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;题外话&lt;/h4&gt;
+
+&lt;p&gt;######进程、线程、协程
+进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过），如果知道nginx原理相信会觉得似曾相识
+其实可以从调度、并发性、系统开销、拥有资源等发面作比较&lt;/p&gt;
+
+&lt;p&gt;进程：&lt;/p&gt;
+
+&lt;p&gt;进程被称为重量级别进程（HWP）。进程也可看做一个线程的集合，在我看来进程管理者是操作系统
+进程的调度是有OS来调度和管理。所以进程的调度，并发，系统开销、资源拥有都是系统层面。&lt;/p&gt;
+
+&lt;p&gt;线程：&lt;/p&gt;
+
+&lt;p&gt;线程被称为轻量级别的进程（LWP）是CPU调度和分配的基本单元。在我看来线程是一个CPU执行的实例。是一个进程获取到执行时内部调度，并发。&lt;/p&gt;
+
+&lt;p&gt;进程和线程intel网站上有一份超级详细和全面的资料。&lt;a href=&quot;https://software.intel.com/sites/default/files/m/5/7/f/a/b/12568-2.1.1_e7_ba_bf_e7_a8_8b_e4_b8_8e_e8_bf_9b_e7_a8_8b_e7_9a_84_e5_8c_ba_e5_88_ab.pdf&quot;&gt;process vs threads.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;协程:
+协程是一个不能被操作系统和CPU调度的玩意，全靠语言本身来控制。不关是进程，线程调度的时候都要进行上下文切换， 协程这玩意不涉及系统和CPU的上下文切换，协程个人感觉是就是异步和内存切换。
+附带一篇不错协程介绍&lt;a href=&quot;http://blog.imisko.com/2017/08/02/golang-coroutine/&quot;&gt;Golang协程之殇&lt;/a&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>c pointer</title>
