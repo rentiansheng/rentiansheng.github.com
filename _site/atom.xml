@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-08-30T13:43:18+08:00</updated>
+ <updated>2016-09-09T10:47:11+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -188,6 +188,8 @@ Command + u: 开启/关闭背景透明
 shift + command + [/]: 前一个/后一个标签页
 
 command + option + +: 进入/退出铺满屏幕
+
+ command + ctrl+ 上/下/左/右 : 调整当前分屏边框大小，
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h4 id=&quot;section-2&quot;&gt;&lt;strong&gt;其他&lt;/strong&gt;&lt;/h4&gt;
