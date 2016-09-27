@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="留言">
+  <meta name="keywords" content="react">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      留言 &middot; Reage blog
+      react &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -76,7 +76,7 @@
     
       
         
-          <a class="sidebar-nav-item active" href="/message.html">留言</a>
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
         
       
     
@@ -130,28 +130,79 @@
           
         </ul>            
       <div class="container content" style="margin-top:2rem">
-        <div class="page">
-  <h1 class="page-title">留言</h1>
-  留个足迹吧
+        <div class="post">
+  <h1 class="post-title">react</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2016-09-27</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> fe
+</span>
+  </div>
+  <h3 id="commpont">同一个commpont多次使用出现的错误</h3>
 
+<pre><code>错误提示如下：
+ Only a ReactOwner can have refs. You might be adding a ref to a component that was not created inside a component's `render` method, or you have multiple copies of React loaded
+
+ 解决方法如下
+ npm uninstall react react-dom
+ npm install react react-dom --save
+</code></pre>
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html" title="PHP VS GO">PHP VS GO</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/c/2016/08/21/cpointer.html" title="c pointer">c pointer</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-08-21</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/iterm2/2016/08/11/iterm2keys.html" title="iterm2 快捷键">iterm2 快捷键</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-08-11</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="留言" data-title="留言" data-url="//message.html"></div>
+<div class="ds-thread" data-thread-key="react" data-title="react" data-url="//react/2016/09/27/reacterr.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
-	var duoshuoQuery = {short_name:"ireage"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0]
-		|| document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
 </script>
 <!-- 多说公共JS代码 end -->
+<!-- 百度统计代码 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
-</div>
 
       </div>
     </div>

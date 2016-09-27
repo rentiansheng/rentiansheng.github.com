@@ -4,13 +4,30 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-09-09T10:47:11+08:00</updated>
+ <updated>2016-09-27T21:42:56+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>react</title>
+   <link href="http://www.ireage.com/react/2016/09/27/reacterr.html"/>
+   <updated>2016-09-27T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/react/2016/09/27/reacterr</id>
+   <content type="html">&lt;h3 id=&quot;commpont&quot;&gt;同一个commpont多次使用出现的错误&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;错误提示如下：
+ Only a ReactOwner can have refs. You might be adding a ref to a component that was not created inside a component's `render` method, or you have multiple copies of React loaded
+
+ 解决方法如下
+ npm uninstall react react-dom
+ npm install react react-dom --save
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
  
  <entry>
    <title>PHP VS GO</title>
