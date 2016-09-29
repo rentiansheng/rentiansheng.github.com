@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-09-27T21:42:56+08:00</updated>
+ <updated>2016-09-29T19:46:52+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -25,6 +25,12 @@
  解决方法如下
  npm uninstall react react-dom
  npm install react react-dom --save
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;setstate&quot;&gt;setState有延时&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;this.setState(params:{page:2});
+随后使用fetch将this.state.params作为参数获取数据的时候，竟然是之前的数据
 &lt;/code&gt;&lt;/pre&gt;
 </content>
  </entry>
