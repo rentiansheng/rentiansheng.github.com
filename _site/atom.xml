@@ -4,13 +4,70 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-09-29T19:46:52+08:00</updated>
+ <updated>2016-11-06T11:12:39+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>服务治理之开发环境配置解决</title>
+   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html"/>
+   <updated>2016-10-06T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/服务治理之开发环境配置</id>
+   <content type="html">&lt;h3 id=&quot;section&quot;&gt;出现的问题&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;新搭建的开发环境如何快速使用&lt;/li&gt;
+  &lt;li&gt;如何解决开发中路由问题（同一个服务或者接口不同调用者调用不同服务方）&lt;/li&gt;
+  &lt;li&gt;如何解决开发中使用host的问题&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;为什么测试环境和生产环境没有问题&lt;/h3&gt;
+
+&lt;p&gt;测试和生产环境在服务和接口的环境调用比较简单，都是一一对应的。
+在使用的过程中，服务治理这不需要关注调用者身份，只需根据服务中配置的
+地址信息，选择一个可用的服务者来转发这个请求即可。&lt;/p&gt;
+
+&lt;p&gt;但是在开发环境中，服务和接口调用者关系比较复杂。我将调用者分成两种类型，
+直接调用者和间接调用者。间接调用者的需求是最简单的，这个服务或者接口
+我不需要关心，只要能返回结果。 直接调用者需求是最复杂的，直接调用者有非常
+明确的服务提供者，有可能是整个服务下的接口，也有可能是服务下摸个接口。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;没有服务治理之前怎么解决&lt;/h3&gt;
+
+&lt;h6 id=&quot;section-3&quot;&gt;使用服务治理前&lt;/h6&gt;
+
+&lt;p&gt;调用者和服务方是直接通信的，所有环境的配置都是在代码配置文件中，调用者可以
+直接指定服务方地址。可以同修改配置文件和/etc/hosts文件来决定服务方&lt;/p&gt;
+
+&lt;h6 id=&quot;section-4&quot;&gt;使用服务治后&lt;/h6&gt;
+
+&lt;p&gt;调用者和服务方是间接通信的， 服务治理做为中间方。调用者和服务方直接通信都是
+服务治理的提供者。修改本地配置失效。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;解决方法&lt;/h3&gt;
+
+&lt;p&gt;服务治理只在服务信息和接口信息中新加路由表&lt;/p&gt;
+
+&lt;p&gt;|调用者|调用者|服务者|
+|–|–|–|
+在服务信息中新加域名信息&lt;/p&gt;
+
+&lt;h6 id=&quot;section-6&quot;&gt;1. 新搭建的开发环境如何快速使用&lt;/h6&gt;
+&lt;p&gt;每一个服务需要一个默认可以使用的地址&lt;/p&gt;
+
+&lt;h6 id=&quot;section-7&quot;&gt;2. 如何解决开发中路由问题（同一个服务或者接口不同调用者调用不同服务方）&lt;/h6&gt;
+&lt;p&gt;服务和接口分别有host的配置，通过调者IP地址来决定服务方的地址&lt;/p&gt;
+
+&lt;h6 id=&quot;host&quot;&gt;3. 如何解决开发中使用host的问题&lt;/h6&gt;
+
+&lt;p&gt;为服务配置一个域名，在http的头部添加host即可。&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>react</title>
