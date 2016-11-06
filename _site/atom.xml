@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-11-06T11:12:39+08:00</updated>
+ <updated>2016-11-06T11:17:25+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -52,9 +52,29 @@
 
 &lt;p&gt;服务治理只在服务信息和接口信息中新加路由表&lt;/p&gt;
 
-&lt;p&gt;|调用者|调用者|服务者|
-|–|–|–|
-在服务信息中新加域名信息&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;调用者&lt;/th&gt;
+      &lt;th&gt;调用者&lt;/th&gt;
+      &lt;th&gt;服务者&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;测试ip1&lt;/td&gt;
+      &lt;td&gt;127.0.0.1&lt;/td&gt;
+      &lt;td&gt;http://apiv1.ireage.com&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;测试ip2&lt;/td&gt;
+      &lt;td&gt;127.0.0.1&lt;/td&gt;
+      &lt;td&gt;http://apiv2.ireage.com&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;在服务信息中新加域名信息domain: http://api.ireage.com&lt;/p&gt;
 
 &lt;h6 id=&quot;section-6&quot;&gt;1. 新搭建的开发环境如何快速使用&lt;/h6&gt;
 &lt;p&gt;每一个服务需要一个默认可以使用的地址&lt;/p&gt;
