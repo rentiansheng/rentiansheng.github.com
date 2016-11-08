@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="php extensions(二) phpinfo输出内容">
+  <meta name="keywords" content="服务治理之服务管理">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      php extensions(二) phpinfo输出内容 &middot; Reage blog
+      服务治理之服务管理 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -131,64 +131,70 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">php extensions(二) phpinfo输出内容</h1>
+  <h1 class="post-title">服务治理之服务管理</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2015-04-18</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> php extension, c, and 开源
+    <span><i class="fa fa-clock-o"></i> 2016-11-07</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 服务治理
 </span>
   </div>
-  <h3 id="php-extensions--phpinfo">php extensions(二)  phpinfo输出内容</h3>
+  <h2 id="section">如何管理服务</h2>
+<hr />
 
-<h4 id="section">引言</h4>
+<p>需要考虑的问题：</p>
 
-<p>我们在使用一个PHP扩展的时候，首先，将编译后的扩展放到PHP的扩展加载目录下，使用phpinfo函数来查看插件是否已经加载。</p>
+<pre><code>* 1. 服务信息注册
 
-<h4 id="section-1">代码实现</h4>
-
-<p>在phpinfo函数添加内容特别简单的。
-   1.首先修改module entry</p>
-
-<figure class="highlight"><pre><code class="language-php" data-lang="php">zend_module_entry reage_module_entry = {
-             STANDARD_MODULE_HEADER,
-             &quot;reage&quot;,//扩展的名字
-             NULL, // functions
-             NULL, // minit
-             NULL, //mshutdown
-             NULL, //rinit
-             NULL, //rshutdown
-             PHP_MINFO(reage_info), //注册在phpinfo函数中输出内容的函数,reage_info
-             &quot;0.0.1&quot;, //版本号
-             STANDARD_MODULE_PROPERTIES
-         };</code></pre></figure>
-
-<p>2.输出内容函数的实现</p>
-
-<figure class="highlight"><pre><code class="language-php" data-lang="php">PHP_MINFO_FUNCTION(reage_info) {
-           php_info_print_table_start();
-           php_info_print_table_header(2, &quot;key&quot;, &quot;value&quot;);
-           php_info_print_table_row(2, &quot;author&quot;, &quot;Reage&quot;);
-           php_info_print_table_end();
-        }</code></pre></figure>
-
-<h4 id="section-2">使用到的函数</h4>
-
-<pre><code>php_info_print_table_start();
-php_info_print_table_header();
-php_info_print_table_row();
-php_info_print_table_end();
-
-除了这些函数，还有很多函数，需要的话请自行查阅
+* 2. 如何保证服务信息一致
 </code></pre>
 
-<p>####  源代码</p>
+<p>服务信息是服务发现很重要的部分，它是包含服务提供者的地址信息和提供服务的接口。
+服务信息需要高可用而且随时更新。gateway可以缓存从服务信息。
+然而，这些信息最终会变得过时，客户端也无法发现服务实例。
+因此，服务信息必须保证是一个一个分布式可用。</p>
 
-<p><a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)">https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)</a></p>
+<h6 id="section-1">目前可以使用的组件有：</h6>
 
-<h4 id="section-3">特别说明</h4>
+<pre><code>etcd
 
-<p>在搜索资料时，发现一个写的特别好的php扩展开发系列文章，希望对大家有用</p>
+consul
 
-<p><a href="http://www.walu.cc/phpbook/index.md">PHP扩展开发及内核应用</a></p>
+zookeeper
+
+Kubernetes
+
+eureka
+</code></pre>
+
+<p>最后，根据公司运维等方面考虑选择使用zookeeper</p>
+
+<h2 id="section-2">主要实现功能</h2>
+
+<pre><code>1. 服务发现
+
+   主动注册和被动注册，我使用的是被动注册，因为调用方和服务方都是PHP，主动注册不方便
+
+2. 服务管理
+
+  由于是被动注册，需要提供一个注册平台，主要提服务注册、授权、地址等信息管理
+
+3. 通信
+
+   异步通信和同步通信，现在只实现同步通信
+
+4. 访问控制
+
+   限制调用放key对服务方QPS、接口、有效时长
+
+5. 数据交换编码
+
+    目前支持http下json、yar-msgpack相互转换
+</code></pre>
+
+<h2 id="zookeeper">基于zookeeper服务管理的实现</h2>
+<hr />
+
+<p><img src="/img/zkmanagerservice.png" alt="基于zookeeper服务管理的实现图" /></p>
+
 
   <div class="post-affix">
     <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
@@ -198,29 +204,29 @@ php_info_print_table_end();
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html" class="read-more-btn">Read More</a>
+    <a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h3>
+    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html" title="服务治理之开发环境配置解决">服务治理之开发环境配置解决</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
-    
-    <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html" title="服务治理之开发环境配置解决">服务治理之开发环境配置解决</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-10-06</span>
-    </div><!-- /.list-item -->
     
     <div class="list-item">
       <h4><a href="/react/2016/09/27/reacterr.html" title="react">react</a></h4>
       <span><i class="fa fa-clock-o"></i>  2016-09-27</span>
     </div><!-- /.list-item -->
     
+    <div class="list-item">
+      <h4><a href="/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html" title="PHP VS GO">PHP VS GO</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-08-30</span>
+    </div><!-- /.list-item -->
+    
   </div><!-- /.read-more-list -->
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="php extensions(二) phpinfo输出内容" data-title="php extensions(二) phpinfo输出内容" data-url="//php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html"></div>
+<div class="ds-thread" data-thread-key="服务治理之服务管理" data-title="服务治理之服务管理" data-url="//%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

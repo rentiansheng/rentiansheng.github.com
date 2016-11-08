@@ -4,13 +4,79 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-11-06T11:17:25+08:00</updated>
+ <updated>2016-11-08T21:25:31+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>服务治理之服务管理</title>
+   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html"/>
+   <updated>2016-11-07T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/服务治理之服务管理</id>
+   <content type="html">&lt;h2 id=&quot;section&quot;&gt;如何管理服务&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;需要考虑的问题：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;* 1. 服务信息注册
+
+* 2. 如何保证服务信息一致
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;服务信息是服务发现很重要的部分，它是包含服务提供者的地址信息和提供服务的接口。
+服务信息需要高可用而且随时更新。gateway可以缓存从服务信息。
+然而，这些信息最终会变得过时，客户端也无法发现服务实例。
+因此，服务信息必须保证是一个一个分布式可用。&lt;/p&gt;
+
+&lt;h6 id=&quot;section-1&quot;&gt;目前可以使用的组件有：&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;etcd
+
+consul
+
+zookeeper
+
+Kubernetes
+
+eureka
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后，根据公司运维等方面考虑选择使用zookeeper&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;主要实现功能&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;1. 服务发现
+
+   主动注册和被动注册，我使用的是被动注册，因为调用方和服务方都是PHP，主动注册不方便
+
+2. 服务管理
+
+  由于是被动注册，需要提供一个注册平台，主要提服务注册、授权、地址等信息管理
+
+3. 通信
+
+   异步通信和同步通信，现在只实现同步通信
+
+4. 访问控制
+
+   限制调用放key对服务方QPS、接口、有效时长
+
+5. 数据交换编码
+
+    目前支持http下json、yar-msgpack相互转换
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;zookeeper&quot;&gt;基于zookeeper服务管理的实现&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/zkmanagerservice.png&quot; alt=&quot;基于zookeeper服务管理的实现图&quot; /&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>服务治理之开发环境配置解决</title>
