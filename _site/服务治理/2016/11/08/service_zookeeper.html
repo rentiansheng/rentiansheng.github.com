@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="json_decode解析失败">
+  <meta name="keywords" content="服务治理之zookeeper使用中遇到及设计">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      json_decode解析失败 &middot; Reage blog
+      服务治理之zookeeper使用中遇到及设计 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -131,35 +131,133 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">json_decode解析失败</h1>
+  <h1 class="post-title">服务治理之zookeeper使用中遇到及设计</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2016-02-24</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> php
+    <span><i class="fa fa-clock-o"></i> 2016-11-08</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 服务治理
 </span>
   </div>
-  <p>最近，一直在使用的系统突然出现一个奇怪的问题。一个商户信息总是没法展示的，两个系统采用json做的数据交换，
-线上日志记录到模块是接受导数据，但是在后面的日志中，发现数据为空。经过在线上加log发现json_decode失败的返回值为NULL。
-随后把log中的日志拿出来，json_decode没有问题的。</p>
+  <h1 id="section">如何规划需要管理配置</h1>
 
-<p>首先想到的问题是：</p>
+<p>根据需求将所有的信息分成四类</p>
+
+<pre><code>1. 分类
+
+    /classify下每个节点是一个分类名，内容是分类描述，分类属于辅助信息，没有太大意义。
+
+    eg: /classify/c1  分类名c1, /classify/c1节点内容为c1的描述
+
+2. 服务信息
+
+    /service下每个节点都是一个服务
+
+    eg: /service/srv1  服务名为srv1，/service/c1节点内容服务srv1具体内容
+
+3. 服务地址
+
+    /address 下每个节点都是一个服务
+
+    eg: /service/srv1  服务名为srv1，/service/c1节点内容服务srv1具体内容
+
+4. 服务下的API
+
+    /api下每一个节点是一个服务，服务下节点是API的命名的节点
+
+    eg: /api/srv1/api1   /api/srv1下的子节点是srv1服务下的所有API，/api/srv1/api1  服务srv1下api1的内容
+</code></pre>
+
+<h1 id="section-1">问题</h1>
+
+<pre><code>1. zk reconnect后授权问题
+
+2. zk session 过期
+
+3. zk reconnect 数据同步的问题
+
+2. watcher 消失后修改的问题
+</code></pre>
+
+<h1 id="section-2">功能设计</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>模块</th>
+      <th>功能</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>zk</td>
+      <td>1.管理节点&lt;/br&gt;2.内容节点</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>watcher</td>
+      <td>1.关注子节点变化&lt;/br&gt;2.关注本身变化</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>queue</td>
+      <td>1.处理错误&lt;/br&gt;2.重新初始化监控&lt;/br&gt;3.初始化缓存&lt;/br&gt;4.通知cache变更</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>cache</td>
+      <td>1.根据类型更新缓存</td>
+      <td>所有缓存相关的操作</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="section-3">好处</h1>
+
+<pre><code>1. 各模块职责单一
+
+2. 统一的错误处理
+
+3. 收敛缓存处理逻辑
+
+4. 方便扩展
+</code></pre>
+
+<h1 id="section-4">解决问题方法</h1>
 
 <ol>
   <li>
-    <p>json格式的问题</p>
+    <p>zk reconnect后授权问题</p>
   </li>
   <li>
-    <p>内存限制</p>
+    <p>zk session 过期</p>
   </li>
   <li>
-    <p>编码问题</p>
+    <p>zk reconnect 数据同步的问题</p>
+
+    <p>问题1、2、3 在queue模块中添加统一的错误处理逻辑</p>
+
+    <ol>
+      <li>
+        <p>添加授权信息</p>
+      </li>
+      <li>
+        <p>关闭原有的watcher</p>
+      </li>
+      <li>
+        <p>初始化watcher进程</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>watcher 消失后修改的问题</p>
+
+    <p>通过设计queue和cache模块，分开实现，延时获取数据的。</p>
+
+    <p>具体流程，见下图</p>
   </li>
 </ol>
 
-<p>上面的问题，很容就可以检查结果了。到底是不是这些原因的。不幸的事情发生了。这些都不是的，太奇葩了。</p>
-
-<p>虽有用json_decode解码失败搜索发现，有人说是因为json串有\t等特殊字符的问题的（之所以copy后解析成功，是因为不同的编辑器和编码格式会对特殊字符做处理）。</p>
-
-<p>在不同的终端下查看数据，发现数据中有特符符号。但是并不是\t,而是编码格式为\u0014\u0017数据。最好建议大家不要对数据进行解码查看，要看查看最原始的数据。因为不同的编码会对特殊符号做处理，在不同的编码下，特殊符号可能会显示为空白，不显示，显示为不同的符号等。</p>
+<p><img src="http://7xi8r0.com1.z0.glb.clouddn.com/watcher_note.png" alt="" /></p>
 
   <div class="post-affix">
     <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
@@ -169,29 +267,29 @@
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html" class="read-more-btn">Read More</a>
+    <a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到及设计">服务治理之zookeeper使用中遇到及设计</a></h3>
+    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
-    
-    <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-07</span>
-    </div><!-- /.list-item -->
     
     <div class="list-item">
       <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html" title="服务治理之开发环境配置解决">服务治理之开发环境配置解决</a></h4>
       <span><i class="fa fa-clock-o"></i>  2016-10-06</span>
     </div><!-- /.list-item -->
     
+    <div class="list-item">
+      <h4><a href="/react/2016/09/27/reacterr.html" title="react">react</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-09-27</span>
+    </div><!-- /.list-item -->
+    
   </div><!-- /.read-more-list -->
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="json_decode解析失败" data-title="json_decode解析失败" data-url="//php/2016/02/24/json_decode.html"></div>
+<div class="ds-thread" data-thread-key="服务治理之zookeeper使用中遇到及设计" data-title="服务治理之zookeeper使用中遇到及设计" data-url="//%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
