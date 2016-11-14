@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 服务治理之zookeeper使用中遇到及设计
+title: 服务治理之zookeeper使用中遇到的问题及设计
 category: [服务治理]
 tags: [服务治理]
 ---
