@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="服务治理">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      服务治理 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+    <a class="sidebar-nav-item" href="http://www.rhttp.cn" target="_blank">之前blog</a>
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">服务治理</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2016-11-16</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 服务治理
+</span>
+  </div>
+  <h2 id="section">为什么要做服务治理</h2>
+
+<p>一个系统在开始之初，业务单一，系统规较小。 随着业务发展，系统开变的庞大。</p>
+
+<p>出现以下问题：</p>
+
+<ol>
+  <li>系统的代码的开发和部署变得困难</li>
+  <li>水平扩展困难</li>
+  <li>功能及技术迭代困难
+（注：技术迭代只的是替换使用的语言、第三工具更换）</li>
+</ol>
+
+<p>为了解决上面的问题，我们开始分拆系统，将一个庞大的系统分成n个小系统， 然后n个系统随着业务发展，</p>
+
+<p>拆分带来的好处如下：</p>
+
+<ol>
+  <li>独立部署，方便水平扩展</li>
+  <li>系统隔离</li>
+  <li>快速的迭代（每个项目可以根据自己的业务常见，使用最优的语言和第三方工具）</li>
+</ol>
+
+<p>但是，拆分并没有解决问题，随着业务发展，我们n个小系统继续添加关联业务，随着时间的发展
+也变的复杂和庞大。我们又继续的拆分，变大，拆分，一遍又一遍坐着这些事情。</p>
+
+<p>我们如何解决这个问题？
+就是我们将一个功能做成一个单元，单独部署和迭代升级。不添加任何没有直接关系的功能。
+每个单元职责单一，单独部署。</p>
+
+<p>随之带来的问题是：</p>
+
+<ol>
+  <li>服务越来越多，如果管理服务</li>
+  <li>如何做负载均衡</li>
+  <li>如何做到服务地址变更管理</li>
+</ol>
+
+<p>最开始的解决方案是基于OP和RD配合来完成的。我们过DNS,NGINX,CONFIG文件来完成。</p>
+
+<pre><code>DNS，NGINX都可以做负载均衡。
+
+CONFIG文件来管理服务
+
+DNS用来管理服务地址的变更
+</code></pre>
+
+<p>上面的方法，虽然可以解决问题，但是每次要修改配置，等待配置生效。无法做到快速响应。
+为了解决这些问题引入服务治理。</p>
+
+<h2 id="section-1">服务治理内容</h2>
+
+<p>既然是服务的治理，我们就管理服务信息，根据上面的问题，
+我们要求一个高可用、低延迟的数据存储工具。</p>
+
+<p>经过筛选我们最终选择了zookeeper。
+我们先来zookeeper官方的定义：</p>
+
+<p>ZooKeeper is a centralized service for maintaining configuration information,
+ naming, providing distributed synchronization, and providing group services.</p>
+
+<p>使用zookeeper原因：</p>
+
+<ol>
+  <li>公司已经有zookeeper集群，具备运维能力</li>
+  <li>zookeeper 使用范围比较广，</li>
+  <li>watcher机制及时通知修改，保证信息一直</li>
+</ol>
+
+<p>虽然，我们可以通过zookeeper来解决服务配置的问题，
+但是服务的信息并不会自动出现在zookeeper中，需要我们开发一个完整的功能。</p>
+
+<p>服务治理需要的功能：</p>
+
+<ol>
+  <li>
+    <p>服务发现</p>
+
+    <p>主动注册和第三方注册，我使用的是被动注册，因为调用方和服务方都是PHP，主动注册实现复杂</p>
+  </li>
+  <li>
+    <p>服务管理</p>
+
+    <p>服务统计信息、服务信息、授权查看，在第三方注册时候，提供服务注册和修改功能</p>
+  </li>
+  <li>
+    <p>通信</p>
+
+    <p>异步通信和同步通信，现在只实现同步通信</p>
+  </li>
+  <li>
+    <p>访问控制</p>
+
+    <p>限制调用方key对服务方访问频次、是否具有访问权限</p>
+  </li>
+  <li>
+    <p>数据交互协议适配</p>
+
+    <p>调用放不用关注服务方提供服务协议。目前支持http下json、yar-msgpack相互转换</p>
+  </li>
+</ol>
+
+<h2 id="section-2">如何去做</h2>
+
+<p>到目前为止，我找到解决问题的方法和需要实现的功能的。
+根据上面的信息，我来看下我们具体是的设计。</p>
+
+<p><img src="http://www.ireage.com/img/zkmanagerservice.png" alt="" /></p>
+
+<p>在设计中我们工分五部分：</p>
+
+<ol>
+  <li>
+    <p>调用者</p>
+
+    <p>通过HTTP或YAR访问API Gateway， 将需要调用的服务信息和参数告诉API Gateway，</p>
+  </li>
+  <li>
+    <p>服务方</p>
+
+    <p>a) 提供服务</p>
+
+    <p>b) 将自己的信息通过管理平台注册到zookeeper中</p>
+
+    <pre><code>  1. 服务名、状态
+  2. 地址信息、机房、权重及状态
+  3. 服务下接口列表
+      a) 接口名
+      b) 接口路径
+      c) 输出数据的编码（json或者yar-msgpack）
+      d) 状态
+</code></pre>
+  </li>
+  <li>
+    <p>API Gateway</p>
+
+    <p>a) 转发请求</p>
+
+    <p>b) 服务不存在或者不提供服务状态下快速失败</p>
+
+    <p>c) 对发送的数据做编码（json或者yar-msgpack）</p>
+
+    <p>d) 负载均衡</p>
+
+    <p>e) 将服务和接口的信息缓存到内存中</p>
+
+    <p>f) 通过watcher机制将变更的服务信息缓存到内存中</p>
+  </li>
+  <li>
+    <p>管理平台</p>
+
+    <p>a) 服务及接口注册</p>
+
+    <p>b) 服务及接口查看</p>
+
+    <p>c) 服务及接口修改</p>
+
+    <p>d) 统计信息查看</p>
+  </li>
+  <li>
+    <p>ZooKeeper</p>
+
+    <p>ZooKeeper在整个服务注册与发现的设计中，最重要是如何来存储服务的注册信息。
+在使用zookeeper我们先来看下zookeeper是如何存储数据的。
+下面是zookeeper官方的介绍:</p>
+
+    <p>The name space provided by ZooKeeper is much like that of a standard file system. 
+A name is a sequence of path elements separated by a slash (/). 
+Every node in ZooKeeper’s name space is identified by a path.</p>
+  </li>
+</ol>
+
+<p><img src="http://zookeeper.apache.org/doc/r3.1.1/images/zknamespace.jpg" alt="" /></p>
+
+<p>zookeeper就像一个树，用每一个”/{name}”表示节点及节点名。每一个节点可以有子节点和内容。</p>
+
+<p>我们在zookeeper用于实现服务治理的信息有服务信息、地址信息、接口信息。具体格式如下：</p>
+
+<p>服务信息格式：/service/{服务名}</p>
+
+<p>地址信息：/address/{服务名}</p>
+
+<p>API信息：/api/{服务名}/{接口名}</p>
+
+<p>为什么要将zookeeper的存储结果设置上面的结果， zookeeper在watcher处理给了两个API
+   一个是关注子节点变化，一个是关注本身节点化。这样设计让每个节点功能单一。</p>
+
+<h2 id="zookeeper">出现的问题（如何保证缓存信息和zookeeper一直）</h2>
+
+<p>API Gateway 为了做到低延迟和高可用性，在API Gateway 中缓存服务配置，
+既然有缓存那么必须要涉及到缓存与zookeeper配置信息一直， 
+就需要用到zookeeper的watcher机制。在zookeeper中内容中修改时，
+通过watcher机制通知API Gateway 来更新缓存</p>
+
+<p>具体的使用方法如下：</p>
+
+<p>watcher 正常情况：</p>
+
+<p><img src="http://www.ireage.com/img/zkwatcher.png" alt="" /></p>
+
+<p>watcher 错误情况:</p>
+
+<p><img src="http://www.ireage.com/img/zkwatcherror.png" alt="" /></p>
+
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-07</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html" title="服务治理之开发环境配置解决">服务治理之开发环境配置解决</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-10-06</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="服务治理" data-title="服务治理" data-url="//%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- 多说公共JS代码 end -->
+<!-- 百度统计代码 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
