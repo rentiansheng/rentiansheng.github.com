@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-11-16T23:20:35+08:00</updated>
+ <updated>2016-11-17T13:49:20+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -17,60 +17,63 @@
    <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html"/>
    <updated>2016-11-16T00:00:00+08:00</updated>
    <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger</id>
-   <content type="html">&lt;h2 id=&quot;section&quot;&gt;为什么要做服务治理&lt;/h2&gt;
+   <content type="html">&lt;h1 id=&quot;section&quot;&gt;服务治理&lt;/h1&gt;
 
-&lt;p&gt;一个系统在开始之初，业务单一，系统规较小。 随着业务发展，系统开变的庞大。&lt;/p&gt;
+&lt;h2 id=&quot;section-1&quot;&gt;为什么要做服务治理&lt;/h2&gt;
+
+&lt;p&gt;一个系统在开始之初，业务单一，系统规比较小。 随着业务发展，系统开始变的庞大。&lt;/p&gt;
 
 &lt;p&gt;出现以下问题：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;系统的代码的开发和部署变得困难&lt;/li&gt;
+  &lt;li&gt;代码维护和部署变得困难&lt;/li&gt;
   &lt;li&gt;水平扩展困难&lt;/li&gt;
   &lt;li&gt;功能及技术迭代困难
 （注：技术迭代只的是替换使用的语言、第三工具更换）&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;为了解决上面的问题，我们开始分拆系统，将一个庞大的系统分成n个小系统， 然后n个系统随着业务发展，&lt;/p&gt;
+&lt;p&gt;为了解决上述的问题，我们开始分拆系统，将一个庞大的系统分成n个小系统。&lt;/p&gt;
 
 &lt;p&gt;拆分带来的好处如下：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;独立部署，方便水平扩展&lt;/li&gt;
   &lt;li&gt;系统隔离&lt;/li&gt;
-  &lt;li&gt;快速的迭代（每个项目可以根据自己的业务常见，使用最优的语言和第三方工具）&lt;/li&gt;
+  &lt;li&gt;快速的迭代（每个项目可以根据自己的业务场景来决定使用最优的语言和第三方工具）&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;但是，拆分并没有解决问题，随着业务发展，我们n个小系统继续添加关联业务，随着时间的发展
-也变的复杂和庞大。我们又继续的拆分，变大，拆分，一遍又一遍坐着这些事情。&lt;/p&gt;
+&lt;p&gt;但是，拆分并没有解决问题，随着业务发展，我们n个小系统继续添加相关的业务，随着时间的发展
+也变的复杂和庞大。我们又继续的拆分。 然后继续变大，拆分，一遍又一遍坐着这些事情。&lt;/p&gt;
 
-&lt;p&gt;我们如何解决这个问题？
-就是我们将一个功能做成一个单元，单独部署和迭代升级。不添加任何没有直接关系的功能。
+&lt;p&gt;我们如何解决这个问题：
+就是我们在开发之初，就将一个功能做成一个独立提供服务的单元，单独部署和迭代升级。不添加任何没有直接关系的功能。
 每个单元职责单一，单独部署。&lt;/p&gt;
 
 &lt;p&gt;随之带来的问题是：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;服务越来越多，如果管理服务&lt;/li&gt;
+  &lt;li&gt;独立的服务单元越来越多，如果去管理这些服务单元&lt;/li&gt;
   &lt;li&gt;如何做负载均衡&lt;/li&gt;
   &lt;li&gt;如何做到服务地址变更管理&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;最开始的解决方案是基于OP和RD配合来完成的。我们过DNS,NGINX,CONFIG文件来完成。&lt;/p&gt;
+&lt;p&gt;最开始的解决方案是基于OP和RD配合来完成的。
+就是我们通过DNS,NGINX,CONFIG文件配合来完成任务。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;DNS，NGINX都可以做负载均衡。
+&lt;pre&gt;&lt;code&gt;DNS，NGINX都可以做负载均衡的功能。
 
-CONFIG文件来管理服务
+CONFIG文件来管理服务单元
 
-DNS用来管理服务地址的变更
+DNS用来管理服务单元地址的变更
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;上面的方法，虽然可以解决问题，但是每次要修改配置，等待配置生效。无法做到快速响应。
-为了解决这些问题引入服务治理。&lt;/p&gt;
+&lt;p&gt;上述的方法，虽然可以解决问题，但是每次必须修改配置，重新加载配置才会生效。无法做到快速响应。
+那么就需要使用服务治理的思想。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;服务治理内容&lt;/h2&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;服务治理内容&lt;/h2&gt;
 
-&lt;p&gt;既然是服务的治理，我们就管理服务信息，根据上面的问题，
-我们要求一个高可用、低延迟的数据存储工具。&lt;/p&gt;
+&lt;p&gt;既然是服务治理，我们就是围绕服务信息管理来进行，
+根据我们使用的场景，需要一个高可用、低延迟的数据存储工具。&lt;/p&gt;
 
 &lt;p&gt;经过筛选我们最终选择了zookeeper。
 我们先来zookeeper官方的定义：&lt;/p&gt;
@@ -119,12 +122,12 @@ DNS用来管理服务地址的变更
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;如何去做&lt;/h2&gt;
+&lt;h2 id=&quot;section-3&quot;&gt;如何去做&lt;/h2&gt;
 
 &lt;p&gt;到目前为止，我找到解决问题的方法和需要实现的功能的。
 根据上面的信息，我来看下我们具体是的设计。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://www.ireage.com/img/zkmanagerservice.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/zkmanagerservice.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;在设计中我们工分五部分：&lt;/p&gt;
 
@@ -204,10 +207,10 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
 &lt;p&gt;为什么要将zookeeper的存储结果设置上面的结果， zookeeper在watcher处理给了两个API
    一个是关注子节点变化，一个是关注本身节点化。这样设计让每个节点功能单一。&lt;/p&gt;
 
-&lt;h2 id=&quot;zookeeper&quot;&gt;出现的问题（如何保证缓存信息和zookeeper一直）&lt;/h2&gt;
+&lt;h2 id=&quot;zookeeper&quot;&gt;出现的问题（如何保证缓存信息和zookeeper一致）&lt;/h2&gt;
 
 &lt;p&gt;API Gateway 为了做到低延迟和高可用性，在API Gateway 中缓存服务配置，
-既然有缓存那么必须要涉及到缓存与zookeeper配置信息一直， 
+既然有缓存那么必须要涉及到缓存与zookeeper配置信息一致， 
 就需要用到zookeeper的watcher机制。在zookeeper中内容中修改时，
 通过watcher机制通知API Gateway 来更新缓存&lt;/p&gt;
 
@@ -215,11 +218,11 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
 
 &lt;p&gt;watcher 正常情况：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://www.ireage.com/img/zkwatcher.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/zkwatcher.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;watcher 错误情况:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://www.ireage.com/img/zkwatcherror.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/zkwatcherror.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 </content>
  </entry>

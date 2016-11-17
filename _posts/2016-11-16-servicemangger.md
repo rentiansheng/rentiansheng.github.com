@@ -5,61 +5,66 @@ category: [服务治理]
 tags: [服务治理]
 ---
 
+
+# 服务治理
+
 ## 为什么要做服务治理
 
-一个系统在开始之初，业务单一，系统规较小。 随着业务发展，系统开变的庞大。
+一个系统在开始之初，业务单一，系统规比较小。 随着业务发展，系统开始变的庞大。
 
 出现以下问题：
 
-1. 系统的代码的开发和部署变得困难
+1. 代码维护和部署变得困难
 2. 水平扩展困难
 3. 功能及技术迭代困难
 （注：技术迭代只的是替换使用的语言、第三工具更换）
 
-为了解决上面的问题，我们开始分拆系统，将一个庞大的系统分成n个小系统， 然后n个系统随着业务发展，
+为了解决上述的问题，我们开始分拆系统，将一个庞大的系统分成n个小系统。
 
 拆分带来的好处如下：
 
 1. 独立部署，方便水平扩展
 2. 系统隔离
-3. 快速的迭代（每个项目可以根据自己的业务常见，使用最优的语言和第三方工具）
+3. 快速的迭代（每个项目可以根据自己的业务场景来决定使用最优的语言和第三方工具）
 
-但是，拆分并没有解决问题，随着业务发展，我们n个小系统继续添加关联业务，随着时间的发展
-也变的复杂和庞大。我们又继续的拆分，变大，拆分，一遍又一遍坐着这些事情。
+但是，拆分并没有解决问题，随着业务发展，我们n个小系统继续添加相关的业务，随着时间的发展
+也变的复杂和庞大。我们又继续的拆分。 然后继续变大，拆分，一遍又一遍坐着这些事情。
 
-我们如何解决这个问题？
-就是我们将一个功能做成一个单元，单独部署和迭代升级。不添加任何没有直接关系的功能。
+
+
+我们如何解决这个问题：
+就是我们在开发之初，就将一个功能做成一个独立提供服务的单元，单独部署和迭代升级。不添加任何没有直接关系的功能。
 每个单元职责单一，单独部署。
 
 随之带来的问题是：
 
-1. 服务越来越多，如果管理服务
+1. 独立的服务单元越来越多，如果去管理这些服务单元
 2. 如何做负载均衡
 3. 如何做到服务地址变更管理
 
 
-最开始的解决方案是基于OP和RD配合来完成的。我们过DNS,NGINX,CONFIG文件来完成。
+最开始的解决方案是基于OP和RD配合来完成的。
+就是我们通过DNS,NGINX,CONFIG文件配合来完成任务。
 
-    DNS，NGINX都可以做负载均衡。
+    DNS，NGINX都可以做负载均衡的功能。
 
-    CONFIG文件来管理服务
+    CONFIG文件来管理服务单元
 
-    DNS用来管理服务地址的变更
+    DNS用来管理服务单元地址的变更
 
-上面的方法，虽然可以解决问题，但是每次要修改配置，等待配置生效。无法做到快速响应。
-为了解决这些问题引入服务治理。
+上述的方法，虽然可以解决问题，但是每次必须修改配置，重新加载配置才会生效。无法做到快速响应。
+那么就需要使用服务治理的思想。
 
 ## 服务治理内容
 
-既然是服务的治理，我们就管理服务信息，根据上面的问题，
-我们要求一个高可用、低延迟的数据存储工具。
+既然是服务治理，我们就是围绕服务信息管理来进行，
+根据我们使用的场景，需要一个高可用、低延迟的数据存储工具。
 
 经过筛选我们最终选择了zookeeper。
 我们先来zookeeper官方的定义：
 
 ZooKeeper is a centralized service for maintaining configuration information,
  naming, providing distributed synchronization, and providing group services. 
-
 
 使用zookeeper原因：
 
@@ -101,7 +106,7 @@ ZooKeeper is a centralized service for maintaining configuration information,
 根据上面的信息，我来看下我们具体是的设计。
 
 
-![](http://www.ireage.com/img/zkmanagerservice.png)
+![](/img/zkmanagerservice.png)
 
 在设计中我们工分五部分：
 
@@ -180,10 +185,10 @@ ZooKeeper is a centralized service for maintaining configuration information,
    
 
 
-## 出现的问题（如何保证缓存信息和zookeeper一直）
+## 出现的问题（如何保证缓存信息和zookeeper一致）
 
 API Gateway 为了做到低延迟和高可用性，在API Gateway 中缓存服务配置，
-既然有缓存那么必须要涉及到缓存与zookeeper配置信息一直， 
+既然有缓存那么必须要涉及到缓存与zookeeper配置信息一致， 
 就需要用到zookeeper的watcher机制。在zookeeper中内容中修改时，
 通过watcher机制通知API Gateway 来更新缓存
 
@@ -191,11 +196,11 @@ API Gateway 为了做到低延迟和高可用性，在API Gateway 中缓存服�
 
 watcher 正常情况：
 
-![](http://www.ireage.com/img/zkwatcher.png)
+![](/img/zkwatcher.png)
 
 watcher 错误情况:
 
-![](http://www.ireage.com/img/zkwatcherror.png)
+![](/img/zkwatcherror.png)
 
 
 
