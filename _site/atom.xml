@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-11-17T18:42:11+08:00</updated>
+ <updated>2016-11-17T18:43:02+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -26,7 +26,7 @@
 &lt;p&gt;会出现下列问题：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;代码维护和部署变得困难&lt;/li&gt;
+  &lt;li&gt;维护、开发、部署变得困难&lt;/li&gt;
   &lt;li&gt;水平扩展困难&lt;/li&gt;
   &lt;li&gt;功能及技术迭代困难
 （注：技术迭代指的是替换使用的语言、第三方工具等）&lt;/li&gt;
