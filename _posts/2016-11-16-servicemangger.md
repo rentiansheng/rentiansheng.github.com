@@ -5,6 +5,7 @@ category: [服务治理]
 tags: [服务治理]
 ---
 
+# 服务治理
 
 ## 为什么要做服务治理
 
@@ -218,25 +219,24 @@ Gateway 为了做到低延迟和高可用性，在Gateway 中缓存zookeeper中�
     
 2. 为什么致命错误需要重新初始化缓存？
 
-    下面的介绍会跟开发使用的语言和使用zookeeper的sdk有一定的关系。
+    下面的介绍的内容会跟开发使用的语言和zookeeper的sdk有一定的关系。
 
     开发语言：golang   --- SDK：samuel/go-zookeeper/zk
     
-    我们先来看下zookeeper的SDK是如何处理错误，
+    我们先来看下SDK是如何处理错误，
     个人将SDK的错误分为非致命错误和致命错误错误两种（个人观点）。
     
         非致命错误：ErrNoAuth、ErrAPIError、ErrAuthFailed等
 
         致命错误：ErrSessionMoved、ErrSessionExpired等
     
-    非致命错误是在函数调用时由于函数调用使用的参数及上下文环境出现问题返回的错误，
+    非致命错误是与zookeeper集群通信时，使用的参数及上下文环境出现问题返回的错误，
     影响范围只有本次调用。
 
-    致命错误通常是与zookeeper集群的通信出现网络故障，影响所有SDK与zookeeper的通信。
-
-    但是SDK(go-zookeeper)并不会在出现问题时刻立即报错，
-    SDK会自动尝试建立新的可用session，
-    SDK在session建立成功后给所有watcher发送一个错误通知。
+    致命错误通常是与zookeeper集群的通信出现网络故障，影响与zookeeper集群的所有通信。
+    但是SDK(go-zookeeper)并不会在问题出现时刻立即报错，
+    SDK会自动尝试建立新的可以使用的session，
+    SDK在session建立成功后将给所有的watcher发送一个错误通知。
 
     ErrSessionMoved: 是与zookeeper集群的某个实例session失效后，
     下次与zookeeper成功建立session发送给所有watcher。
@@ -244,8 +244,8 @@ Gateway 为了做到低延迟和高可用性，在Gateway 中缓存zookeeper中�
     ErrSessionExpired:是与整个zookeeper集群session失效后，
     下次与zookeeper成功建立session发送给所有watcher。
 
-    致命错误：我们无法知道在于zookeeper集群session断开的时间段中，
-    zookeeper中的数据数据增删改查的变化。如果只是更新和新加，
+    收到致命错误后，我们无法知道在于zookeeper集群session断开的时间段中，
+    zookeeper中的数据数据变化情况。如果只是更新和新加，
     我们可以在初始化的时候将节点的内容缓存即可，
     但是如果有删除的话。我们就需要遍历所有的缓存内容来删除不需要的缓存。
 
