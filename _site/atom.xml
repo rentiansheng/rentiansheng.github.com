@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-11-18T14:23:08+08:00</updated>
+ <updated>2016-11-23T18:34:54+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -636,8 +636,8 @@ eureka
 
 &lt;h4 id=&quot;section-3&quot;&gt;题外话&lt;/h4&gt;
 
-&lt;p&gt;######进程、线程、协程
-进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过），如果知道nginx原理相信会觉得似曾相识
+&lt;h6 id=&quot;section-4&quot;&gt;进程、线程、协程&lt;/h6&gt;
+&lt;p&gt;进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过），如果知道nginx原理相信会觉得似曾相识
 其实可以从调度、并发性、系统开销、拥有资源等发面作比较&lt;/p&gt;
 
 &lt;p&gt;进程：&lt;/p&gt;
