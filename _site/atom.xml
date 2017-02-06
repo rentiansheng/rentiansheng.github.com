@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2016-11-23T18:34:54+08:00</updated>
+ <updated>2017-02-06T14:51:33+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -637,7 +637,7 @@ eureka
 &lt;h4 id=&quot;section-3&quot;&gt;题外话&lt;/h4&gt;
 
 &lt;h6 id=&quot;section-4&quot;&gt;进程、线程、协程&lt;/h6&gt;
-&lt;p&gt;进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过），如果知道nginx原理相信会觉得似曾相识
+&lt;p&gt;进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过，如果知道nginx原理相信会觉得似曾相识
 其实可以从调度、并发性、系统开销、拥有资源等发面作比较&lt;/p&gt;
 
 &lt;p&gt;进程：&lt;/p&gt;
@@ -1112,6 +1112,7 @@ ZEND_GET_MODULE(reage)
 &lt;ol&gt;
   &lt;li&gt;PC chrome浏览器。&lt;/li&gt;
   &lt;li&gt;手机android 海豚浏览器&lt;/li&gt;
+  &lt;li&gt;firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;h2 id=&quot;section-2&quot;&gt;注意事项&lt;/h2&gt;
@@ -1154,7 +1155,7 @@ ZEND_GET_MODULE(reage)
   Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
   Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
   Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
-  NOtifier.ModelTimeout(ct); //超时消失模式。显示一定时间自动消失。
+  NOtifier.firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）(ct); //超时消失模式。显示一定时间自动消失。
  &lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;

@@ -25,6 +25,7 @@ chrome 浏览器桌面通知
 
 1. PC chrome浏览器。
 2. 手机android 海豚浏览器
+4. firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）
 
 
 ## 注意事项
@@ -65,7 +66,7 @@ chrome 浏览器桌面通知
      Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
      Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
      Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
-     NOtifier.ModelTimeout(ct); //超时消失模式。显示一定时间自动消失。
+     NOtifier.firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）(ct); //超时消失模式。显示一定时间自动消失。
      ```
 
 3. 发送通知
