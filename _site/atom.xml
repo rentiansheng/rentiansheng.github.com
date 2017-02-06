@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2017-02-06T14:51:33+08:00</updated>
+ <updated>2017-02-06T15:23:56+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -1131,56 +1131,82 @@ ZEND_GET_MODULE(reage)
   &lt;li&gt;
     &lt;p&gt;引用notify.js文件&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;HTML
+    &lt;p&gt;&lt;code&gt;
  &amp;lt;script src=&quot;notifiy.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;浏览器配置&lt;/p&gt;
 
-    &lt;p&gt;检查浏览器是否支持桌面通知功能
- &lt;code&gt;HTML
+    &lt;p&gt;检查浏览器是否支持桌面通知功能&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
  Notifier.HasSupport();
 &lt;/code&gt;&lt;/p&gt;
 
-    &lt;p&gt;获取允许桌面通知权限
- &lt;code&gt;HTML
+    &lt;p&gt;获取允许桌面通知权限&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
  Notifier.RequestPermission();
 &lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;设置通知显示方式（可选。不设置采用默认模式）&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;HTML
-  Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
-  Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
-  Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
-  NOtifier.firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）(ct); //超时消失模式。显示一定时间自动消失。
- &lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;code&gt;
+ Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
+ Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
+ Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
+ NOtifier.firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）(ct); //超时消失模式。显示一定时间自动消失。
+&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;发送通知&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;HTML
- Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
+    &lt;p&gt;&lt;code&gt;
+Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
 &lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;关闭的方法&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;HTML
+    &lt;p&gt;&lt;code&gt;
   Notifier.Clse(type);    //type=1 关闭上一个 其他值 关闭最早打开的
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
   Notifier.ClosePre();    //关闭最近个打开的通知
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
   Notifier.CloseLast();   //关闭最早显示的通知
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
   NOtifier.CloseAll();    //关闭所有通知
- &lt;/code&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;其他方法&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;HTML
+    &lt;p&gt;&lt;code&gt;
  Notifier.GetPermission();   //获取关于通知使用权限，0，已经得到权限 1，需要获取权限 2，禁止使用
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
  Notifier.IsGetPermission(); //是否已经获取通知的使用权限
+&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;
  Notifier.Disable();         //是否禁用通知
 &lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
