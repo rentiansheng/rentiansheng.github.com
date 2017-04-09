@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2017-02-06T15:23:56+08:00</updated>
+ <updated>2017-04-09T21:20:37+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -520,7 +520,7 @@ eureka
   &lt;thead&gt;
     &lt;tr&gt;
       &lt;th&gt;调用者&lt;/th&gt;
-      &lt;th&gt;调用者&lt;/th&gt;
+      &lt;th&gt;调用者IP&lt;/th&gt;
       &lt;th&gt;服务者&lt;/th&gt;
     &lt;/tr&gt;
   &lt;/thead&gt;
@@ -532,7 +532,7 @@ eureka
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;测试ip2&lt;/td&gt;
-      &lt;td&gt;127.0.0.1&lt;/td&gt;
+      &lt;td&gt;127.0.0.2&lt;/td&gt;
       &lt;td&gt;http://apiv2.ireage.com&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
@@ -573,6 +573,14 @@ eureka
 &lt;pre&gt;&lt;code&gt;this.setState(params:{page:2});
 随后使用fetch将this.state.params作为参数获取数据的时候，竟然是之前的数据
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;url&quot;&gt;同一组件，在URL参数改变时，未重新加载数据&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;使用组件componentWillReceiveProps事件即可。
+componentWillMount和componentDidMount只有在组件切换时执行，同一组件在不同参数下不会触发。
+例如：http::/ireage.com/test#/list/1 变为 http::/ireage.com/test#/list/2 不触发componentWillMount和componentDidMount事件。
+&lt;/code&gt;&lt;/pre&gt;
+
 </content>
  </entry>
  

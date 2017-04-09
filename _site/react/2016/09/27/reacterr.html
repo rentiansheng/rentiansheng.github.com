@@ -153,6 +153,14 @@
 随后使用fetch将this.state.params作为参数获取数据的时候，竟然是之前的数据
 </code></pre>
 
+<h3 id="url">同一组件，在URL参数改变时，未重新加载数据</h3>
+
+<pre><code>使用组件componentWillReceiveProps事件即可。
+componentWillMount和componentDidMount只有在组件切换时执行，同一组件在不同参数下不会触发。
+例如：http::/ireage.com/test#/list/1 变为 http::/ireage.com/test#/list/2 不触发componentWillMount和componentDidMount事件。
+</code></pre>
+
+
   <div class="post-affix">
     <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
   </div>
