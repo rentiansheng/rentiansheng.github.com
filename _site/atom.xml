@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2017-04-09T21:20:37+08:00</updated>
+ <updated>2017-04-09T21:31:38+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -339,17 +339,17 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
       &lt;td&gt;zk&lt;/td&gt;
-      &lt;td&gt;1.管理节点&amp;lt;/br&amp;gt;2.内容节点&lt;/td&gt;
+      &lt;td&gt;1.管理节点   2.内容节点&lt;/td&gt;
       &lt;td&gt; &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;watcher&lt;/td&gt;
-      &lt;td&gt;1.关注子节点变化&amp;lt;/br&amp;gt;2.关注本身变化&lt;/td&gt;
+      &lt;td&gt;1.关注子节点变化    2.关注本身变化&lt;/td&gt;
       &lt;td&gt; &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;queue&lt;/td&gt;
-      &lt;td&gt;1.处理错误&amp;lt;/br&amp;gt;2.重新初始化监控&amp;lt;/br&amp;gt;3.初始化缓存&amp;lt;/br&amp;gt;4.通知cache变更&lt;/td&gt;
+      &lt;td&gt;1.处理错误  2.重新初始化监控  3.初始化缓存 4.通知cache变更&lt;/td&gt;
       &lt;td&gt; &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
