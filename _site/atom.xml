@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Reage blog</title>
- <link href="http://www.ireage.com/atom.xml" rel="self"/>
- <link href="http://www.ireage.com/"/>
- <updated>2017-04-09T21:33:39+08:00</updated>
- <id>http://www.ireage.com</id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2018-03-16T23:18:45+08:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
@@ -13,13 +13,97 @@
 
  
  <entry>
-   <title>服务治理</title>
-   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html"/>
-   <updated>2016-11-16T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger</id>
-   <content type="html">&lt;h1 id=&quot;section&quot;&gt;服务治理&lt;/h1&gt;
+   <title>golang 下载文件格式错误</title>
+   <link href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html"/>
+   <updated>2018-03-16T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2018/03/16/godownfilecontenttype</id>
+   <content type="html">&lt;h3 id=&quot;场景&quot;&gt;场景&lt;/h3&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;为什么要做服务治理&lt;/h2&gt;
+&lt;p&gt;最近在使用golang做一个cmdb，系统中有大量的数据需要导出下载。
+在功能开发完成后， 系统在开发和测试环境运行正常。但是部署到环境后，
+在下载数据的时候，文件下载下来会变成zip或者没有后缀等两种情况。&lt;/p&gt;
+
+&lt;h3 id=&quot;问题分析&quot;&gt;问题分析&lt;/h3&gt;
+
+&lt;p&gt;文件下载格式不正确，首先，想到的是http response的header中的
+content-type格式不对， 使用curl -v 请求后发现返回数据如下&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-curl&quot; data-lang=&quot;curl&quot;&gt;&amp;gt; POST /hosts/export HTTP/1.1
+&amp;gt; Accept: */*
+&amp;gt; Cache-Control: no-cache
+&amp;gt; Content-Length: 246
+&amp;gt; content-type: multipart/form-data; 
+&amp;gt;
+&amp;lt; HTTP/1.1 100 Continue
+&amp;lt; HTTP/1.1 200 OK
+&amp;lt; Date: Wed, 14 Mar 2018 09:49:55 GMT
+&amp;lt; Content-Type: application/zip
+&amp;lt; Content-Length: 7795&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;通过curl 调用确认了是content-type的问题。
+看了golang关于http package的介绍没有设置mime.type的地方。
+因为go语言使用的是系统的mime，不像nginx，apache有自己的mime配置文件。 
+所以使用golang 的http package功能在不同系统上由于系统的mine.types
+差异影响系统功能。 系统的mime.types在/etc/mime.types大家可以自由查看&lt;/p&gt;
+
+&lt;h3 id=&quot;解决方法&quot;&gt;解决方法&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;更新系统的/etc/mine.types&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;通过代码解决&lt;/p&gt;
+
+    &lt;p&gt;熟悉HTTP协议的同学应该知道，HTTP response header中的content-type
+是可以指定下载文件的格式。
+虽然相信golang作为一门优秀的语言一定会按照HTTP协议实现，
+但是还是翻了下源码，
+http.ServeFile -&amp;gt; serveFile-&amp;gt; serveContent&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-code&quot; data-lang=&quot;code&quot;&gt;func serveContent(w ResponseWriter, r *Request, name string, modtime time.Time, sizeFunc func() (int64, error), content io.ReadSeeker) {
+    ...... 
+    ctype := w.Header().Get(&amp;quot;Content-Type&amp;quot;)
+   	if !haveType {
+   		ctype = mime.TypeByExtension(filepath.Ext(name))
+   		if ctype == &amp;quot;&amp;quot; {
+   			// read a chunk to decide between utf-8 text and binary
+   			var buf [sniffLen]byte
+   			n, _ := io.ReadFull(content, buf[:])
+   			ctype = DetectContentType(buf[:n])
+   			_, err := content.Seek(0, io.SeekStart) // rewind to output whole file
+   			if err != nil {
+   				Error(w, &amp;quot;seeker can&amp;#39;t seek&amp;quot;, StatusInternalServerError)
+   				return
+   			}
+   		}
+   		w.Header().Set(&amp;quot;Content-Type&amp;quot;, ctype)
+   	} else if len(ctypes) &amp;gt; 0 {
+   		ctype = ctypes[0]
+   	}
+   
+     ....
+   }&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;http头部的设置规则&quot;&gt;HTTP头部的设置规则&lt;/h3&gt;
+
+&lt;p&gt;Content-Type: application/vnd.ms-excel   #excel 2003-2007的格式&lt;/p&gt;
+
+&lt;p&gt;Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet  #excel 2007以后的格式&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>服务治理</title>
+   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html"/>
+   <updated>2016-11-16T00:00:00+08:00</updated>
+   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger</id>
+   <content type="html">&lt;h1 id=&quot;服务治理&quot;&gt;服务治理&lt;/h1&gt;
+
+&lt;h2 id=&quot;为什么要做服务治理&quot;&gt;为什么要做服务治理&lt;/h2&gt;
 
 &lt;p&gt;一个系统在开发之初，功能简单，规模较小。 随着业务需求的变化和增加，
 系统的功能和规模会变得庞大。&lt;/p&gt;
@@ -75,7 +159,7 @@ DNS,NGINX,CONFIG都可以用来管理服务单元信息的变更
 &lt;p&gt;上述的方法，虽然可以解决问题，但是每次必须修改配置，然后重新加载配置才会生效。
 无法实现立即生效，避免错误继续扩大的问题。为了解决这些问题，就要使用有效的服务治理方案。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;服务治理&lt;/h2&gt;
+&lt;h2 id=&quot;服务治理-1&quot;&gt;服务治理&lt;/h2&gt;
 
 &lt;p&gt;服务治理主要是对服务信息进行管理的一系列的系统。为了实现这个系统，
 我们需要一个高可用、低延迟的数据存储工具。&lt;/p&gt;
@@ -128,7 +212,7 @@ DNS,NGINX,CONFIG都可以用来管理服务单元信息的变更
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;section-3&quot;&gt;如何去做&lt;/h2&gt;
+&lt;h2 id=&quot;如何去做&quot;&gt;如何去做&lt;/h2&gt;
 
 &lt;p&gt;到目前为止，我找到解决问题的方法和需要实现的功能的。
 根据上面的信息，我们给出了具体是的设计方案。如下图所示：&lt;/p&gt;
@@ -215,7 +299,7 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
    我们现在来看一个具体的例子：假设有一个服务s，下面有A,B两个接口
 &lt;img src=&quot;/img/zkstoragestructrue.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;zookeeper&quot;&gt;出现的问题（如何保证缓存信息和zookeeper中的内容一致）&lt;/h2&gt;
+&lt;h2 id=&quot;出现的问题如何保证缓存信息和zookeeper中的内容一致&quot;&gt;出现的问题（如何保证缓存信息和zookeeper中的内容一致）&lt;/h2&gt;
 
 &lt;p&gt;Gateway 为了做到低延迟和高可用性，在Gateway 中缓存zookeeper中的数据。
 在Gateway中缓存数据的格式与zookeeper中的结构一致。
@@ -283,10 +367,10 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
  
  <entry>
    <title>服务治理之zookeeper使用中遇到的问题及设计</title>
-   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html"/>
+   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html"/>
    <updated>2016-11-08T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper</id>
-   <content type="html">&lt;h1 id=&quot;section&quot;&gt;如何规划需要管理配置&lt;/h1&gt;
+   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper</id>
+   <content type="html">&lt;h1 id=&quot;如何规划需要管理配置&quot;&gt;如何规划需要管理配置&lt;/h1&gt;
 
 &lt;p&gt;根据需求将所有的信息分成四类&lt;/p&gt;
 
@@ -315,7 +399,7 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
     eg: /api/srv1/api1   /api/srv1下的子节点是srv1服务下的所有API，/api/srv1/api1  服务srv1下api1的内容
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&quot;section-1&quot;&gt;问题&lt;/h1&gt;
+&lt;h1 id=&quot;问题&quot;&gt;问题&lt;/h1&gt;
 
 &lt;pre&gt;&lt;code&gt;1. zk reconnect后授权问题
 
@@ -326,7 +410,7 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
 2. watcher 消失后修改的问题
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&quot;section-2&quot;&gt;功能设计&lt;/h1&gt;
+&lt;h1 id=&quot;功能设计&quot;&gt;功能设计&lt;/h1&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -360,7 +444,7 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;h1 id=&quot;section-3&quot;&gt;好处&lt;/h1&gt;
+&lt;h1 id=&quot;好处&quot;&gt;好处&lt;/h1&gt;
 
 &lt;pre&gt;&lt;code&gt;1. 各模块职责单一
 
@@ -371,7 +455,7 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
 4. 方便扩展
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&quot;section-4&quot;&gt;解决问题方法&lt;/h1&gt;
+&lt;h1 id=&quot;解决问题方法&quot;&gt;解决问题方法&lt;/h1&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -412,10 +496,10 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
  
  <entry>
    <title>服务治理之服务管理</title>
-   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html"/>
+   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html"/>
    <updated>2016-11-07T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/服务治理之服务管理</id>
-   <content type="html">&lt;h2 id=&quot;section&quot;&gt;如何管理服务&lt;/h2&gt;
+   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/服务治理之服务管理</id>
+   <content type="html">&lt;h2 id=&quot;如何管理服务&quot;&gt;如何管理服务&lt;/h2&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;需要考虑的问题：&lt;/p&gt;
@@ -430,7 +514,7 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
 然而，这些信息最终会变得过时，客户端也无法发现服务实例。
 因此，服务信息必须保证是一个一个分布式可用。&lt;/p&gt;
 
-&lt;h6 id=&quot;section-1&quot;&gt;目前可以使用的组件有：&lt;/h6&gt;
+&lt;h6 id=&quot;目前可以使用的组件有&quot;&gt;目前可以使用的组件有：&lt;/h6&gt;
 
 &lt;pre&gt;&lt;code&gt;etcd
 
@@ -445,7 +529,7 @@ eureka
 
 &lt;p&gt;最后，根据公司运维等方面考虑选择使用zookeeper&lt;/p&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;主要实现功能&lt;/h2&gt;
+&lt;h2 id=&quot;主要实现功能&quot;&gt;主要实现功能&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code&gt;1. 服务发现
 
@@ -468,7 +552,7 @@ eureka
     目前支持http下json、yar-msgpack相互转换
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;zookeeper&quot;&gt;基于zookeeper服务管理的实现&lt;/h2&gt;
+&lt;h2 id=&quot;基于zookeeper服务管理的实现&quot;&gt;基于zookeeper服务管理的实现&lt;/h2&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;&lt;img src=&quot;/img/zkmanagerservice.png&quot; alt=&quot;基于zookeeper服务管理的实现图&quot; /&gt;&lt;/p&gt;
@@ -478,10 +562,10 @@ eureka
  
  <entry>
    <title>服务治理之开发环境配置解决</title>
-   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html"/>
+   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html"/>
    <updated>2016-10-06T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/服务治理之开发环境配置</id>
-   <content type="html">&lt;h3 id=&quot;section&quot;&gt;出现的问题&lt;/h3&gt;
+   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/服务治理之开发环境配置</id>
+   <content type="html">&lt;h3 id=&quot;出现的问题&quot;&gt;出现的问题&lt;/h3&gt;
 
 &lt;ol&gt;
   &lt;li&gt;新搭建的开发环境如何快速使用&lt;/li&gt;
@@ -489,7 +573,7 @@ eureka
   &lt;li&gt;如何解决开发中使用host的问题&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;为什么测试环境和生产环境没有问题&lt;/h3&gt;
+&lt;h3 id=&quot;为什么测试环境和生产环境没有问题&quot;&gt;为什么测试环境和生产环境没有问题&lt;/h3&gt;
 
 &lt;p&gt;测试和生产环境在服务和接口的环境调用比较简单，都是一一对应的。
 在使用的过程中，服务治理这不需要关注调用者身份，只需根据服务中配置的
@@ -500,19 +584,19 @@ eureka
 我不需要关心，只要能返回结果。 直接调用者需求是最复杂的，直接调用者有非常
 明确的服务提供者，有可能是整个服务下的接口，也有可能是服务下摸个接口。&lt;/p&gt;
 
-&lt;h3 id=&quot;section-2&quot;&gt;没有服务治理之前怎么解决&lt;/h3&gt;
+&lt;h3 id=&quot;没有服务治理之前怎么解决&quot;&gt;没有服务治理之前怎么解决&lt;/h3&gt;
 
-&lt;h6 id=&quot;section-3&quot;&gt;使用服务治理前&lt;/h6&gt;
+&lt;h6 id=&quot;使用服务治理前&quot;&gt;使用服务治理前&lt;/h6&gt;
 
 &lt;p&gt;调用者和服务方是直接通信的，所有环境的配置都是在代码配置文件中，调用者可以
 直接指定服务方地址。可以同修改配置文件和/etc/hosts文件来决定服务方&lt;/p&gt;
 
-&lt;h6 id=&quot;section-4&quot;&gt;使用服务治后&lt;/h6&gt;
+&lt;h6 id=&quot;使用服务治后&quot;&gt;使用服务治后&lt;/h6&gt;
 
 &lt;p&gt;调用者和服务方是间接通信的， 服务治理做为中间方。调用者和服务方直接通信都是
 服务治理的提供者。修改本地配置失效。&lt;/p&gt;
 
-&lt;h3 id=&quot;section-5&quot;&gt;解决方法&lt;/h3&gt;
+&lt;h3 id=&quot;解决方法&quot;&gt;解决方法&lt;/h3&gt;
 
 &lt;p&gt;服务治理只在服务信息和接口信息中新加路由表&lt;/p&gt;
 
@@ -540,13 +624,13 @@ eureka
 
 &lt;p&gt;在服务信息中新加域名信息domain: http://api.ireage.com&lt;/p&gt;
 
-&lt;h6 id=&quot;section-6&quot;&gt;1. 新搭建的开发环境如何快速使用&lt;/h6&gt;
+&lt;h6 id=&quot;1-新搭建的开发环境如何快速使用&quot;&gt;1. 新搭建的开发环境如何快速使用&lt;/h6&gt;
 &lt;p&gt;每一个服务需要一个默认可以使用的地址&lt;/p&gt;
 
-&lt;h6 id=&quot;section-7&quot;&gt;2. 如何解决开发中路由问题（同一个服务或者接口不同调用者调用不同服务方）&lt;/h6&gt;
+&lt;h6 id=&quot;2-如何解决开发中路由问题同一个服务或者接口不同调用者调用不同服务方&quot;&gt;2. 如何解决开发中路由问题（同一个服务或者接口不同调用者调用不同服务方）&lt;/h6&gt;
 &lt;p&gt;服务和接口分别有host的配置，通过调者IP地址来决定服务方的地址&lt;/p&gt;
 
-&lt;h6 id=&quot;host&quot;&gt;3. 如何解决开发中使用host的问题&lt;/h6&gt;
+&lt;h6 id=&quot;3-如何解决开发中使用host的问题&quot;&gt;3. 如何解决开发中使用host的问题&lt;/h6&gt;
 
 &lt;p&gt;为服务配置一个域名，在http的头部添加host即可。&lt;/p&gt;
 
@@ -555,10 +639,10 @@ eureka
  
  <entry>
    <title>react</title>
-   <link href="http://www.ireage.com/react/2016/09/27/reacterr.html"/>
+   <link href="http://localhost:4000/react/2016/09/27/reacterr.html"/>
    <updated>2016-09-27T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/react/2016/09/27/reacterr</id>
-   <content type="html">&lt;h3 id=&quot;commpont&quot;&gt;同一个commpont多次使用出现的错误&lt;/h3&gt;
+   <id>http://localhost:4000/react/2016/09/27/reacterr</id>
+   <content type="html">&lt;h3 id=&quot;同一个commpont多次使用出现的错误&quot;&gt;同一个commpont多次使用出现的错误&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;错误提示如下：
  Only a ReactOwner can have refs. You might be adding a ref to a component that was not created inside a component's `render` method, or you have multiple copies of React loaded
@@ -568,13 +652,13 @@ eureka
  npm install react react-dom --save
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&quot;setstate&quot;&gt;setState有延时&lt;/h3&gt;
+&lt;h3 id=&quot;setstate有延时&quot;&gt;setState有延时&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;this.setState(params:{page:2});
 随后使用fetch将this.state.params作为参数获取数据的时候，竟然是之前的数据
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&quot;url&quot;&gt;同一组件，在URL参数改变时，未重新加载数据&lt;/h3&gt;
+&lt;h3 id=&quot;同一组件在url参数改变时未重新加载数据&quot;&gt;同一组件，在URL参数改变时，未重新加载数据&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;使用组件componentWillReceiveProps事件即可。
 componentWillMount和componentDidMount只有在组件切换时执行，同一组件在不同参数下不会触发。
@@ -586,10 +670,10 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  
  <entry>
    <title>PHP VS GO</title>
-   <link href="http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html"/>
+   <link href="http://localhost:4000/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html"/>
    <updated>2016-08-30T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo</id>
-   <content type="html">&lt;h4 id=&quot;section&quot;&gt;整体印象&lt;/h4&gt;
+   <id>http://localhost:4000/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo</id>
+   <content type="html">&lt;h4 id=&quot;整体印象&quot;&gt;整体印象&lt;/h4&gt;
 &lt;p&gt;PHP：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;1. 不用编译，写完代码就可以直接看
@@ -609,7 +693,7 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
 5. 完善的网络库
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&quot;section-1&quot;&gt;语法相关&lt;/h4&gt;
+&lt;h4 id=&quot;语法相关&quot;&gt;语法相关&lt;/h4&gt;
 &lt;p&gt;PHP：&lt;/p&gt;
 
 &lt;p&gt;觉得自己不是一个合格PHPer,使用两年多了，竟然总结不出来。&lt;/p&gt;
@@ -629,7 +713,7 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
 7. 把异步搞的和同步一样
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&quot;section-2&quot;&gt;适用场景&lt;/h4&gt;
+&lt;h4 id=&quot;适用场景&quot;&gt;适用场景&lt;/h4&gt;
 
 &lt;p&gt;PHP:&lt;/p&gt;
 
@@ -642,9 +726,9 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  2. 服务开发
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&quot;section-3&quot;&gt;题外话&lt;/h4&gt;
+&lt;h4 id=&quot;题外话&quot;&gt;题外话&lt;/h4&gt;
 
-&lt;h6 id=&quot;section-4&quot;&gt;进程、线程、协程&lt;/h6&gt;
+&lt;h6 id=&quot;进程线程协程&quot;&gt;进程、线程、协程&lt;/h6&gt;
 &lt;p&gt;进程和线程比较常见，操作系统课上都讲过，协程虽然没有讲过，如果知道nginx原理相信会觉得似曾相识
 其实可以从调度、并发性、系统开销、拥有资源等发面作比较&lt;/p&gt;
 
@@ -668,18 +752,18 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  
  <entry>
    <title>c pointer</title>
-   <link href="http://www.ireage.com/c/2016/08/21/cpointer.html"/>
+   <link href="http://localhost:4000/c/2016/08/21/cpointer.html"/>
    <updated>2016-08-21T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/c/2016/08/21/cpointer</id>
-   <content type="html">&lt;h3 id=&quot;section&quot;&gt;指针相关&lt;/h3&gt;
+   <id>http://localhost:4000/c/2016/08/21/cpointer</id>
+   <content type="html">&lt;h3 id=&quot;指针相关&quot;&gt;指针相关&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;h4 id=&quot;glibc-detected--19-munmapchunk-invalid-pointer-0x00007ffff5cc97b0-&quot;&gt;1.&lt;em&gt;** glibc detected **&lt;/em&gt; ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***&lt;/h4&gt;
+&lt;h4 id=&quot;1-glibc-detected--19-munmap_chunk-invalid-pointer-0x00007ffff5cc97b0-&quot;&gt;1.&lt;em&gt;** glibc detected **&lt;/em&gt; ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code&gt; a) free释放内存出现，注意free只能释放malloc分配的内存，在function中看到是指针，这个指针有可能是定义的数组，无法释放
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&quot;type--type-&quot;&gt;2. 二维数组和指针的指针区别( type [][]与 type **)&lt;/h4&gt;
+&lt;h4 id=&quot;2-二维数组和指针的指针区别-type-与-type-&quot;&gt;2. 二维数组和指针的指针区别( type [][]与 type **)&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code&gt;  虽然两种方式在使用的时候访问方式是通用的，差异主要在内存组织
 
@@ -699,14 +783,14 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  
  <entry>
    <title>iterm2 快捷键</title>
-   <link href="http://www.ireage.com/iterm2/2016/08/11/iterm2keys.html"/>
+   <link href="http://localhost:4000/iterm2/2016/08/11/iterm2keys.html"/>
    <updated>2016-08-11T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/iterm2/2016/08/11/iterm2keys</id>
+   <id>http://localhost:4000/iterm2/2016/08/11/iterm2keys</id>
    <content type="html">&lt;p&gt;最近买了一个键盘，操作触控就不方便了，只能在键盘下功夫了。&lt;/p&gt;
 
 &lt;p&gt;本人系统shell是zsh&lt;/p&gt;
 
-&lt;h4 id=&quot;section&quot;&gt;&lt;strong&gt;光标操作&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id=&quot;光标操作&quot;&gt;&lt;strong&gt;光标操作&lt;/strong&gt;&lt;/h4&gt;
 &lt;hr /&gt;
 
 &lt;pre&gt;&lt;code&gt;ctrl + a: 到行首
@@ -736,7 +820,7 @@ command + —/+/0: +字体变大，-字体变小， 0 恢复到默认值，如�
 command + r:清屏，其实是滚到新的一屏，并没有清空。ctrl + l 也可以做到。对 ⌘ + f没有影响
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;&lt;strong&gt;窗口操作&lt;/strong&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;窗口操作&quot;&gt;&lt;strong&gt;窗口操作&lt;/strong&gt;&lt;/h3&gt;
 &lt;hr /&gt;
 
 &lt;pre&gt;&lt;code&gt;shift + command + d: 水平拆分窗口
@@ -764,7 +848,7 @@ command + option + +: 进入/退出铺满屏幕
  command + ctrl+ 上/下/左/右 : 调整当前分屏边框大小，
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&quot;section-2&quot;&gt;&lt;strong&gt;其他&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id=&quot;其他&quot;&gt;&lt;strong&gt;其他&lt;/strong&gt;&lt;/h4&gt;
 &lt;hr /&gt;
 
 &lt;pre&gt;&lt;code&gt;command + shift + m: 新建书签
@@ -784,9 +868,9 @@ command + /: 显示光标的位置
  
  <entry>
    <title>json_decode解析失败</title>
-   <link href="http://www.ireage.com/php/2016/02/24/json_decode.html"/>
+   <link href="http://localhost:4000/php/2016/02/24/json_decode.html"/>
    <updated>2016-02-24T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php/2016/02/24/json_decode</id>
+   <id>http://localhost:4000/php/2016/02/24/json_decode</id>
    <content type="html">&lt;p&gt;最近，一直在使用的系统突然出现一个奇怪的问题。一个商户信息总是没法展示的，两个系统采用json做的数据交换，
 线上日志记录到模块是接受导数据，但是在后面的日志中，发现数据为空。经过在线上加log发现json_decode失败的返回值为NULL。
 随后把log中的日志拿出来，json_decode没有问题的。&lt;/p&gt;
@@ -815,16 +899,16 @@ command + /: 显示光标的位置
  
  <entry>
    <title>php extensions(二) phpinfo输出内容</title>
-   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html"/>
+   <link href="http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html"/>
    <updated>2015-04-18T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php扩展开发学习(二)phpinfo添加信息</id>
-   <content type="html">&lt;h3 id=&quot;php-extensions--phpinfo&quot;&gt;php extensions(二)  phpinfo输出内容&lt;/h3&gt;
+   <id>http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php扩展开发学习(二)phpinfo添加信息</id>
+   <content type="html">&lt;h3 id=&quot;php-extensions二--phpinfo输出内容&quot;&gt;php extensions(二)  phpinfo输出内容&lt;/h3&gt;
 
-&lt;h4 id=&quot;section&quot;&gt;引言&lt;/h4&gt;
+&lt;h4 id=&quot;引言&quot;&gt;引言&lt;/h4&gt;
 
 &lt;p&gt;我们在使用一个PHP扩展的时候，首先，将编译后的扩展放到PHP的扩展加载目录下，使用phpinfo函数来查看插件是否已经加载。&lt;/p&gt;
 
-&lt;h4 id=&quot;section-1&quot;&gt;代码实现&lt;/h4&gt;
+&lt;h4 id=&quot;代码实现&quot;&gt;代码实现&lt;/h4&gt;
 
 &lt;p&gt;在phpinfo函数添加内容特别简单的。
    1.首先修改module entry&lt;/p&gt;
@@ -851,7 +935,7 @@ command + /: 显示光标的位置
            php_info_print_table_end();
         }&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h4 id=&quot;section-2&quot;&gt;使用到的函数&lt;/h4&gt;
+&lt;h4 id=&quot;使用到的函数&quot;&gt;使用到的函数&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code&gt;php_info_print_table_start();
 php_info_print_table_header();
@@ -865,7 +949,7 @@ php_info_print_table_end();
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)&quot;&gt;https://github.com/rentiansheng/php-extension-learn/tree/master/learn2(phpinfo)&lt;/a&gt;&lt;/p&gt;
 
-&lt;h4 id=&quot;section-3&quot;&gt;特别说明&lt;/h4&gt;
+&lt;h4 id=&quot;特别说明&quot;&gt;特别说明&lt;/h4&gt;
 
 &lt;p&gt;在搜索资料时，发现一个写的特别好的php扩展开发系列文章，希望对大家有用&lt;/p&gt;
 
@@ -875,15 +959,15 @@ php_info_print_table_end();
  
  <entry>
    <title>php extensions(-) 代码目录结构</title>
-   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html"/>
+   <link href="http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html"/>
    <updated>2015-04-08T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php扩展开发学习(-)</id>
-   <content type="html">&lt;h3 id=&quot;php-extensions--&quot;&gt;php extensions(-) 代码目录结构&lt;/h3&gt;
+   <id>http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php扩展开发学习(-)</id>
+   <content type="html">&lt;h3 id=&quot;php-extensions--代码目录结构&quot;&gt;php extensions(-) 代码目录结构&lt;/h3&gt;
 
-&lt;h4 id=&quot;section&quot;&gt;引言&lt;/h4&gt;
+&lt;h4 id=&quot;引言&quot;&gt;引言&lt;/h4&gt;
 &lt;p&gt;每一个php extension的目录中最少要包含config.m4、config.w32、php_extension.h、extension.c。php_extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。&lt;/p&gt;
 
-&lt;h4 id=&quot;configm4configw32&quot;&gt;1. 扩展的配置文件config.m4和config.w32&lt;/h4&gt;
+&lt;h4 id=&quot;1-扩展的配置文件configm4和configw32&quot;&gt;1. 扩展的配置文件config.m4和config.w32&lt;/h4&gt;
 
 &lt;p&gt;config.m4用户Unix、Linux等系统。config.m4文件告诉 UNIX 构建系统哪些扩展 configure 选项是支持的，你需要哪些扩展库，以及哪些源文件要编译成它的一部分。&lt;/p&gt;
 
@@ -957,12 +1041,11 @@ ZEND_GET_MODULE(reage)
 &lt;p&gt;####4. 编译php extension
    在php extension的目录下，执行一下命名:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
-   1. phpize
+&lt;pre&gt;&lt;code&gt;   1. phpize
    2. ./configure
    3. make
    4. make test
-  &lt;/code&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;####5. test 
     将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。&lt;/p&gt;
@@ -978,18 +1061,18 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>mysql 优化基础知识（-）</title>
-   <link href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"/>
+   <link href="http://localhost:4000/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"/>
    <updated>2015-03-30T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/mysql/2015/03/30/mysql优化基础知识(-)</id>
-   <content type="html">&lt;h4 id=&quot;primary-key&quot;&gt;1. primary key&lt;/h4&gt;
+   <id>http://localhost:4000/mysql/2015/03/30/mysql优化基础知识(-)</id>
+   <content type="html">&lt;h4 id=&quot;1-primary-key&quot;&gt;1. primary key&lt;/h4&gt;
 &lt;p&gt;primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
   综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
   主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快&lt;/p&gt;
 
-&lt;h4 id=&quot;section&quot;&gt;2.索引在存储时都是正序存储&lt;/h4&gt;
+&lt;h4 id=&quot;2索引在存储时都是正序存储&quot;&gt;2.索引在存储时都是正序存储&lt;/h4&gt;
 &lt;p&gt;因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra现实这Using filesort&lt;/p&gt;
 
-&lt;h4 id=&quot;where-in&quot;&gt;3. where in&lt;/h4&gt;
+&lt;h4 id=&quot;3-where-in&quot;&gt;3. where in&lt;/h4&gt;
 &lt;p&gt;mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)&lt;/p&gt;
 
 </content>
@@ -997,9 +1080,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>codeigniter rabbitmq lirary</title>
-   <link href="http://www.ireage.com/php/2014/11/28/codeigniter-rabbitmq-library.html"/>
+   <link href="http://localhost:4000/php/2014/11/28/codeigniter-rabbitmq-library.html"/>
    <updated>2014-11-28T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/php/2014/11/28/codeigniter rabbitmq library</id>
+   <id>http://localhost:4000/php/2014/11/28/codeigniter rabbitmq library</id>
    <content type="html">&lt;p&gt;简介
 &lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;_&lt;/p&gt;
 
@@ -1007,7 +1090,7 @@ ZEND_GET_MODULE(reage)
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng//ci-rabbitmq&quot;&gt;项目地址：https://github.com/rentiansheng//ci-rabbitmq&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;section&quot;&gt;代码结构&lt;/h2&gt;
+&lt;h2 id=&quot;代码结构&quot;&gt;代码结构&lt;/h2&gt;
 &lt;p&gt;1.文件介绍&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;  1.src/src/libraries/rabbitmq.php  rabbitmq操作代码
@@ -1022,7 +1105,7 @@ ZEND_GET_MODULE(reage)
   3. cp src/src/models/rabbitmqmodel.php   项目代码/application/models/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;函数&lt;/h2&gt;
+&lt;h2 id=&quot;函数&quot;&gt;函数&lt;/h2&gt;
 
 &lt;p&gt;1.queue  declare一个queue&lt;/p&gt;
 
@@ -1077,7 +1160,7 @@ ZEND_GET_MODULE(reage)
        queue  queue的对象
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;demo-&quot;&gt;demo 目录下是示例代码&lt;/h2&gt;
+&lt;h2 id=&quot;demo-目录下是示例代码&quot;&gt;demo 目录下是示例代码&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code&gt;1. 将demo/controllers/taskqueue.php 项目代码/application/controllers/taskqueue.php
 2.  运行例子，最好可以terminal运行,首先转到项目文件所在的路径
@@ -1085,7 +1168,7 @@ ZEND_GET_MODULE(reage)
     sudo [可选择加上php env]  php所在位置 index.php taskqueue   sendMsg 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;我遇到的问题&lt;/h2&gt;
+&lt;h2 id=&quot;我遇到的问题&quot;&gt;我遇到的问题&lt;/h2&gt;
 &lt;p&gt;1.在执行一段时间后无法从redis获取内容&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;    我使用的是ci的cache库操作redis，由于cache 初始化是在controller开始的位置，时间久了，会自动断开链接请注意。
@@ -1097,10 +1180,10 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>览器桌面通知（notifications）</title>
-   <link href="http://www.ireage.com/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html"/>
+   <link href="http://localhost:4000/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html"/>
    <updated>2014-05-28T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/js/2014/05/28/浏览器桌面通知（notifications）</id>
-   <content type="html">&lt;h1 id=&quot;chrome-&quot;&gt;chrome 浏览器桌面通知&lt;/h1&gt;
+   <id>http://localhost:4000/js/2014/05/28/浏览器桌面通知（notifications）</id>
+   <content type="html">&lt;h1 id=&quot;chrome-浏览器桌面通知&quot;&gt;chrome 浏览器桌面通知&lt;/h1&gt;
 
 &lt;p&gt;最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
 这样就很难看到通知了。经过查找发现有些浏览器可以使用noitfications，
@@ -1109,13 +1192,13 @@ ZEND_GET_MODULE(reage)
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/notification&quot;&gt;项目地址：https://github.com/rentiansheng/notification&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;section&quot;&gt;简介&lt;/h2&gt;
+&lt;h2 id=&quot;简介&quot;&gt;简介&lt;/h2&gt;
 
 &lt;p&gt;用于其余B/S下的网络办公提醒功能。
 页面最小化的状态下发送通知
 依然显示在屏幕的右下角，马上可以看到内容&lt;/p&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;依赖&lt;/h2&gt;
+&lt;h2 id=&quot;依赖&quot;&gt;依赖&lt;/h2&gt;
 
 &lt;ol&gt;
   &lt;li&gt;PC chrome浏览器。&lt;/li&gt;
@@ -1123,100 +1206,84 @@ ZEND_GET_MODULE(reage)
   &lt;li&gt;firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;注意事项&lt;/h2&gt;
+&lt;h2 id=&quot;注意事项&quot;&gt;注意事项&lt;/h2&gt;
 
 &lt;p&gt;通知权限是基于网站（或者域名），同一个网站下面的页面只需要获取一次权限即可。
 如果别禁用了。将不会显示通知的，也无法再次获取权限了。
-可以同浏览器的菜单查看权限。
-&lt;code&gt;HTML
-设置-》隐私设选下面的 “内容设置”-》通知
-&lt;/code&gt;
-如果你关闭或者刷新页面了。之前的通知就没法控制了 。&lt;/p&gt;
+可以同浏览器的菜单查看权限。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-HTML&quot;&gt;设置-》隐私设选下面的 “内容设置”-》通知
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你关闭或者刷新页面了。之前的通知就没法控制了 。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-3&quot;&gt;使用&lt;/h2&gt;
+&lt;h2 id=&quot;使用&quot;&gt;使用&lt;/h2&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
     &lt;p&gt;引用notify.js文件&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
- &amp;lt;script src=&quot;notifiy.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; &amp;lt;script src=&quot;notifiy.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;浏览器配置&lt;/p&gt;
 
     &lt;p&gt;检查浏览器是否支持桌面通知功能&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.HasSupport();
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.HasSupport();
+&lt;/code&gt;&lt;/pre&gt;
 
     &lt;p&gt;获取允许桌面通知权限&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.RequestPermission();
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.RequestPermission();
+&lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;设置通知显示方式（可选。不设置采用默认模式）&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.ModelAll();       //默认方式，显示所有的。在linux一般为三个。在window显示在通知区域。
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.ModelUpdate();    //更新模式，显示在上一个通知的位置，
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.ModelCount(c);    //限制当前页面显示的通知个数，默认为三个(可以通过参数c改变个数)。超出限制时关闭最早的通知，
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
- NOtifier.firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）(ct); //超时消失模式。显示一定时间自动消失。
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; NOtifier.firefox 可用但是智能展示一个通知（不建议使用，不同版本存在差异）(ct); //超时消失模式。显示一定时间自动消失。
+&lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;发送通知&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
-Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt;Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的地址  title:通知的标题 message：通知的内容
+&lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;关闭的方法&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
-  Notifier.Clse(type);    //type=1 关闭上一个 其他值 关闭最早打开的
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt;  Notifier.Clse(type);    //type=1 关闭上一个 其他值 关闭最早打开的
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
-  Notifier.ClosePre();    //关闭最近个打开的通知
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt;  Notifier.ClosePre();    //关闭最近个打开的通知
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
-  Notifier.CloseLast();   //关闭最早显示的通知
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt;  Notifier.CloseLast();   //关闭最早显示的通知
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
-  NOtifier.CloseAll();    //关闭所有通知
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt;  NOtifier.CloseAll();    //关闭所有通知
+&lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;其他方法&lt;/p&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.GetPermission();   //获取关于通知使用权限，0，已经得到权限 1，需要获取权限 2，禁止使用
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.GetPermission();   //获取关于通知使用权限，0，已经得到权限 1，需要获取权限 2，禁止使用
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.IsGetPermission(); //是否已经获取通知的使用权限
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.IsGetPermission(); //是否已经获取通知的使用权限
+&lt;/code&gt;&lt;/pre&gt;
 
-    &lt;p&gt;&lt;code&gt;
- Notifier.Disable();         //是否禁用通知
-&lt;/code&gt;&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt; Notifier.Disable();         //是否禁用通知
+&lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
 
@@ -1225,16 +1292,16 @@ Notifier.Notify(icon, title, message); //显示桌面通知，icon：图片的�
  
  <entry>
    <title>c语言 sizeof函数认知</title>
-   <link href="http://www.ireage.com/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html"/>
+   <link href="http://localhost:4000/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html"/>
    <updated>2012-09-06T00:00:00+08:00</updated>
-   <id>http://www.ireage.com/c/2012/09/06/c sizeof函数的认知</id>
+   <id>http://localhost:4000/c/2012/09/06/c sizeof函数的认知</id>
    <content type="html">&lt;p&gt;下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。&lt;/p&gt;
 
 &lt;p&gt;## 首先
  —
  sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后面操作对象都加上括号哪？原因如下。&lt;/p&gt;
 
-&lt;h2 id=&quot;sizeof&quot;&gt;sizeof函数证明&lt;/h2&gt;
+&lt;h2 id=&quot;sizeof函数证明&quot;&gt;sizeof函数证明&lt;/h2&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
   &lt;li&gt;
@@ -1254,7 +1321,7 @@ int a；sizeof a+1；结果值为5； 原因如下 sizeof(a)+1;
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;sizeof-1&quot;&gt;sizeof容易出差的地方&lt;/h2&gt;
+&lt;h2 id=&quot;sizeof容易出差的地方&quot;&gt;sizeof容易出差的地方&lt;/h2&gt;
 &lt;hr /&gt;
 &lt;p&gt;char a[100]=”三月软件工作室—-Reage”;
 char &lt;em&gt;p，&lt;/em&gt;p1=a；&lt;/p&gt;

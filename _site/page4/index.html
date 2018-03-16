@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="mysql 优化基础知识（-）">
+  <meta name="keywords" content="Home">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      mysql 优化基础知识（-） &middot; Reage blog
+      Reage blog &middot; 
     
   </title>
   <!-- CSS -->
@@ -134,81 +134,55 @@
           
         </ul>            
       <div class="container content" style="margin-top:2rem">
-        <div class="post">
-  <h1 class="post-title">mysql 优化基础知识（-）</h1>
-  <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2015-03-30</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> mysql
-</span>
+        <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html">
+        c语言 sizeof函数认知
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2012-09-06</span>
+    下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。
+
+## 首先
+ —
+ sizeof是一个关键字并不是一个函数。或许你有疑问，既然是一个关键字，为什么出现sizeof的时候后...
   </div>
-  <h4 id="1-primary-key">1. primary key</h4>
-<p>primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
-  综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
-  主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快</p>
+  
+</div>
+<div id="post-pagination" class="paginator">
+      
+      <a href="/">1</a>
+      
 
-<h4 id="2索引在存储时都是正序存储">2.索引在存储时都是正序存储</h4>
-<p>因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra现实这Using filesort</p>
-
-<h4 id="3-where-in">3. where in</h4>
-<p>mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)</p>
-
-
-  <div class="post-affix">
-    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
-  </div>
+    
+      
+      <a href="/page2">2</a>
+      
+    
+      
+      <a href="/page3">3</a>
+      
+    
+      
+      <span class="current-page">4</span>
+      
+    
+  (共16篇)
 </div>
 
-<div class="read-more">
+<!--div class="pagination">
   
-  <div class="read-more-header">
-    <a href="/php/2014/11/28/codeigniter-rabbitmq-library.html" class="read-more-btn">Read More</a>
-  </div><!-- /.read-more-header -->
-  <div class="read-more-content">
-    <h3><a href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html" title="golang 下载文件格式错误">golang 下载文件格式错误</a></h3>
-  </div><!-- /.read-more-content -->
+    <span class="pagination-item older"><-</span>
   
-  <div class="read-more-list">
-    
-    <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-16</span>
-    </div><!-- /.list-item -->
-    
-    <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
-    </div><!-- /.list-item -->
-    
-  </div><!-- /.read-more-list -->
   
-</div><!-- /.read-more -->
-<!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="mysql 优化基础知识（-）" data-title="mysql 优化基础知识（-）" data-url="//mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"></div>
-<!-- 多说评论框 end -->
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"ireage"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0]
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script>
-<!-- 多说公共JS代码 end -->
-<!-- 百度统计代码 -->
-<script>
-var _hmt = _hmt || [];
-(function() {
-      var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
-          var s = document.getElementsByTagName("script")[0]; 
-            s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
+    
+  <a class="pagination-item newer" href="/page3">-></a>
+    
+  
+</div-->
 
       </div>
     </div>

@@ -13,7 +13,6 @@ relative_permalinks: false
 # Gems
 gems: [jekyll-paginate]
 
-
 # Setup
 permalink:            date
 title:               'Reage blog'

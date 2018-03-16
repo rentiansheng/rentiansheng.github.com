@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="mysql 优化基础知识（-）">
+  <meta name="keywords" content="golang 下载文件格式错误">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      mysql 优化基础知识（-） &middot; Reage blog
+      golang 下载文件格式错误 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -135,22 +135,87 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">mysql 优化基础知识（-）</h1>
+  <h1 class="post-title">golang 下载文件格式错误</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2015-03-30</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> mysql
+    <span><i class="fa fa-clock-o"></i> 2018-03-16</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang and 文件下载
 </span>
   </div>
-  <h4 id="1-primary-key">1. primary key</h4>
-<p>primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
-  综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
-  主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快</p>
+  <h3 id="场景">场景</h3>
 
-<h4 id="2索引在存储时都是正序存储">2.索引在存储时都是正序存储</h4>
-<p>因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra现实这Using filesort</p>
+<p>最近在使用golang做一个cmdb，系统中有大量的数据需要导出下载。
+在功能开发完成后， 系统在开发和测试环境运行正常。但是部署到环境后，
+在下载数据的时候，文件下载下来会变成zip或者没有后缀等两种情况。</p>
 
-<h4 id="3-where-in">3. where in</h4>
-<p>mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)</p>
+<h3 id="问题分析">问题分析</h3>
+
+<p>文件下载格式不正确，首先，想到的是http response的header中的
+content-type格式不对， 使用curl -v 请求后发现返回数据如下</p>
+
+<figure class="highlight"><pre><code class="language-curl" data-lang="curl">&gt; POST /hosts/export HTTP/1.1
+&gt; Accept: */*
+&gt; Cache-Control: no-cache
+&gt; Content-Length: 246
+&gt; content-type: multipart/form-data; 
+&gt;
+&lt; HTTP/1.1 100 Continue
+&lt; HTTP/1.1 200 OK
+&lt; Date: Wed, 14 Mar 2018 09:49:55 GMT
+&lt; Content-Type: application/zip
+&lt; Content-Length: 7795</code></pre></figure>
+
+<p>通过curl 调用确认了是content-type的问题。
+看了golang关于http package的介绍没有设置mime.type的地方。
+因为go语言使用的是系统的mime，不像nginx，apache有自己的mime配置文件。 
+所以使用golang 的http package功能在不同系统上由于系统的mine.types
+差异影响系统功能。 系统的mime.types在/etc/mime.types大家可以自由查看</p>
+
+<h3 id="解决方法">解决方法</h3>
+
+<ol>
+  <li>
+    <p>更新系统的/etc/mine.types</p>
+  </li>
+  <li>
+    <p>通过代码解决</p>
+
+    <p>熟悉HTTP协议的同学应该知道，HTTP response header中的content-type
+是可以指定下载文件的格式。
+虽然相信golang作为一门优秀的语言一定会按照HTTP协议实现，
+但是还是翻了下源码，
+http.ServeFile -&gt; serveFile-&gt; serveContent</p>
+  </li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-code" data-lang="code">func serveContent(w ResponseWriter, r *Request, name string, modtime time.Time, sizeFunc func() (int64, error), content io.ReadSeeker) {
+    ...... 
+    ctype := w.Header().Get(&quot;Content-Type&quot;)
+   	if !haveType {
+   		ctype = mime.TypeByExtension(filepath.Ext(name))
+   		if ctype == &quot;&quot; {
+   			// read a chunk to decide between utf-8 text and binary
+   			var buf [sniffLen]byte
+   			n, _ := io.ReadFull(content, buf[:])
+   			ctype = DetectContentType(buf[:n])
+   			_, err := content.Seek(0, io.SeekStart) // rewind to output whole file
+   			if err != nil {
+   				Error(w, &quot;seeker can&#39;t seek&quot;, StatusInternalServerError)
+   				return
+   			}
+   		}
+   		w.Header().Set(&quot;Content-Type&quot;, ctype)
+   	} else if len(ctypes) &gt; 0 {
+   		ctype = ctypes[0]
+   	}
+   
+     ....
+   }</code></pre></figure>
+
+<h3 id="http头部的设置规则">HTTP头部的设置规则</h3>
+
+<p>Content-Type: application/vnd.ms-excel   #excel 2003-2007的格式</p>
+
+<p>Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet  #excel 2007以后的格式</p>
 
 
   <div class="post-affix">
@@ -161,29 +226,29 @@
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/php/2014/11/28/codeigniter-rabbitmq-library.html" class="read-more-btn">Read More</a>
+    <a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html" title="golang 下载文件格式错误">golang 下载文件格式错误</a></h3>
+    <h3><a href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
-    
-    <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-16</span>
-    </div><!-- /.list-item -->
     
     <div class="list-item">
       <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
       <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
     </div><!-- /.list-item -->
     
+    <div class="list-item">
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-07</span>
+    </div><!-- /.list-item -->
+    
   </div><!-- /.read-more-list -->
   
 </div><!-- /.read-more -->
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="mysql 优化基础知识（-）" data-title="mysql 优化基础知识（-）" data-url="//mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"></div>
+<div class="ds-thread" data-thread-key="golang 下载文件格式错误" data-title="golang 下载文件格式错误" data-url="//golang/2018/03/16/godownfilecontenttype.html"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

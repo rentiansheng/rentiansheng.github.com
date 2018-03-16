@@ -90,6 +90,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/posts/">文档</a>
         
       
@@ -108,7 +112,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -137,12 +141,12 @@
   <span class="extra-right"><i class="fa fa-tags"></i> php extension, c, and 开源
 </span>
   </div>
-  <h3 id="php-extensions--">php extensions(-) 代码目录结构</h3>
+  <h3 id="php-extensions--代码目录结构">php extensions(-) 代码目录结构</h3>
 
-<h4 id="section">引言</h4>
+<h4 id="引言">引言</h4>
 <p>每一个php extension的目录中最少要包含config.m4、config.w32、php_extension.h、extension.c。php_extension.h和extension.c文件是以后编写php extension主要用到文件，这里就不介绍了。下面我们开一个叫reage的php extension。</p>
 
-<h4 id="configm4configw32">1. 扩展的配置文件config.m4和config.w32</h4>
+<h4 id="1-扩展的配置文件configm4和configw32">1. 扩展的配置文件config.m4和config.w32</h4>
 
 <p>config.m4用户Unix、Linux等系统。config.m4文件告诉 UNIX 构建系统哪些扩展 configure 选项是支持的，你需要哪些扩展库，以及哪些源文件要编译成它的一部分。</p>
 
@@ -216,12 +220,11 @@ ZEND_GET_MODULE(reage)
 <p>####4. 编译php extension
    在php extension的目录下，执行一下命名:</p>
 
-<p><code>
-   1. phpize
+<pre><code>   1. phpize
    2. ./configure
    3. make
    4. make test
-  </code></p>
+</code></pre>
 
 <p>####5. test 
     将modules/reage.so 拷贝到你php的extension路径中。不知道路径的话，看下phpinfo()中extension_dir的值就可以了。然后修改php.ini添加extension=reage.so。如果没有问题，在phpinfo()中会现实reage及其版本。</p>
@@ -234,7 +237,7 @@ ZEND_GET_MODULE(reage)
 <a href="https://github.com/rentiansheng/php-extension-learn/tree/master/learn1">https://github.com/rentiansheng/php-extension-learn/tree/master/learn1</a></p>
 
   <div class="post-affix">
-    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
   </div>
 </div>
 
@@ -244,19 +247,19 @@ ZEND_GET_MODULE(reage)
     <a href="/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h3>
+    <h3><a href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html" title="golang 下载文件格式错误">golang 下载文件格式错误</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-16</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-07</span>
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

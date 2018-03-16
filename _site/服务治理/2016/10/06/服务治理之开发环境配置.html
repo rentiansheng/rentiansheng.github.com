@@ -90,6 +90,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/posts/">文档</a>
         
       
@@ -108,7 +112,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -137,7 +141,7 @@
   <span class="extra-right"><i class="fa fa-tags"></i> 服务治理
 </span>
   </div>
-  <h3 id="section">出现的问题</h3>
+  <h3 id="出现的问题">出现的问题</h3>
 
 <ol>
   <li>新搭建的开发环境如何快速使用</li>
@@ -145,7 +149,7 @@
   <li>如何解决开发中使用host的问题</li>
 </ol>
 
-<h3 id="section-1">为什么测试环境和生产环境没有问题</h3>
+<h3 id="为什么测试环境和生产环境没有问题">为什么测试环境和生产环境没有问题</h3>
 
 <p>测试和生产环境在服务和接口的环境调用比较简单，都是一一对应的。
 在使用的过程中，服务治理这不需要关注调用者身份，只需根据服务中配置的
@@ -156,19 +160,19 @@
 我不需要关心，只要能返回结果。 直接调用者需求是最复杂的，直接调用者有非常
 明确的服务提供者，有可能是整个服务下的接口，也有可能是服务下摸个接口。</p>
 
-<h3 id="section-2">没有服务治理之前怎么解决</h3>
+<h3 id="没有服务治理之前怎么解决">没有服务治理之前怎么解决</h3>
 
-<h6 id="section-3">使用服务治理前</h6>
+<h6 id="使用服务治理前">使用服务治理前</h6>
 
 <p>调用者和服务方是直接通信的，所有环境的配置都是在代码配置文件中，调用者可以
 直接指定服务方地址。可以同修改配置文件和/etc/hosts文件来决定服务方</p>
 
-<h6 id="section-4">使用服务治后</h6>
+<h6 id="使用服务治后">使用服务治后</h6>
 
 <p>调用者和服务方是间接通信的， 服务治理做为中间方。调用者和服务方直接通信都是
 服务治理的提供者。修改本地配置失效。</p>
 
-<h3 id="section-5">解决方法</h3>
+<h3 id="解决方法">解决方法</h3>
 
 <p>服务治理只在服务信息和接口信息中新加路由表</p>
 
@@ -196,19 +200,19 @@
 
 <p>在服务信息中新加域名信息domain: http://api.ireage.com</p>
 
-<h6 id="section-6">1. 新搭建的开发环境如何快速使用</h6>
+<h6 id="1-新搭建的开发环境如何快速使用">1. 新搭建的开发环境如何快速使用</h6>
 <p>每一个服务需要一个默认可以使用的地址</p>
 
-<h6 id="section-7">2. 如何解决开发中路由问题（同一个服务或者接口不同调用者调用不同服务方）</h6>
+<h6 id="2-如何解决开发中路由问题同一个服务或者接口不同调用者调用不同服务方">2. 如何解决开发中路由问题（同一个服务或者接口不同调用者调用不同服务方）</h6>
 <p>服务和接口分别有host的配置，通过调者IP地址来决定服务方的地址</p>
 
-<h6 id="host">3. 如何解决开发中使用host的问题</h6>
+<h6 id="3-如何解决开发中使用host的问题">3. 如何解决开发中使用host的问题</h6>
 
 <p>为服务配置一个域名，在http的头部添加host即可。</p>
 
 
   <div class="post-affix">
-    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
   </div>
 </div>
 
@@ -218,19 +222,19 @@
     <a href="/react/2016/09/27/reacterr.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h3>
+    <h3><a href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html" title="golang 下载文件格式错误">golang 下载文件格式错误</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-16</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-07</span>
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

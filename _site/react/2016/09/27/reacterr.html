@@ -90,6 +90,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/posts/">文档</a>
         
       
@@ -108,7 +112,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -137,7 +141,7 @@
   <span class="extra-right"><i class="fa fa-tags"></i> fe
 </span>
   </div>
-  <h3 id="commpont">同一个commpont多次使用出现的错误</h3>
+  <h3 id="同一个commpont多次使用出现的错误">同一个commpont多次使用出现的错误</h3>
 
 <pre><code>错误提示如下：
  Only a ReactOwner can have refs. You might be adding a ref to a component that was not created inside a component's `render` method, or you have multiple copies of React loaded
@@ -147,13 +151,13 @@
  npm install react react-dom --save
 </code></pre>
 
-<h3 id="setstate">setState有延时</h3>
+<h3 id="setstate有延时">setState有延时</h3>
 
 <pre><code>this.setState(params:{page:2});
 随后使用fetch将this.state.params作为参数获取数据的时候，竟然是之前的数据
 </code></pre>
 
-<h3 id="url">同一组件，在URL参数改变时，未重新加载数据</h3>
+<h3 id="同一组件在url参数改变时未重新加载数据">同一组件，在URL参数改变时，未重新加载数据</h3>
 
 <pre><code>使用组件componentWillReceiveProps事件即可。
 componentWillMount和componentDidMount只有在组件切换时执行，同一组件在不同参数下不会触发。
@@ -162,7 +166,7 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
 
 
   <div class="post-affix">
-    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
   </div>
 </div>
 
@@ -172,19 +176,19 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
     <a href="/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h3>
+    <h3><a href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html" title="golang 下载文件格式错误">golang 下载文件格式错误</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-16</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html" title="服务治理之服务管理">服务治理之服务管理</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2016-11-07</span>
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html" title="服务治理之zookeeper使用中遇到的问题及设计">服务治理之zookeeper使用中遇到的问题及设计</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-08</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
