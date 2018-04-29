@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-04-29T21:20:45+08:00</updated>
+ <updated>2018-04-29T21:24:41+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -46,7 +46,7 @@
 
 &lt;h2 id=&quot;3-use-excel-data-validation&quot;&gt;3. Use EXCEL data validation&lt;/h2&gt;
 &lt;hr /&gt;
-&lt;p&gt;In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be achieved by yourself.&lt;/p&gt;
+&lt;p&gt;In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be implemented on xlsx itself.&lt;/p&gt;
 
 &lt;p&gt;Implement the function code in:
 The &lt;a href=&quot;https://github.com/rentiansheng/xlsx&quot;&gt;support data validation&lt;/a&gt; code has been submitted to the PR but has not been merged.
@@ -100,7 +100,7 @@ Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verifica
 
 &lt;h2 id=&quot;3-使用excel-数据验证&quot;&gt;3. 使用EXCEL 数据验证&lt;/h2&gt;
 &lt;hr /&gt;
-&lt;p&gt;xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能自己实现。&lt;/p&gt;
+&lt;p&gt;xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能基于xlsx自己实现。&lt;/p&gt;
 
 &lt;p&gt;实现功能代码在：
 &lt;a href=&quot;https://github.com/rentiansheng/xlsx&quot;&gt;支持数据验证&lt;/a&gt; 代码已经提交PR,但是未合并。

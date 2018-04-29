@@ -34,7 +34,7 @@ In most cases, xlsx is selected, and xlsx is more in star and fork than excelle.
 
 ## 3. Use EXCEL data validation
 ---
-In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be achieved by yourself.
+In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be implemented on xlsx itself.
 
 Implement the function code in:
 The [support data validation](https://github.com/rentiansheng/xlsx) code has been submitted to the PR but has not been merged.
