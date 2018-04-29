@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="Golang EXCEL 列，单元格数据验证(下拉列表，数字文本长度校验)">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      Golang EXCEL 列，单元格数据验证(下拉列表，数字文本长度校验) &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+    <a class="sidebar-nav-item" href="http://www.rhttp.cn" target="_blank">之前blog</a>
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">Golang EXCEL 列，单元格数据验证(下拉列表，数字文本长度校验)</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2018-04-29</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang, excel, and 数据验证
+</span>
+  </div>
+  <h2 id="1-前提">1. 前提</h2>
+<hr />
+
+<p>最近Golang开发的项目中用到excel 导入，导出。数据导出没什么问题， 直接写excel 就行了。但是导入模版遇到一些问题。</p>
+
+<p>问题如下：</p>
+
+<pre><code>1. db中数据定义为字符串，字段如果用户填写都是数字，获取数据的时候，该字段就是数字，需要后端转换
+2. 枚举类型字段，填写难度过大。用户需要知道对应的值
+3. 字段范围值，填写比较困难，（如用户，类型等）
+3. 无法限定字段填写内容的长度
+4. 无法限定数字填写范围
+</code></pre>
+
+<p>为什么不直接放一个excel文件， 项目中数据导入，导出字段是不固定，需要根据个人的配置实字段来导入，导出</p>
+
+<h2 id="2-golang-excel-类库选择">2. Golang EXCEL 类库选择</h2>
+<hr />
+
+<p>经过上网查找发现两个现在使用比较多golang 操作 excel 类库</p>
+<ol>
+  <li>https://github.com/360EntSecGroup-Skylar/excelize</li>
+  <li>https://github.com/tealeg/xlsx</li>
+</ol>
+
+<p>最总，选择了xlsx, xlsx在star 和fork 比 excelle多。但是excelize最近活跃度上更活跃，文档更详细（有中文）</p>
+
+<h2 id="3-使用excel-数据验证">3. 使用EXCEL 数据验证</h2>
+<hr />
+<p>xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能自己实现。</p>
+
+<p>实现功能代码在：
+https://github.com/rentiansheng/xlsx 代码已经提交PR,但是未合并。
+现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。</p>
+
+<p>关于数据校验的代码的测试例子在 https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go
+可以go test 查看生产excel内容。</p>
+
+<h2 id="4-开发excel-需要准备的">4. 开发EXCEL 需要准备的</h2>
+<hr />
+
+<p>excel 是openxml 来描述的一个zip压缩文件。
+office中的文件都是类似的。 微软已经将文档公开。</p>
+
+<p>工具：
+open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供校验，文档，生成代码功能（不是golang）</p>
+
+
+  <div class="post-affix">
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/golang/2018/03/16/godownfilecontenttype.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://localhost:4000/golang/2018/04/29/golangexceldatavalidation_en.html" title="Golang EXCEL column, cell data validation (drop-down list, numeric text length check)">Golang EXCEL column, cell data validation (drop-down list, numeric text length check)</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/golang/2018/03/16/godownfilecontenttype.html" title="golang 下载文件格式错误">golang 下载文件格式错误</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-03-16</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html" title="服务治理">服务治理</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2016-11-16</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="Golang EXCEL 列，单元格数据验证(下拉列表，数字文本长度校验)" data-title="Golang EXCEL 列，单元格数据验证(下拉列表，数字文本长度校验)" data-url="//golang/2018/04/29/golangexceldatavalidation.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"ireage"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- 多说公共JS代码 end -->
+<!-- 百度统计代码 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
