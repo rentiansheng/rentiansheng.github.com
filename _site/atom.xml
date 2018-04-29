@@ -4,13 +4,121 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-03-16T23:18:45+08:00</updated>
+ <updated>2018-04-29T20:55:56+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Golang EXCEL column, cell data validation (drop-down list, numeric text length check)</title>
+   <link href="http://localhost:4000/golang/2018/04/29/golangexceldatavalidation_en.html"/>
+   <updated>2018-04-29T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2018/04/29/golangexceldatavalidation_en</id>
+   <content type="html">&lt;h2 id=&quot;1-remise&quot;&gt;1. remise&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Recently used in Golang development projects used excel import, export. Data export is no problem, just write excel on the line. However, importing templates has encountered some problems.&lt;/p&gt;
+
+&lt;p&gt;Questions are as follows:
+   
+    1. The data in db is defined as a string. If the field is filled with numbers, the field is a number when the data is acquired. The backend conversion is required.
+    2. Enumerate the type fields, fill in too difficult. Users need to know the corresponding value
+    3. The field range value, fill in more difficult, (such as user, type, etc.)
+    3  can not limit the length of the field to fill in the content
+    4. Cannot limit the range of numbers&lt;/p&gt;
+
+&lt;p&gt;Why not directly put an excel file, the data in the project is imported, the export field is not fixed, you need to import according to the personal configuration real field, export&lt;/p&gt;
+
+&lt;h2 id=&quot;2-golang-excel-class-library-selection&quot;&gt;2. Golang EXCEL Class Library Selection&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;After the Internet search found two more use now more golang operation excel class library&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;https://github.com/360EntSecGroup-Skylar/excelize&lt;/li&gt;
+  &lt;li&gt;https://github.com/tealeg/xlsx&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In most cases, xlsx is selected, and xlsx is more in star and fork than excelle. However, excelize is more active in recent activity and the document is more detailed (in Chinese)&lt;/p&gt;
+
+&lt;h2 id=&quot;3-use-excel-data-validation&quot;&gt;3. Use EXCEL data validation&lt;/h2&gt;
+&lt;hr /&gt;
+&lt;p&gt;In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be achieved by yourself.&lt;/p&gt;
+
+&lt;p&gt;Implement the function code in:
+The https://github.com/rentiansheng/xlsx code has been submitted to the PR but has not been merged.
+Now it’s simple and crude to implement the list of excel data validation, rang validation (time, date need to be converted to numbers, now unimplemented) has confirmed that available data validation has list (display dorp box), rang (number, decimal, text length ), User input will be prompted for incorrect content.&lt;/p&gt;
+
+&lt;p&gt;An example of a test code for data validation is at https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go
+You can go test to view the production excel content.&lt;/p&gt;
+
+&lt;h2 id=&quot;4-need-to-prepare-for-the-development-of-excel&quot;&gt;4. Need to prepare for the development of EXCEL&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Excel is a zip file described by openxml.
+The files in the office are all similar. Microsoft has published the document.&lt;/p&gt;
+
+&lt;p&gt;tool:
+Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verification, documentation, generate code function (not golang)&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Golang EXCEL 列，单元格数据验证(下拉列表，数字文本长度校验)</title>
+   <link href="http://localhost:4000/golang/2018/04/29/golangexceldatavalidation.html"/>
+   <updated>2018-04-29T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2018/04/29/golangexceldatavalidation</id>
+   <content type="html">&lt;h2 id=&quot;1-前提&quot;&gt;1. 前提&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;最近Golang开发的项目中用到excel 导入，导出。数据导出没什么问题， 直接写excel 就行了。但是导入模版遇到一些问题。&lt;/p&gt;
+
+&lt;p&gt;问题如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. db中数据定义为字符串，字段如果用户填写都是数字，获取数据的时候，该字段就是数字，需要后端转换
+2. 枚举类型字段，填写难度过大。用户需要知道对应的值
+3. 字段范围值，填写比较困难，（如用户，类型等）
+3. 无法限定字段填写内容的长度
+4. 无法限定数字填写范围
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;为什么不直接放一个excel文件， 项目中数据导入，导出字段是不固定，需要根据个人的配置实字段来导入，导出&lt;/p&gt;
+
+&lt;h2 id=&quot;2-golang-excel-类库选择&quot;&gt;2. Golang EXCEL 类库选择&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;经过上网查找发现两个现在使用比较多golang 操作 excel 类库&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;https://github.com/360EntSecGroup-Skylar/excelize&lt;/li&gt;
+  &lt;li&gt;https://github.com/tealeg/xlsx&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;最总，选择了xlsx, xlsx在star 和fork 比 excelle多。但是excelize最近活跃度上更活跃，文档更详细（有中文）&lt;/p&gt;
+
+&lt;h2 id=&quot;3-使用excel-数据验证&quot;&gt;3. 使用EXCEL 数据验证&lt;/h2&gt;
+&lt;hr /&gt;
+&lt;p&gt;xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能自己实现。&lt;/p&gt;
+
+&lt;p&gt;实现功能代码在：
+https://github.com/rentiansheng/xlsx 代码已经提交PR,但是未合并。
+现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。&lt;/p&gt;
+
+&lt;p&gt;关于数据校验的代码的测试例子在 https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go
+可以go test 查看生产excel内容。&lt;/p&gt;
+
+&lt;h2 id=&quot;4-开发excel-需要准备的&quot;&gt;4. 开发EXCEL 需要准备的&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;excel 是openxml 来描述的一个zip压缩文件。
+office中的文件都是类似的。 微软已经将文档公开。&lt;/p&gt;
+
+&lt;p&gt;工具：
+open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供校验，文档，生成代码功能（不是golang）&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>golang 下载文件格式错误</title>
