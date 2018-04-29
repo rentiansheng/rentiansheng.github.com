@@ -13,7 +13,7 @@ tags: [golang, excel, data validation]
 Recently used in Golang development projects used excel import, export. Data export is no problem, just write excel on the line. However, importing templates has encountered some problems.
 
 Questions are as follows:
-   
+
     1. The data in db is defined as a string. If the field is filled with numbers, the field is a number when the data is acquired. The backend conversion is required.
     2. Enumerate the type fields, fill in too difficult. Users need to know the corresponding value
     3. The field range value, fill in more difficult, (such as user, type, etc.)
