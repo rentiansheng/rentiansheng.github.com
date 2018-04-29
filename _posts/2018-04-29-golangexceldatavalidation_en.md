@@ -26,8 +26,8 @@ Why not directly put an excel file, the data in the project is imported, the exp
 ---
 
 After the Internet search found two more use now more golang operation excel class library
-1. https://github.com/360EntSecGroup-Skylar/excelize
-2. https://github.com/tealeg/xlsx
+1. [excelize](https://github.com/360EntSecGroup-Skylar/excelize)
+2. [xlsx](https://github.com/tealeg/xlsx)
 
 In most cases, xlsx is selected, and xlsx is more in star and fork than excelle. However, excelize is more active in recent activity and the document is more detailed (in Chinese)
 
@@ -37,10 +37,10 @@ In most cases, xlsx is selected, and xlsx is more in star and fork than excelle.
 In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be achieved by yourself.
 
 Implement the function code in:
-The https://github.com/rentiansheng/xlsx code has been submitted to the PR but has not been merged.
+The [support data validation](https://github.com/rentiansheng/xlsx) code has been submitted to the PR but has not been merged.
 Now it's simple and crude to implement the list of excel data validation, rang validation (time, date need to be converted to numbers, now unimplemented) has confirmed that available data validation has list (display dorp box), rang (number, decimal, text length ), User input will be prompted for incorrect content.
 
-An example of a test code for data validation is at https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go
+An example of a test code for data validation is at [data validation test code](https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go)
 You can go test to view the production excel content.
 
 ## 4. Need to prepare for the development of EXCEL

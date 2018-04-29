@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-04-29T20:58:19+08:00</updated>
+ <updated>2018-04-29T21:04:13+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -37,8 +37,8 @@
 
 &lt;p&gt;After the Internet search found two more use now more golang operation excel class library&lt;/p&gt;
 &lt;ol&gt;
-  &lt;li&gt;https://github.com/360EntSecGroup-Skylar/excelize&lt;/li&gt;
-  &lt;li&gt;https://github.com/tealeg/xlsx&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/360EntSecGroup-Skylar/excelize&quot;&gt;excelize&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/tealeg/xlsx&quot;&gt;xlsx&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;In most cases, xlsx is selected, and xlsx is more in star and fork than excelle. However, excelize is more active in recent activity and the document is more detailed (in Chinese)&lt;/p&gt;
@@ -48,10 +48,10 @@
 &lt;p&gt;In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be achieved by yourself.&lt;/p&gt;
 
 &lt;p&gt;Implement the function code in:
-The https://github.com/rentiansheng/xlsx code has been submitted to the PR but has not been merged.
+The &lt;a href=&quot;https://github.com/rentiansheng/xlsx&quot;&gt;support data validation&lt;/a&gt; code has been submitted to the PR but has not been merged.
 Now it’s simple and crude to implement the list of excel data validation, rang validation (time, date need to be converted to numbers, now unimplemented) has confirmed that available data validation has list (display dorp box), rang (number, decimal, text length ), User input will be prompted for incorrect content.&lt;/p&gt;
 
-&lt;p&gt;An example of a test code for data validation is at https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go
+&lt;p&gt;An example of a test code for data validation is at &lt;a href=&quot;https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go&quot;&gt;data validation test code&lt;/a&gt;
 You can go test to view the production excel content.&lt;/p&gt;
 
 &lt;h2 id=&quot;4-need-to-prepare-for-the-development-of-excel&quot;&gt;4. Need to prepare for the development of EXCEL&lt;/h2&gt;
@@ -91,8 +91,8 @@ Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verifica
 
 &lt;p&gt;经过上网查找发现两个现在使用比较多golang 操作 excel 类库&lt;/p&gt;
 &lt;ol&gt;
-  &lt;li&gt;https://github.com/360EntSecGroup-Skylar/excelize&lt;/li&gt;
-  &lt;li&gt;https://github.com/tealeg/xlsx&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/360EntSecGroup-Skylar/excelize&quot;&gt;excelize&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/tealeg/xlsx&quot;&gt;xlsx&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;最总，选择了xlsx, xlsx在star 和fork 比 excelle多。但是excelize最近活跃度上更活跃，文档更详细（有中文）&lt;/p&gt;
@@ -102,10 +102,10 @@ Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verifica
 &lt;p&gt;xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能自己实现。&lt;/p&gt;
 
 &lt;p&gt;实现功能代码在：
-https://github.com/rentiansheng/xlsx 代码已经提交PR,但是未合并。
+&lt;a href=&quot;https://github.com/rentiansheng/xlsx&quot;&gt;支持数据验证&lt;/a&gt; 代码已经提交PR,但是未合并。
 现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。&lt;/p&gt;
 
-&lt;p&gt;关于数据校验的代码的测试例子在 https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go
+&lt;p&gt;关于数据校验的代码的测试例子在&lt;a href=&quot;https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go&quot;&gt;数据验证test代码&lt;/a&gt;
 可以go test 查看生产excel内容。&lt;/p&gt;
 
 &lt;h2 id=&quot;4-开发excel-需要准备的&quot;&gt;4. 开发EXCEL 需要准备的&lt;/h2&gt;
