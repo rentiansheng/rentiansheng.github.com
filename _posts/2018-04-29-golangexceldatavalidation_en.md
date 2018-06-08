@@ -1,10 +1,21 @@
 ---
 layout: post
-title: Golang EXCEL column, cell data validation (drop-down list, numeric text length check)
+title: The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)
 category: [golang]
 tags: [golang, excel, data validation]
 ---
 
+
+### completed function
+
+   1. Cell, column support drop-down list selection
+   2. Cell, column support range check
+   3. Open Excel support cell, column data check read
+  
+### Items to pay attention to
+  
+   1. Excel data validation supports setting the length of the check character to 255,
+   2. Excel is not supported as a check condition by selecting cells in the workbook
 
 
 ## 1. remise
