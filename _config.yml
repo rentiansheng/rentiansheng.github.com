@@ -32,4 +32,6 @@ version:             1.5.0
 
 post_affix:         'articles from reage blog'
 
-
+# disqus settings
+disqus:
+  shortname: reage
