@@ -4,13 +4,242 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-06-09T13:50:07+08:00</updated>
+ <updated>2018-07-15T21:02:24+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>excel文件实现包含xml的详情</title>
+   <link href="http://localhost:4000/excel/2018/07/15/excel_xml.html"/>
+   <updated>2018-07-15T00:00:00+08:00</updated>
+   <id>http://localhost:4000/excel/2018/07/15/excel_xml</id>
+   <content type="html">&lt;h3 id=&quot;excel-文件描述&quot;&gt;excel 文件描述&lt;/h3&gt;
+
+&lt;p&gt;excel 是一个包含多个xml文件目录的zip压缩文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/表示为excel文件解压后的根目录
+/docProps 文档相关的属性
+/xl excel  数据相关厨房目录
+/xl/charts excel 图表相关都存在这里
+/xl/drawings excel 图表定义 
+/xl/worksheets excel工作簿下sheet存放目录
+/xl/media 用来excel中导入的图片，声音，视频等地方资源
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;excel-文件组成部分&quot;&gt;excel 文件组成部分&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;/_rels/.rels  包关系项
+
+/[Content_Types].xml  内容类型项
+
+/docProps/app.xml  应用程序定义的文件属性部分，sheet与sheet名字关系，
+
+/docProps/core.xml   核心文件属性部分
+
+/xl/workbook.xml   工作簿部分相关定义
+
+/xl/_rels/workbook.xml.rels 部分关系项
+
+
+/xl/sharedStrings.xml   共享字符串表部分，用户输入内容
+
+/xl/styles.xml   样式部分，关于font，boder,fill 相关定义
+
+
+/xl/worksheets/sheetX.xml   excel中sheet中单元格与样式的关系，内容，数据校验等相关
+
+/xl/theme/themeX.xml   sheetX的主题部分，themeX中的**X**表示的是工作X（数字）的主题，eg:1,2,3 
+
+/xl/media/nameX.xml excel引入外部资源的定义
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&quot;必须的xml文件&quot;&gt;必须的xml文件&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;/_rels/.rels
+
+/docProps/app.xml
+
+/docProps/core.xml
+
+/xl/sharedStrings.xml
+
+/xl/styles.xml
+
+/xl/thene/themeX.xml
+
+/xl/workbook.xml
+
+/xl/worksheets/sheetX.xml
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;stylexml&quot;&gt;style.xml&lt;/h4&gt;
+
+&lt;p&gt;style有font,fill, border,cellXfs等四部分组成。&lt;/p&gt;
+
+&lt;p&gt;font 表示字体相关的描述&lt;/p&gt;
+
+&lt;p&gt;fill 表示填充颜色及样式&lt;/p&gt;
+
+&lt;p&gt;border 表示边框颜色及样式&lt;/p&gt;
+
+&lt;p&gt;cellXfs有font,fill,border组成，来描述一个具体对象的样式&lt;/p&gt;
+
+&lt;p&gt;每一个xml节点的count属性表示共有多少个子对象&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-xml&quot;&gt;&amp;lt;styleSheet&amp;gt; 
+   &amp;lt;font&amp;gt;&amp;lt;/font&amp;gt;
+   &amp;lt;fills count=&quot;&quot;&amp;gt;
+       &amp;lt;fill&amp;gt;&amp;lt;/fill&amp;gt;
+   &amp;lt;/fills&amp;gt;
+   &amp;lt;borders count=&quot;&quot;&amp;gt;
+       &amp;lt;border&amp;gt;&amp;lt;/border&amp;gt;
+   &amp;lt;/borders&amp;gt;
+   &amp;lt;cellXfs count=&quot;&quot;&amp;gt;
+	   &amp;lt;xf&amp;gt;&amp;lt;/xf&amp;gt;
+   &amp;lt;/cellXfs&amp;gt;
+&amp;lt;/styleSheet&amp;gt;
+ 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&quot;font-组成&quot;&gt;font 组成&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;font&amp;gt;
+   &amp;lt;b/&amp;gt;加粗
+   &amp;lt;i/&amp;gt; 倾斜
+   &amp;lt;u val=&quot;double|single&quot;/&amp;gt; 下划线，单|双
+   &amp;lt;sz val=&quot;x&quot;/&amp;gt; 字体大小， val=size
+   &amp;lt;name val=&quot;&quot;/&amp;gt; 字体名
+   &amp;lt;family val=&quot;&quot;&amp;gt; 此元素指定当前字体的字体系列。 此信息可以按字体定义使用
+当此字体不可用时，替换逻辑以找到适当的替代字体。 这个信息是
+通过在存在时查询字体来确定，并且在字体不可用时不应修改。
+&amp;lt;/font&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&quot;fill-组成&quot;&gt;fill 组成&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;	&amp;lt;fill&amp;gt;
+		&amp;lt;patternFill patternType=&quot;solid&quot;&amp;gt;  patternType表示填充的类型
+			&amp;lt;fgColor rgb=&quot;AARRGGBB&quot; /&amp;gt;   前景色，AARRGGBB, AA表示是透明度，RR红色，GG绿色，BB蓝色，每一位都一个16进制数字
+			&amp;lt;bgColor rgb=&quot;AARRGGBB&quot; /&amp;gt;  背景色， AARRGGBB
+		&amp;lt;/patternFill&amp;gt;
+	&amp;lt;/fill&amp;gt;
+	
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;border diagonalUp=&quot;1&quot; diagonalDown=&quot;1&quot;&gt;
+   &lt;left /&gt;
+   &lt;right style=&quot;thin&quot;&gt;
+    &lt;color rgb=&quot;FFFF0000&quot; /&gt;
+   &lt;/right&gt;
+   &lt;top /&gt;
+   &lt;bottom /&gt;
+   &lt;diagonal style=&quot;thin&quot;&gt;
+    &lt;color rgb=&quot;FFFF0000&quot; /&gt;
+   &lt;/diagonal&gt;
+  &lt;/border&gt;
+
+&lt;h6 id=&quot;border-组成&quot;&gt;border 组成&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;  &amp;lt;border&amp;gt;    
+     &amp;lt;left /&amp;gt; 左边框
+     &amp;lt;right /&amp;gt; 右边框
+     &amp;lt;top /&amp;gt;  上边框
+     &amp;lt;bottom /&amp;gt;  下边框
+     &amp;lt;diagonal /&amp;gt; 对角线
+  &amp;lt;/border&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;border 节点可以有属性diagonalUp，diagonalDown 这两个属性是border中孩子节点diagonal描述，表示对角线话的放心，
+left,right,top,bottom四个节点可以有color子节点及style属性，color子节点有一个rgb属性用来描述颜色值， style表示边框的样式&lt;/p&gt;
+
+&lt;h6 id=&quot;xf组成&quot;&gt;xf组成&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;  &amp;lt;xf numFmtId=&quot;&quot; fontId=&quot;&quot; fillId=&quot;&quot; borderId=&quot;&quot; xfId=&quot;&quot;&amp;gt;
+   &amp;lt;alignment vertical=&quot;&quot;  horizontal=&quot;&quot; textRotation=&quot;&quot; wrapText=&quot;&quot; /&amp;gt; 
+  &amp;lt;/xf&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;numFmtId 单元格格式&lt;/p&gt;
+
+&lt;p&gt;fontId fonts节点的子节点index&lt;/p&gt;
+
+&lt;p&gt;fillId fills节点的子节点index&lt;/p&gt;
+
+&lt;p&gt;borderId borders节点的子节点indx&lt;/p&gt;
+
+&lt;p&gt;vertical cell内容的对齐方式&lt;/p&gt;
+
+&lt;p&gt;horizontal cell内容的对齐方式&lt;/p&gt;
+
+&lt;p&gt;textRotation cell内容文字的旋转方式&lt;/p&gt;
+
+&lt;p&gt;wrapText 文字环绕方式&lt;/p&gt;
+
+&lt;p&gt;部分字段可选值&lt;/p&gt;
+
+&lt;p&gt;vertical,horizontal 的部分值&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;left
+center
+right
+fill
+justify
+centerContinuous
+distributed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;numFmtId 的部分值
+0  通用格式
+1  整数
+18 时间， 格式是h:mm AM/PM
+19 时间， 格式是h:mm:ss AM/PM
+20 时间， 格式是h:mm
+21 时间， 格式是h:mm:ss
+22 日期，格式是m/d/yy h:mm
+49 文字&lt;/p&gt;
+
+&lt;h4 id=&quot;sheetxxml&quot;&gt;sheetX.xml&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;worksheet&amp;gt;
+   &amp;lt;dimension ref=&quot;&quot; /&amp;gt;
+   &amp;lt;sheetViews&amp;gt;
+  &amp;lt;sheetView windowProtection=&quot;&quot; showFormulas=&quot;&quot; showGridLines=&quot;&quot; showRowColHeaders=&quot;&quot; showZeros=&quot;&quot; rightToLeft=&quot;false&quot; tabSelected=&quot;&quot; showOutlineSymbols=&quot;true&quot; defaultGridColor=&quot;true&quot; view=&quot;normal&quot; topLeftCell=&quot;A1&quot; colorId=&quot;64&quot; zoomScale=&quot;&quot; zoomScaleNormal=&quot;&quot; zoomScalePageLayoutView=&quot;&quot; workbookViewId=&quot;&quot;&amp;gt;
+       &amp;lt;/sheetView&amp;gt;
+   &amp;lt;/sheetViews&amp;gt;
+   &amp;lt;sheetFormatPr /&amp;gt;
+   &amp;lt;col collapsed=&quot;&quot; hidden=&quot;&quot; min=&quot;&quot; max=&quot;&quot; width=&quot;&quot; style=&quot;&quot; customWidth=&quot;&quot; /&amp;gt;
+   &amp;lt;sheetData&amp;gt;
+      &amp;lt;row r=&quot;&quot; spans=&quot;&quot;&amp;gt;
+         &amp;lt;c r=&quot;&quot; t=&quot;&quot;&amp;gt;
+             &amp;lt;v&amp;gt;&amp;lt;/v&amp;gt;
+         &amp;lt;/c&amp;gt;
+      &amp;lt;/row&amp;gt;
+   &amp;lt;/sheetData&amp;gt; 
+   &amp;lt;dataValidations count=&quot;2&quot;&amp;gt;
+     &amp;lt;dataValidation type=&quot;&quot; allowBlank=&quot;&quot; showInputMessage=&quot;&quot; showErrorMessage=&quot;&quot; sqref=&quot;&quot;&amp;gt;
+       &amp;lt;formula1&amp;gt;
+        &quot;&quot;
+       &amp;lt;/formula1&amp;gt;
+ 	   &amp;lt;formula2&amp;gt;
+        &quot;&quot;
+       &amp;lt;/formula2&amp;gt;
+     &amp;lt;/dataValidation&amp;gt;
+    &amp;lt;/dataValidations&amp;gt;
+
+   &amp;lt;pageMargins left=&quot;&quot; top=&quot;&quot; bottom=&quot;&quot; header=&quot;&quot; footer=&quot;&quot; /&amp;gt;
+   &amp;lt;pageSetup paperSize=&quot;&quot; orientation=&quot;&quot; verticalDpi=&quot;&quot;  /&amp;gt;
+   &amp;lt;drawing /&amp;gt;
+   &amp;lt;extLst&amp;gt;
+     &amp;lt;ext&amp;gt;
+     &amp;lt;/ext&amp;gt;
+   &amp;lt;/extLst&amp;gt;
+
+&amp;lt;/worksheet&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
  
  <entry>
    <title>The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)</title>
