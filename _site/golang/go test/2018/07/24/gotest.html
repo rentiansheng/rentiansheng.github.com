@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="c pointer">
+  <meta name="keywords" content="优雅的写go test">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      c pointer &middot; Reage blog
+      优雅的写go test &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -139,35 +139,23 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">c pointer</h1>
+  <h1 class="post-title">优雅的写go test</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2016-08-21</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> c语言 and pointer
+    <span><i class="fa fa-clock-o"></i> 2018-07-24</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang and go test
 </span>
   </div>
-  <h3 id="指针相关">指针相关</h3>
-<hr />
+  <h3 id="go-test-介绍">go test 介绍</h3>
 
-<h4 id="1-glibc-detected--19-munmap_chunk-invalid-pointer-0x00007ffff5cc97b0-">1.<em>** glibc detected **</em> ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***</h4>
+<p>go语言的单元测试采用内置的测试框架,通过引入testing包以及go test来提供测试功能。
+go语言的单元测试是一个个单独的文件。 每一个单元测试文件是与源代码同名加上_test.go的文件，
+没有单元测试的文件必须以_test.go结尾</p>
 
-<pre><code> a) free释放内存出现，注意free只能释放malloc分配的内存，在function中看到是指针，这个指针有可能是定义的数组，无法释放
-</code></pre>
+<p>eg:代码文件是 aa.go, 单元测试的文件就应该是aa_test.go</p>
 
-<h4 id="2-二维数组和指针的指针区别-type-与-type-">2. 二维数组和指针的指针区别( type [][]与 type **)</h4>
-
-<pre><code>  虽然两种方式在使用的时候访问方式是通用的，差异主要在内存组织
-
-  二维数组是一个连续的区域，如char a[2][3] 实际上是一个连续的sizeof(char)*2*3的内存区域。在变量定义时候已经确立整数组存储数据集合容纳数据大小，
-  并且没一行数据的个数必须一样，无法扩容;
-
-
-  指针指针是是通过先分配type * 来存储二维数组中一维，然后在分配type 来维持二维数组二维。存储数据集合和动态调整，没一行的个数可以不同。
-</code></pre>
-
-<p>eg:内存组织图，type标识数据类型</p>
-
-<p><img src="/img/arrayandpointerpointer.png" alt="内存组织图" /></p>
-
+<p>go test 执行会主动调用当前执行go test 命令目录及子目录中所有已_test.go结尾文件中的
+的以Test开头函数(谨记Test后的第一字母需要是大写)， 
+当go test 带有-benchmem参数时， 会调用已Benchmark开头函数(谨记Benchmark后的第一字母需要是大写)</p>
 
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
@@ -177,7 +165,7 @@
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/iterm2/2016/08/11/iterm2keys.html" class="read-more-btn">Read More</a>
+    <a href="/excel/2018/07/15/excel_xml.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
     <h3><a href="http://localhost:4000/distributed%20lock/2018/09/02/distributedlock.html" title="共享分布式锁">共享分布式锁</a></h3>
@@ -186,13 +174,13 @@
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/golang/go%20test/2018/07/24/gotest.html" title="优雅的写go test">优雅的写go test</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2018-07-24</span>
+      <h4><a href="/excel/2018/07/15/excel_xml.html" title="excel文件实现包含xml的详情">excel文件实现包含xml的详情</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-07-15</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/excel/2018/07/15/excel_xml.html" title="excel文件实现包含xml的详情">excel文件实现包含xml的详情</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2018-07-15</span>
+      <h4><a href="/golang/2018/04/29/golangexceldatavalidation_en.html" title="The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)">The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-04-29</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

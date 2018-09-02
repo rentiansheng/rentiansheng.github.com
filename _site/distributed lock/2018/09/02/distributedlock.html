@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="c pointer">
+  <meta name="keywords" content="共享分布式锁">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      c pointer &middot; Reage blog
+      共享分布式锁 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -139,34 +139,92 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">c pointer</h1>
+  <h1 class="post-title">共享分布式锁</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2016-08-21</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> c语言 and pointer
+    <span><i class="fa fa-clock-o"></i> 2018-09-02</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> distributed lock
 </span>
   </div>
-  <h3 id="指针相关">指针相关</h3>
-<hr />
+  <h4 id="前提">前提</h4>
 
-<h4 id="1-glibc-detected--19-munmap_chunk-invalid-pointer-0x00007ffff5cc97b0-">1.<em>** glibc detected **</em> ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***</h4>
+<p>分布式锁是在分布式系统中，我们为了保证分布式系统的效率和数据的正确性，在相同工作的多个节点中不被重复处理而采用的技术的。</p>
 
-<pre><code> a) free释放内存出现，注意free只能释放malloc分配的内存，在function中看到是指针，这个指针有可能是定义的数组，无法释放
+<h4 id="使用场景">使用场景</h4>
+
+<p>现在看网上的分布式锁都是现在资源限制。 锁的使用者限定到当前服务使用者。 在分层的web锁无法继承。
+在系统设计中我们经常会才分层设计， 会有负责处理逻辑的层，处理数据的存储层。为了保证服务的高可用每一个服务我们都会部署多个实例。 
+为了保证数据的完整性，我们需要在逻辑锁住资源， 在数据处理层修改数据。   这里面就涉及到两个问题</p>
+
+<ol>
+  <li>锁如何共享？</li>
+  <li>如何获取锁？</li>
+</ol>
+
+<h4 id="实现">实现</h4>
+
+<h6 id="分布式锁实现">分布式锁实现</h6>
+
+<p>为了保证分布式锁的正确性，我们可以选择以下方案。</p>
+
+<ol>
+  <li>redis SETNX 方案</li>
+  <li>redisLock 方案</li>
+  <li>zookeeper 顺序节点</li>
+</ol>
+
+<h5 id="锁的结构设计">锁的结构设计</h5>
+
+<p>注解：由于锁是在分布式事务中事务，其中定义变量与实务相关, 代码是golang</p>
+
+<pre><code>
+锁的结构
+
+type Lock struct {
+	//  当前锁的标记。 是开启事务得到的事务ID， 事务主ID，不可以为空
+	TxnID string `json:"txnID"`
+
+	// 锁资源的子事务ID， 可以为空， 为空将自动生成改项目
+	SubTxnID string `json:"subTxnID"`
+
+	// 被锁资源的标记或者名字
+	LockName string `json:"lockName"`
+
+	
+	// 锁的超时时间
+    Expire time.Duration `json:"expire"`
+
+    // 锁的创建时间
+	Createtime time.Time `json:"createTime"`
+}
+
+
+锁的返回值， 无法锁住资源时，返回nil （就是空NULL）
+type LockResult struct {
+	// 锁资源的子事务ID， 
+	SubTxnID string `json:"subTxnID"`
+
+	// 获取lock 传入的TxnID事务中是否有子事务拥有锁，
+	Locked bool `json:"locked"`
+
+	// 拥有锁的子事务ID， 及时第一lock资源的子事务ID
+	LockSubTxnID string `json:"lockSubTxnID"`
+}
+
 </code></pre>
 
-<h4 id="2-二维数组和指针的指针区别-type-与-type-">2. 二维数组和指针的指针区别( type [][]与 type **)</h4>
+<h5 id="如何获取锁">如何获取锁</h5>
 
-<pre><code>  虽然两种方式在使用的时候访问方式是通用的，差异主要在内存组织
+<ul>
+  <li>用户需要携带TxnID 和 SubTxnID, TxnID必填， SubTxnID非必填，如果SubTxnID没有填写，则自动生成。</li>
+  <li>使用原子操作写入原子锁， 如果写入成功，则表示当前TxnID和SubTxnID拥有锁。</li>
+  <li>使用原子操作写入原子锁， 如果写入失败，获取当前锁的内容， 先判断锁中的TxnID是否与传入的TxnID相等， 如何不等于返回无法锁住资源， <br />
+否则TxnID等于TxnID， 继续执行</li>
+  <li>判断SubTxnID是否等于传入的SubTxnID， 等于则返回当前TxnID和SubTxnID拥有锁， 否则返回TxnID拥有锁， SubTxnID不拥有锁</li>
+</ul>
 
-  二维数组是一个连续的区域，如char a[2][3] 实际上是一个连续的sizeof(char)*2*3的内存区域。在变量定义时候已经确立整数组存储数据集合容纳数据大小，
-  并且没一行数据的个数必须一样，无法扩容;
+<h4 id="如何共享锁">如何共享锁</h4>
 
-
-  指针指针是是通过先分配type * 来存储二维数组中一维，然后在分配type 来维持二维数组二维。存储数据集合和动态调整，没一行的个数可以不同。
-</code></pre>
-
-<p>eg:内存组织图，type标识数据类型</p>
-
-<p><img src="/img/arrayandpointerpointer.png" alt="内存组织图" /></p>
+<p>逻辑层调用存储层的时候通过HTTP header 将TxnID 透传下去</p>
 
 
   <div class="post-affix">
@@ -177,22 +235,22 @@
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/iterm2/2016/08/11/iterm2keys.html" class="read-more-btn">Read More</a>
+    <a href="/golang/go%20test/2018/07/24/gotest.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://localhost:4000/distributed%20lock/2018/09/02/distributedlock.html" title="共享分布式锁">共享分布式锁</a></h3>
+    <h3><a href="http://localhost:4000/golang/go%20test/2018/07/24/gotest.html" title="优雅的写go test">优雅的写go test</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/golang/go%20test/2018/07/24/gotest.html" title="优雅的写go test">优雅的写go test</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2018-07-24</span>
+      <h4><a href="/excel/2018/07/15/excel_xml.html" title="excel文件实现包含xml的详情">excel文件实现包含xml的详情</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-07-15</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/excel/2018/07/15/excel_xml.html" title="excel文件实现包含xml的详情">excel文件实现包含xml的详情</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2018-07-15</span>
+      <h4><a href="/golang/2018/04/29/golangexceldatavalidation_en.html" title="The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)">The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-04-29</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
