@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-10-08T19:33:01+08:00</updated>
+ <updated>2018-10-08T19:57:38+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -30,10 +30,13 @@
 
 &lt;h3 id=&quot;相关知识&quot;&gt;相关知识&lt;/h3&gt;
 
-&lt;p&gt;net.Dialer.Timeout 限制建立TCP连接的时间
-http.Transport.TLSHandshakeTimeout 限制 TLS握手的时间
-http.Transport.ResponseHeaderTimeout 限制读取response 返回内容的时间
-http.Transport.ExpectContinueTimeout 限制client在发送包含 Expect: 100-continue的header到收到继续发送body的response之间的时间等待。注意在1.6中设置这个值会禁用HTTP/2(DefaultTransport自1.6.2起是个特例)&lt;/p&gt;
+&lt;p&gt;net.Dialer.Timeout 限制建立TCP连接的时间&lt;/p&gt;
+
+&lt;p&gt;http.Transport.TLSHandshakeTimeout 限制 TLS握手的时间&lt;/p&gt;
+
+&lt;p&gt;http.Transport.ResponseHeaderTimeout 限制读取response 返回内容的时间&lt;/p&gt;
+
+&lt;p&gt;http.Transport.ExpectContinueTimeout 限制client在发送包含 Expect: 100-continue的header到收到继续发送body的response之间的时间等待。注意在1.6中设置这个值会禁用HTTP/2(DefaultTransport自1.6.2起是个特例)&lt;/p&gt;
 
 &lt;h3 id=&quot;场景重现代码&quot;&gt;场景重现代码&lt;/h3&gt;
 
