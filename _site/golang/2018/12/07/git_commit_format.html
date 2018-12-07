@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="git comiit messge 消息格式规范">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      git comiit messge 消息格式规范 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+    <a class="sidebar-nav-item" href="http://www.rhttp.cn" target="_blank">之前blog</a>
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">git comiit messge 消息格式规范</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2018-12-07</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> git
+</span>
+  </div>
+  <p>根据外部文档总结出来git commit 提交的格式规范</p>
+
+<h1 id="git-comiit-messge-消息格式">git comiit messge 消息格式</h1>
+<pre><code>  type:messsge issue 
+</code></pre>
+<p>样例</p>
+
+<pre><code>  # 新加一个文档 
+  git commit -m "docs: add readme document issue #1 #2"  readme.md
+</code></pre>
+
+<h2 id="type-取值范围">type 取值范围</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>标记</th>
+      <th>含义</th>
+      <th>加入版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>feature</td>
+      <td>新功能</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>fix</td>
+      <td>错误修复</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>docs</td>
+      <td>文档更改</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>style</td>
+      <td>（格式化，缺少半冒号等;没有代码更改）</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>refactor</td>
+      <td>代码重构重构</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>test</td>
+      <td>添加缺失的测试，重构测试;没有生产代码更改</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>chore</td>
+      <td>构建脚本，任务等相关代码</td>
+      <td>v1</td>
+    </tr>
+    <tr>
+      <td>depend</td>
+      <td>依赖的第三方代码</td>
+      <td>v2</td>
+    </tr>
+    <tr>
+      <td>lib</td>
+      <td>公共类库代码</td>
+      <td>v2</td>
+    </tr>
+    <tr>
+      <td>define</td>
+      <td>公共变量定义</td>
+      <td>v2</td>
+    </tr>
+    <tr>
+      <td>common</td>
+      <td> </td>
+      <td>v2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="message">message</h2>
+<p>本次提交的描述</p>
+
+<h2 id="issue">issue</h2>
+<p>本次提交相关的issue ,可以有多个</p>
+
+  <div class="post-affix">
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://localhost:4000/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html" title="net/http timeout awaiting response headers">net/http timeout awaiting response headers</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/distributed%20lock/2018/09/02/distributedlock.html" title="共享分布式锁">共享分布式锁</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-09-02</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/golang/go%20test/2018/07/24/gotest.html" title="优雅的写go test">优雅的写go test</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-07-24</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
