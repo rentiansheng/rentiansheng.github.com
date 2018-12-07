@@ -87,3 +87,6 @@ func httpClient() {
 
 ```
 
+### 其他
+
+虽然client 出现net/http: timeout awaiting response headers 错误， 但是后端服务还在继续执行，返回数据会出现SIGPIPE，因为该链接已经断开

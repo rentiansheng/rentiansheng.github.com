@@ -4,13 +4,101 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-10-08T19:57:38+08:00</updated>
+ <updated>2018-12-07T09:40:51+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>net/http timeout awaiting response headers</title>
+   <link href="http://localhost:4000/golang/2018/12/07/git_commit_format.html"/>
+   <updated>2018-12-07T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2018/12/07/git_commit_format</id>
+   <content type="html">&lt;h3 id=&quot;前提&quot;&gt;前提&lt;/h3&gt;
+
+&lt;p&gt;在做系统压测的是发现有部分接口，返回 &lt;strong&gt;net/http: timeout awaiting response headers&lt;/strong&gt; 错误，&lt;/p&gt;
+
+&lt;h3 id=&quot;分析&quot;&gt;分析&lt;/h3&gt;
+
+&lt;p&gt;看到错误首先想到的是http请求超时， 修改http client的timeout发下没有任何效果。&lt;/p&gt;
+
+&lt;p&gt;但是这个错误就是http client 超时引起。是http client 在一定时间内没有返回数据，
+客户端取消连接引起。 这个是由于http.Client的transport中ResponseHeaderTimeout 设置不合理引起的。&lt;/p&gt;
+
+&lt;h3 id=&quot;相关知识&quot;&gt;相关知识&lt;/h3&gt;
+
+&lt;p&gt;net.Dialer.Timeout 限制建立TCP连接的时间&lt;/p&gt;
+
+&lt;p&gt;http.Transport.TLSHandshakeTimeout 限制 TLS握手的时间&lt;/p&gt;
+
+&lt;p&gt;http.Transport.ResponseHeaderTimeout 限制读取response 返回内容的时间&lt;/p&gt;
+
+&lt;p&gt;http.Transport.ExpectContinueTimeout 限制client在发送包含 Expect: 100-continue的header到收到继续发送body的response之间的时间等待。注意在1.6中设置这个值会禁用HTTP/2(DefaultTransport自1.6.2起是个特例)&lt;/p&gt;
+
+&lt;h3 id=&quot;场景重现代码&quot;&gt;场景重现代码&lt;/h3&gt;
+
+&lt;p&gt;使用下面代码中的client 调用服务端即可&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;
+// server code 
+func httpServer() {
+	srv := &amp;amp;http.Server{
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		Addr:         &quot;:65530&quot;,
+	}
+
+	http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
+		str := &quot;{}&quot;
+		time.Sleep(3 * time.Second)
+		w.Write([]byte(str))
+	})
+	go func() {
+		err := srv.ListenAndServe()
+		if nil != err {
+			fmt.Println(err)
+		}
+	}()
+	time.Sleep(10)
+
+}
+
+// client code
+func httpClient() {
+	for i := 0; i &amp;lt; 10; i++ {
+		transport := &amp;amp;http.Transport{
+			TLSHandshakeTimeout: 5 * time.Second,
+			TLSClientConfig:     nil,
+			Dial: (&amp;amp;net.Dialer{
+				Timeout:   500 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).Dial,
+			ResponseHeaderTimeout: 1 * time.Second,
+		}
+		c := &amp;amp;http.Client{
+			Timeout:   10 * time.Second,
+			Transport: transport,
+		}
+		_, err := c.Get(&quot;http://127.0.0.1:65530/aa&quot;)
+		if nil != err {
+			fmt.Println(err)
+		}
+
+
+	}
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
+
+&lt;p&gt;虽然client 出现net/http: timeout awaiting response headers 错误， 但是后端服务还在继续执行，返回数据会出现SIGPIPE，因为该链接已经断开&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>net/http timeout awaiting response headers</title>
@@ -94,6 +182,9 @@ func httpClient() {
 
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
+
+&lt;p&gt;虽然client 出现net/http: timeout awaiting response headers 错误， 但是后端服务还在继续执行，返回数据会出现SIGPIPE，因为该链接已经断开&lt;/p&gt;
 </content>
  </entry>
  
