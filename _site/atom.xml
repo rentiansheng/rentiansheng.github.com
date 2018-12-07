@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-12-07T09:40:51+08:00</updated>
+ <updated>2018-12-07T09:43:59+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -13,90 +13,95 @@
 
  
  <entry>
-   <title>net/http timeout awaiting response headers</title>
+   <title>git comiit messge 消息格式规范</title>
    <link href="http://localhost:4000/golang/2018/12/07/git_commit_format.html"/>
    <updated>2018-12-07T00:00:00+08:00</updated>
    <id>http://localhost:4000/golang/2018/12/07/git_commit_format</id>
-   <content type="html">&lt;h3 id=&quot;前提&quot;&gt;前提&lt;/h3&gt;
+   <content type="html">&lt;p&gt;根据外部文档总结出来git commit 提交的格式规范&lt;/p&gt;
 
-&lt;p&gt;在做系统压测的是发现有部分接口，返回 &lt;strong&gt;net/http: timeout awaiting response headers&lt;/strong&gt; 错误，&lt;/p&gt;
+&lt;h1 id=&quot;git-comiit-messge-消息格式&quot;&gt;git comiit messge 消息格式&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;  type:messsge issue 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;样例&lt;/p&gt;
 
-&lt;h3 id=&quot;分析&quot;&gt;分析&lt;/h3&gt;
-
-&lt;p&gt;看到错误首先想到的是http请求超时， 修改http client的timeout发下没有任何效果。&lt;/p&gt;
-
-&lt;p&gt;但是这个错误就是http client 超时引起。是http client 在一定时间内没有返回数据，
-客户端取消连接引起。 这个是由于http.Client的transport中ResponseHeaderTimeout 设置不合理引起的。&lt;/p&gt;
-
-&lt;h3 id=&quot;相关知识&quot;&gt;相关知识&lt;/h3&gt;
-
-&lt;p&gt;net.Dialer.Timeout 限制建立TCP连接的时间&lt;/p&gt;
-
-&lt;p&gt;http.Transport.TLSHandshakeTimeout 限制 TLS握手的时间&lt;/p&gt;
-
-&lt;p&gt;http.Transport.ResponseHeaderTimeout 限制读取response 返回内容的时间&lt;/p&gt;
-
-&lt;p&gt;http.Transport.ExpectContinueTimeout 限制client在发送包含 Expect: 100-continue的header到收到继续发送body的response之间的时间等待。注意在1.6中设置这个值会禁用HTTP/2(DefaultTransport自1.6.2起是个特例)&lt;/p&gt;
-
-&lt;h3 id=&quot;场景重现代码&quot;&gt;场景重现代码&lt;/h3&gt;
-
-&lt;p&gt;使用下面代码中的client 调用服务端即可&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;
-// server code 
-func httpServer() {
-	srv := &amp;amp;http.Server{
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		Addr:         &quot;:65530&quot;,
-	}
-
-	http.HandleFunc(&quot;/&quot;, func(w http.ResponseWriter, r *http.Request) {
-		str := &quot;{}&quot;
-		time.Sleep(3 * time.Second)
-		w.Write([]byte(str))
-	})
-	go func() {
-		err := srv.ListenAndServe()
-		if nil != err {
-			fmt.Println(err)
-		}
-	}()
-	time.Sleep(10)
-
-}
-
-// client code
-func httpClient() {
-	for i := 0; i &amp;lt; 10; i++ {
-		transport := &amp;amp;http.Transport{
-			TLSHandshakeTimeout: 5 * time.Second,
-			TLSClientConfig:     nil,
-			Dial: (&amp;amp;net.Dialer{
-				Timeout:   500 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).Dial,
-			ResponseHeaderTimeout: 1 * time.Second,
-		}
-		c := &amp;amp;http.Client{
-			Timeout:   10 * time.Second,
-			Transport: transport,
-		}
-		_, err := c.Get(&quot;http://127.0.0.1:65530/aa&quot;)
-		if nil != err {
-			fmt.Println(err)
-		}
-
-
-	}
-
-}
-
+&lt;pre&gt;&lt;code&gt;  # 新加一个文档 
+  git commit -m &quot;docs: add readme document issue #1 #2&quot;  readme.md
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
+&lt;h2 id=&quot;type-取值范围&quot;&gt;type 取值范围&lt;/h2&gt;
 
-&lt;p&gt;虽然client 出现net/http: timeout awaiting response headers 错误， 但是后端服务还在继续执行，返回数据会出现SIGPIPE，因为该链接已经断开&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;标记&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+      &lt;th&gt;加入版本&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;feature&lt;/td&gt;
+      &lt;td&gt;新功能&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;fix&lt;/td&gt;
+      &lt;td&gt;错误修复&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;docs&lt;/td&gt;
+      &lt;td&gt;文档更改&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;style&lt;/td&gt;
+      &lt;td&gt;（格式化，缺少半冒号等;没有代码更改）&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;refactor&lt;/td&gt;
+      &lt;td&gt;代码重构重构&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;test&lt;/td&gt;
+      &lt;td&gt;添加缺失的测试，重构测试;没有生产代码更改&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chore&lt;/td&gt;
+      &lt;td&gt;构建脚本，任务等相关代码&lt;/td&gt;
+      &lt;td&gt;v1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;depend&lt;/td&gt;
+      &lt;td&gt;依赖的第三方代码&lt;/td&gt;
+      &lt;td&gt;v2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;lib&lt;/td&gt;
+      &lt;td&gt;公共类库代码&lt;/td&gt;
+      &lt;td&gt;v2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;define&lt;/td&gt;
+      &lt;td&gt;公共变量定义&lt;/td&gt;
+      &lt;td&gt;v2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;common&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;v2&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;message&quot;&gt;message&lt;/h2&gt;
+&lt;p&gt;本次提交的描述&lt;/p&gt;
+
+&lt;h2 id=&quot;issue&quot;&gt;issue&lt;/h2&gt;
+&lt;p&gt;本次提交相关的issue ,可以有多个&lt;/p&gt;
 </content>
  </entry>
  
