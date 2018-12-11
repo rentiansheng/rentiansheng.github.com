@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-12-07T09:43:59+08:00</updated>
+ <updated>2018-12-11T10:37:39+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -13,13 +13,13 @@
 
  
  <entry>
-   <title>git comiit messge 消息格式规范</title>
+   <title>git comMit messge 消息格式规范</title>
    <link href="http://localhost:4000/golang/2018/12/07/git_commit_format.html"/>
    <updated>2018-12-07T00:00:00+08:00</updated>
    <id>http://localhost:4000/golang/2018/12/07/git_commit_format</id>
    <content type="html">&lt;p&gt;根据外部文档总结出来git commit 提交的格式规范&lt;/p&gt;
 
-&lt;h1 id=&quot;git-comiit-messge-消息格式&quot;&gt;git comiit messge 消息格式&lt;/h1&gt;
+&lt;h1 id=&quot;git-commit-messge-消息格式&quot;&gt;git commit messge 消息格式&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;  type:messsge issue 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;样例&lt;/p&gt;
@@ -90,8 +90,8 @@
       &lt;td&gt;v2&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
-      &lt;td&gt;common&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;merge&lt;/td&gt;
+      &lt;td&gt;不同分支之间的代码合并, issue 内容可以忽略&lt;/td&gt;
       &lt;td&gt;v2&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;

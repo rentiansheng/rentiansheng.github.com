@@ -1,12 +1,12 @@
 ---
 layout: post
-title:  git comiit messge 消息格式规范
+title:  git comMit messge 消息格式规范
 category: [golang]
 tags: [git]
 ---
 根据外部文档总结出来git commit 提交的格式规范
 
-# git comiit messge 消息格式
+# git commit messge 消息格式
 ```
   type:messsge issue 
 ```
@@ -31,7 +31,8 @@ tags: [git]
 |depend |依赖的第三方代码|v2|
 |lib|     公共类库代码|v2|
 |define|  公共变量定义|v2|    
-|common||v2|
+|merge|不同分支之间的代码合并, issue 内容可以忽略|v2|
+  
 
 ## message
 本次提交的描述
