@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  git comMit messge 消息格式规范
-category: [golang]
+category: [git]
 tags: [git]
 ---
 根据外部文档总结出来git commit 提交的格式规范

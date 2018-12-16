@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)">
+  <meta name="keywords" content="为什么要使用request id">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check) &middot; Reage blog
+      为什么要使用request id &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -139,69 +139,64 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)</h1>
+  <h1 class="post-title">为什么要使用request id</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2018-04-29</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> golang, excel, and data validation
+    <span><i class="fa fa-clock-o"></i> 2018-12-16</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 其他
 </span>
   </div>
-  <h3 id="completed-function">completed function</h3>
+  <h4 id="1-request-id-是为了解决下面问题">1. request id 是为了解决下面问题</h4>
 
-<p>   1. Cell, column support drop-down list selection
-   2. Cell, column support range check
-   3. Open Excel support cell, column data check read
-  </p>
-<h3 id="items-to-pay-attention-to">Items to pay attention to</h3>
-<p>  
-   1. Excel data validation supports setting the length of the check character to 255,
-   2. Excel is not supported as a check condition by selecting cells in the workbook</p>
-
-<h2 id="1-remise">1. remise</h2>
-<hr />
-
-<p>Recently used in Golang development projects used excel import, export. Data export is no problem, just write excel on the line. However, importing templates has encountered some problems.</p>
-
-<p>Questions are as follows:</p>
-
-<pre><code>1. The data in db is defined as a string. If the field is filled with numbers, the field is a number when the data is acquired. The backend conversion is required.
-2. Enumerate the type fields, fill in too difficult. Users need to know the corresponding value
-3. The field range value, fill in more difficult, (such as user, type, etc.)
-3  can not limit the length of the field to fill in the content
-4. Cannot limit the range of numbers
+<pre><code>问题一： 客户端访问的Web服务时，如何将客户端请求与服务端日志关联 
+问题二： 微服务架构下，访问日志如何查询
+问题三： 不同项目交互出现异常，如何做日志关联
 </code></pre>
 
-<p>Why not directly put an excel file, the data in the project is imported, the export field is not fixed, you need to import according to the personal configuration real field, export</p>
+<h4 id="2-request-id-vs-没有request-id">2. request id vs 没有request id</h4>
 
-<h2 id="2-golang-excel-class-library-selection">2. Golang EXCEL Class Library Selection</h2>
-<hr />
+<h5 id="没有request-id-请求">没有request id 请求</h5>
 
-<p>After the Internet search found two more use now more golang operation excel class library</p>
+<p>只能根据调用函数日志关键，在根据用户的输入的参数，时间来确定相关的日志。
+ 如果项目是以分布式，微服务架构来实现， 上面查日志方式帮助很小。</p>
+
+<p>原因如下</p>
 <ol>
-  <li><a href="https://github.com/360EntSecGroup-Skylar/excelize">excelize</a></li>
-  <li><a href="https://github.com/tealeg/xlsx">xlsx</a></li>
+  <li>代码层层封装后，无法通过日志关键与用户请求关联</li>
+  <li>微服务架构下，用户请求逻辑层分解多个子任务给下层服务处理，下层服务无法与用户请求关联</li>
+  <li>不同项目交互，如何在并发，错误重试，参数相同的情况下，无法通过关键字，时间来确定日志</li>
 </ol>
 
-<p>In most cases, xlsx is selected, and xlsx is more in star and fork than excelle. However, excelize is more active in recent activity and the document is more detailed (in Chinese)</p>
+<p>#####  request id</p>
 
-<h2 id="3-use-excel-data-validation">3. Use EXCEL data validation</h2>
-<hr />
-<p>In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be implemented on xlsx itself.</p>
+<ol>
+  <li>当前项目，根据request id 可以找到所有与请求相关的日志</li>
+  <li>不同项目，可以根据request id 确定唯一的请求</li>
+</ol>
 
-<p>Implement the function code in:
-The <a href="https://github.com/rentiansheng/xlsx">support data validation</a> code has been submitted to the PR but has not been merged.
-Now it’s simple and crude to implement the list of excel data validation, rang validation (time, date need to be converted to numbers, now unimplemented) has confirmed that available data validation has list (display dorp box), rang (number, decimal, text length ), User input will be prompted for incorrect content.</p>
+<h4 id="3-request-id-好处">3. request id 好处</h4>
 
-<p>An example of a test code for data validation is at <a href="https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go">data validation test code</a>
-You can go test to view the production excel content.</p>
+<ol>
+  <li>用户请求日志关联</li>
+  <li>项目间请求日志关联</li>
+  <li>多服务间日志聚合</li>
+  <li>调用关系分析</li>
+  <li>日志分析</li>
+</ol>
 
-<h2 id="4-need-to-prepare-for-the-development-of-excel">4. Need to prepare for the development of EXCEL</h2>
-<hr />
+<h4 id="4-request-id-依赖">4. request id 依赖</h4>
 
-<p>Excel is a zip file described by openxml.
-The files in the office are all similar. Microsoft has published the document.</p>
+<ol>
+  <li>使用request id，要有配套日志记录系统</li>
+  <li>周边系统支持，保持统一</li>
+  <li>request id 每次用户请求，必须保证唯一。</li>
+</ol>
 
-<p>tool:
-Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verification, documentation, generate code function (not golang)</p>
+<h4 id="5-高级用法">5. 高级用法</h4>
+
+<p><a href="https://ai.google/research/pubs/pub36356">Google Dapper</a></p>
+
+<p><a href="https://zipkin.io/">Google Dapper 实现 zipkin</a></p>
+
 
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
@@ -211,22 +206,22 @@ Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verifica
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/golang/2018/04/29/golangexceldatavalidation.html" class="read-more-btn">Read More</a>
+    <a href="/git/2018/12/07/git_commit_format.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://localhost:4000/%E5%85%B6%E4%BB%96/2018/12/16/request_id.html" title="为什么要使用request id">为什么要使用request id</a></h3>
+    <h3><a href="http://localhost:4000/git/2018/12/07/git_commit_format.html" title="git comMit messge 消息格式规范">git comMit messge 消息格式规范</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/git/2018/12/07/git_commit_format.html" title="git comMit messge 消息格式规范">git comMit messge 消息格式规范</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2018-12-07</span>
+      <h4><a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html" title="net/http timeout awaiting response headers">net/http timeout awaiting response headers</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-10-08</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html" title="net/http timeout awaiting response headers">net/http timeout awaiting response headers</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2018-10-08</span>
+      <h4><a href="/distributed%20lock/2018/09/02/distributedlock.html" title="共享分布式锁">共享分布式锁</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-09-02</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
