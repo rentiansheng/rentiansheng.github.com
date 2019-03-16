@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="golang json">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      golang json &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+    <a class="sidebar-nav-item" href="http://www.rhttp.cn" target="_blank">之前blog</a>
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">golang json</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2019-03-16</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang
+</span>
+  </div>
+  <h3 id="json-序列化反序列化规则">json 序列化/反序列化规则</h3>
+
+<pre><code>bool  for JSON booleans
+float64 for JSON numbers（包含 int,int64,int32,int16 ...）
+string, for JSON strings (包含字符串，时间)
+[]interface{}, for JSON arrays(数字，字符串，对象等组成的数组，json )
+map[string]interface{}, for JSON objects 
+nil for JSON null
+</code></pre>
+
+<h3 id="golang-为什么要有jsontag">golang 为什么要有jsontag</h3>
+
+<p>由于golang使用大小作为是否导出属性，方法的定义的规则。
+造成golang json Unmarshal 无法将小写开头的json的key解析到struct结构。
+例如：</p>
+<pre><code class="language-golang">a := `{"a":2}`
+type aStruct struct {
+    A int
+    a int
+}
+</code></pre>
+<p>json Unmarshal 后, A/a 字段中都是空值。 在给结构的key 加上tag后就可以取出
+小写字段的key</p>
+
+<pre><code class="language-golang">a := `{"a":2,"aa":4}`
+type aStruct struct {
+    A int `json:"a"`
+    a int `json:"aa"` //小写属性加tag是无意义的。值解析不上的
+}
+</code></pre>
+
+<h3 id="golang-内置tag">golang 内置tag</h3>
+
+<pre><code>omitempty：如果字段的值为空
+（boolean as false, number as 0,  nil pointer, a nil interface value, and any empty array, slice, map, or string）
+在序列化时该字段不存
+-：该字段在json 序列化/反序列忽律
+string：将字段值在编码过程中转换成 JSON 中的字符串类型，只有当字段类型是 string, floating point, integer, or boolean 的情况下才会转换。
+
+</code></pre>
+
+<h3 id="golang-tag-作用">golang tag 作用</h3>
+
+<ol>
+  <li>反序列化支持json小写key反写到struct 的key中</li>
+  <li>支持json中的key转化
+```
+type Login struct {
+ User   string <code>json:"usr"</code>
+ Password string    <code>json:"pwd" </code>
+}</li>
+</ol>
+
+<pre><code>
+### golang json 反序列一个key支持多种数据类型
+
+由于golang 是一种强类型语言。struct对象的key类型是固定的。
+但是在弱类型语言中对就不一样了。 
+
+例如：PHP （支持key为字符串）
+如果 PHP array是空的时候，序列化出来是[]。
+但是不为空的时候，序列化出来的是{"key":"value"}或者是["val1","val2"]
+我们需要把 [] 当成 {} 处理。
+
+
+这种情况我们可以使用重载UnmarshalJson的方法来实现
+
+```golang 
+代码：
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+)
+
+type AField struct {
+	A map[string]interface{}
+	B []string
+}
+
+func (a *AField) UnmarshalJSON(b []byte) error {
+	str := strings.TrimSpace(string(b))
+	if str == "" || str == "[]" {
+		a.A = nil
+		return nil
+	}
+	if err := json.Unmarshal(b, &amp;a.B); err == nil {
+		return nil
+	}
+	return json.Unmarshal(b, &amp;a.A)
+}
+
+type tmpStruct struct {
+	A AField `json:"a"`
+}
+
+func main() {
+	strArr := `{"a":["b","b"]}`
+	strMap := `{"a":{"aa":"11"}}`
+
+	t1 := new(tmpStruct)
+	t2 := new(tmpStruct)
+	json.Unmarshal([]byte(strArr), t1)
+	json.Unmarshal([]byte(strMap), t2)
+
+	fmt.Println(fmt.Sprintf("%#v", t1))
+	fmt.Println(fmt.Sprintf("%#v", t2))
+}
+结果：
+
+&amp;main.tmpStruct{A:main.AField{A:map[string]interface {}(nil), B:[]string{"b", "b"}}}
+&amp;main.tmpStruct{A:main.AField{A:map[string]interface {}{"aa":"11"}, B:[]string(nil)}}
+</code></pre>
+
+  <div class="post-affix">
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/%E5%85%B6%E4%BB%96/2018/12/16/request_id.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://localhost:4000/%E5%85%B6%E4%BB%96/2018/12/16/request_id.html" title="为什么要使用request id">为什么要使用request id</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/git/2018/12/07/git_commit_format.html" title="git comMit messge 消息格式规范">git comMit messge 消息格式规范</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-12-07</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html" title="net/http timeout awaiting response headers">net/http timeout awaiting response headers</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2018-10-08</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
