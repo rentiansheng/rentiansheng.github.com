@@ -4,13 +4,136 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-03-16T16:51:17+08:00</updated>
+ <updated>2019-03-16T16:53:17+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>golang json</title>
+   <link href="http://localhost:4000/golang/2019/03/16/jsontag.html"/>
+   <updated>2019-03-16T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2019/03/16/jsontag</id>
+   <content type="html">&lt;h3 id=&quot;json-序列化反序列化规则&quot;&gt;json 序列化/反序列化规则&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;bool  for JSON booleans
+float64 for JSON numbers（包含 int,int64,int32,int16 ...）
+string, for JSON strings (包含字符串，时间)
+[]interface{}, for JSON arrays(数字，字符串，对象等组成的数组，json )
+map[string]interface{}, for JSON objects 
+nil for JSON null
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;golang-为什么要有jsontag&quot;&gt;golang 为什么要有jsontag&lt;/h3&gt;
+
+&lt;p&gt;由于golang使用大小作为是否导出属性，方法的定义的规则。
+造成golang json Unmarshal 无法将小写开头的json的key解析到struct结构。
+例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;a := `{&quot;a&quot;:2}`
+type aStruct struct {
+    A int
+    a int
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;json Unmarshal 后, A/a 字段中都是空值。 在给结构的key 加上tag后就可以取出
+小写字段的key&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;a := `{&quot;a&quot;:2,&quot;aa&quot;:4}`
+type aStruct struct {
+    A int `json:&quot;a&quot;`
+    a int `json:&quot;aa&quot;` //小写属性加tag是无意义的。值解析不上的
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;golang-内置tag&quot;&gt;golang 内置tag&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;omitempty：如果字段的值为空
+（boolean as false, number as 0,  nil pointer, a nil interface value, and any empty array, slice, map, or string）
+在序列化时该字段不存
+-：该字段在json 序列化/反序列忽律
+string：将字段值在编码过程中转换成 JSON 中的字符串类型，只有当字段类型是 string, floating point, integer, or boolean 的情况下才会转换。
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;golang-tag-作用&quot;&gt;golang tag 作用&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;反序列化支持json小写key反写到struct 的key中&lt;/li&gt;
+  &lt;li&gt;支持json中的key转化
+```
+type Login struct {
+ User   string &lt;code&gt;json:&quot;usr&quot;&lt;/code&gt;
+ Password string    &lt;code&gt;json:&quot;pwd&quot; &lt;/code&gt;
+}&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code&gt;
+### golang json 反序列一个key支持多种数据类型
+
+由于golang 是一种强类型语言。struct对象的key类型是固定的。
+但是在弱类型语言中对就不一样了。 
+
+例如：PHP （支持key为字符串）
+如果 PHP array是空的时候，序列化出来是[]。
+但是不为空的时候，序列化出来的是{&quot;key&quot;:&quot;value&quot;}或者是[&quot;val1&quot;,&quot;val2&quot;]
+我们需要把 [] 当成 {} 处理。
+
+
+这种情况我们可以使用重载UnmarshalJson的方法来实现
+
+```golang 
+代码：
+package main
+
+import (
+	&quot;encoding/json&quot;
+	&quot;fmt&quot;
+	&quot;strings&quot;
+)
+
+type AField struct {
+	A map[string]interface{}
+	B []string
+}
+
+func (a *AField) UnmarshalJSON(b []byte) error {
+	str := strings.TrimSpace(string(b))
+	if str == &quot;&quot; || str == &quot;[]&quot; {
+		a.A = nil
+		return nil
+	}
+	if err := json.Unmarshal(b, &amp;amp;a.B); err == nil {
+		return nil
+	}
+	return json.Unmarshal(b, &amp;amp;a.A)
+}
+
+type tmpStruct struct {
+	A AField `json:&quot;a&quot;`
+}
+
+func main() {
+	strArr := `{&quot;a&quot;:[&quot;b&quot;,&quot;b&quot;]}`
+	strMap := `{&quot;a&quot;:{&quot;aa&quot;:&quot;11&quot;}}`
+
+	t1 := new(tmpStruct)
+	t2 := new(tmpStruct)
+	json.Unmarshal([]byte(strArr), t1)
+	json.Unmarshal([]byte(strMap), t2)
+
+	fmt.Println(fmt.Sprintf(&quot;%#v&quot;, t1))
+	fmt.Println(fmt.Sprintf(&quot;%#v&quot;, t2))
+}
+结果：
+
+&amp;amp;main.tmpStruct{A:main.AField{A:map[string]interface {}(nil), B:[]string{&quot;b&quot;, &quot;b&quot;}}}
+&amp;amp;main.tmpStruct{A:main.AField{A:map[string]interface {}{&quot;aa&quot;:&quot;11&quot;}, B:[]string(nil)}}
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
  
  <entry>
    <title>为什么要使用request id</title>
