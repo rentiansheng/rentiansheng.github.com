@@ -4,13 +4,76 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-03-16T16:53:51+08:00</updated>
+ <updated>2019-04-24T17:19:13+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>web 服务error的设计</title>
+   <link href="http://localhost:4000/web/2019/04/24/web_error_design.html"/>
+   <updated>2019-04-24T00:00:00+08:00</updated>
+   <id>http://localhost:4000/web/2019/04/24/web_error_design</id>
+   <content type="html">&lt;h2 id=&quot;1-为什么要设计系统自己的error&quot;&gt;1. 为什么要设计系统自己的error&lt;/h2&gt;
+
+&lt;p&gt;我们为什么要设计的系统自己的error，就为了重复造轮子？&lt;/p&gt;
+
+&lt;p&gt;每个语言都有自己的error系统，为什么不使用？&lt;/p&gt;
+
+&lt;p&gt;要回答这些问题。需要先了解error出现和使用的场景。&lt;/p&gt;
+
+&lt;p&gt;error 是当服务在链接第三方服务，校验数据，处理逻辑异常的时候用于提示用户，查找出错原因第一手资料。&lt;/p&gt;
+
+&lt;p&gt;用户的提示：简单易懂&lt;/p&gt;
+
+&lt;p&gt;开发人员： 需要详细的上下信息&lt;/p&gt;
+
+&lt;p&gt;面向第三方系统： 错误归类，判断。&lt;/p&gt;
+
+&lt;p&gt;所以当以错误产生的时刻需要将错误处理为面向用户，面向开发人员和第三方系统的格式。&lt;/p&gt;
+
+&lt;p&gt;语言本身的系统error或exception 适用于开发人员。带有很强的专业性。不适宜展示给用户或者第三方系统。 语言本的系统error或exception 也缺乏去多语言，多长场景的支持。&lt;/p&gt;
+
+&lt;h3 id=&quot;2-error-内容&quot;&gt;2. error 内容&lt;/h3&gt;
+
+&lt;p&gt;error_code  与第三方系统交互实用&lt;/p&gt;
+
+&lt;p&gt;error_messsage  提示用户使用&lt;/p&gt;
+
+&lt;p&gt;request_id  聚合日志使用&lt;/p&gt;
+
+&lt;p&gt;http_code  http response 状态码&lt;/p&gt;
+
+&lt;h3 id=&quot;3-error-带有的方法&quot;&gt;3. error 带有的方法&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;error  code 对应一个format 格式字符串&lt;/strong&gt;
+```
+// 根据错误码和参数生成error
+Errorf(code int, …. interface{})&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;// 根据错误生成error
+Error(code int)&lt;/p&gt;
+
+&lt;p&gt;// 根据第三方系统的error code 和error message 生成error
+New(code int, msg string)&lt;/p&gt;
+
+&lt;p&gt;// 打印日志使用
+String ()  string&lt;/p&gt;
+
+&lt;p&gt;// error code 
+Code() int&lt;/p&gt;
+
+&lt;p&gt;// error message&lt;/p&gt;
+
+&lt;p&gt;Message() string&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>golang json</title>
