@@ -4,13 +4,68 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-04-24T17:19:13+08:00</updated>
+ <updated>2019-04-29T20:07:16+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title></title>
+   <link href="http://localhost:4000/2019/04/29/2019-04-29-golang_mysql_conn_err.html"/>
+   <updated>2019-04-29T20:07:16+08:00</updated>
+   <id>http://localhost:4000/2019/04/29/2019-04-29-golang_mysql_conn_err</id>
+   <content type="html">&lt;p&gt;出现这个是因为你使用MySql 5.7及以上的版本。如果不是就要看了。这篇文章对你没有帮助。&lt;/p&gt;
+
+&lt;p&gt;出现问题原因：
+mysql5.7中user表的password字段已被取消，取而代之的事 authentication_string 字段。
+mysql.user 表中的plugin字段值不对。如果用户对应plugin=caching_sha2_password. 我们遇到的问题是一样的。&lt;/p&gt;
+
+&lt;p&gt;确认方式如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;mysql&amp;gt; use mysql;
+mysql&amp;gt; select host,user,plugin from mysql.user;
++-----------+------------------+-----------------------+
+| host      | user             | plugin                |
++-----------+------------------+-----------------------+
+| %         | root             | caching_sha2_password |
+| localhost | mysql.infoschema | caching_sha2_password |
+| localhost | mysql.session    | caching_sha2_password |
+| localhost | mysql.sys        | caching_sha2_password |
++-----------+------------------+-----------------------+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修复问题方式如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;mysql&amp;gt; use mysql;
+mysql&amp;gt;  ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
+flush privileges; 
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;确认方案：&lt;/p&gt;
+
+&lt;p&gt;修改样例（我修改的root用户）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mysql&amp;gt; use mysql;
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;mysql.user 表中用户对应的plugin 字段是否改变为mysql_native_password&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;mysql&amp;gt; use mysql;
+mysql&amp;gt; select host,user,plugin from mysql.user;
++-----------+------------------+-----------------------+
+| host      | user             | plugin                |
++-----------+------------------+-----------------------+
+| %         | root             | mysql_native_password |
+| localhost | mysql.infoschema | caching_sha2_password |
+| localhost | mysql.session    | caching_sha2_password |
+| localhost | mysql.sys        | caching_sha2_password |
++-----------+------------------+-----------------------+
+
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
  
  <entry>
    <title>web 服务error的设计</title>
@@ -783,14 +838,18 @@ distributed
    <id>http://localhost:4000/golang/2018/04/29/golangexceldatavalidation_en</id>
    <content type="html">&lt;h3 id=&quot;completed-function&quot;&gt;completed function&lt;/h3&gt;
 
-&lt;p&gt;   1. Cell, column support drop-down list selection
-   2. Cell, column support range check
-   3. Open Excel support cell, column data check read
-  &lt;/p&gt;
+&lt;p&gt;   1. Cell, column support drop-down list selection&lt;/p&gt;
+
+&lt;p&gt;   2. Cell, column support range check&lt;/p&gt;
+
+&lt;p&gt;   3. Open Excel support cell, column data check read&lt;/p&gt;
+
+&lt;p&gt;  &lt;/p&gt;
 &lt;h3 id=&quot;items-to-pay-attention-to&quot;&gt;Items to pay attention to&lt;/h3&gt;
 &lt;p&gt;  
-   1. Excel data validation supports setting the length of the check character to 255,
-   2. Excel is not supported as a check condition by selecting cells in the workbook&lt;/p&gt;
+   1. Excel data validation supports setting the length of the check character to 255,&lt;/p&gt;
+
+&lt;p&gt;   2. Excel is not supported as a check condition by selecting cells in the workbook&lt;/p&gt;
 
 &lt;h2 id=&quot;1-remise&quot;&gt;1. remise&lt;/h2&gt;
 &lt;hr /&gt;
