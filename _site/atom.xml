@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-04-29T20:10:46+08:00</updated>
+ <updated>2019-04-29T20:48:20+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -38,8 +38,8 @@ mysql&amp;gt; select host,user,plugin from mysql.user;
 
 &lt;p&gt;修复问题方式如下：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;mysql&amp;gt; use mysql;
-mysql&amp;gt;  ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
-flush privileges; 
+mysql&amp;gt; ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
+mysql&amp;gt; flush privileges; 
 
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -47,7 +47,8 @@ flush privileges;
 
 &lt;p&gt;修改样例（我修改的root用户）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;mysql&amp;gt; use mysql;
-ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+mysql&amp;gt; ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+mysql&amp;gt; flush privileges; 
 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;mysql.user 表中用户对应的plugin 字段是否改变为mysql_native_password&lt;/p&gt;

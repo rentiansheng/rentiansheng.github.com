@@ -28,8 +28,8 @@ mysql> select host,user,plugin from mysql.user;
 修复问题方式如下：
 ``` sh 
 mysql> use mysql;
-mysql>  ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
-flush privileges; 
+mysql> ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
+mysql> flush privileges; 
 
 ``` 
 
@@ -39,7 +39,8 @@ flush privileges;
 修改样例（我修改的root用户）：
 ```
 mysql> use mysql;
-ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+mysql> flush privileges; 
 
 ```
 mysql.user 表中用户对应的plugin 字段是否改变为mysql_native_password
