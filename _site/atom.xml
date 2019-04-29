@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-04-29T20:07:16+08:00</updated>
+ <updated>2019-04-29T20:10:46+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -13,10 +13,10 @@
 
  
  <entry>
-   <title></title>
-   <link href="http://localhost:4000/2019/04/29/2019-04-29-golang_mysql_conn_err.html"/>
-   <updated>2019-04-29T20:07:16+08:00</updated>
-   <id>http://localhost:4000/2019/04/29/2019-04-29-golang_mysql_conn_err</id>
+   <title>mysql this authentication plugin is not supported</title>
+   <link href="http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err.html"/>
+   <updated>2019-04-29T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err</id>
    <content type="html">&lt;p&gt;出现这个是因为你使用MySql 5.7及以上的版本。如果不是就要看了。这篇文章对你没有帮助。&lt;/p&gt;
 
 &lt;p&gt;出现问题原因：

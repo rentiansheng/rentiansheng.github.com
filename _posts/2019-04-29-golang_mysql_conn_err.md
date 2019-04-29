@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  mysql: this authentication plugin is not supported
+title:  mysql this authentication plugin is not supported
 category: [golang, mysql]
 tags: [golang,mysql]
 ---
