@@ -32,7 +32,7 @@ tags: [git]
 |lib|     公共类库代码|v2|
 |define|  公共变量定义|v2|    
 |merge|不同分支之间的代码合并, issue 内容可以忽略|v2|
-  
+|info|注释等描述类型数据|v3| 
 
 ## message
 本次提交的描述
