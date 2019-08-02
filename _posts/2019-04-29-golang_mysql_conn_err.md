@@ -5,7 +5,7 @@ category: [golang, mysql]
 tags: [golang,mysql]
 ---
 
-出现这个是因为你使用MySql 5.7及以上的版本。如果不是就要看了。这篇文章对你没有帮助。
+出现这个是因为你使用MySql 5.7及以上的版本。如果不是就不用继续看了。这篇文章对你没有帮助。
 
 出现问题原因：
 mysql5.7中user表的password字段已被取消，取而代之的事 authentication_string 字段。
