@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="c pointer">
+  <meta name="keywords" content="mysql this authentication plugin is not supported">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      c pointer &middot; Reage blog
+      mysql this authentication plugin is not supported &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -143,35 +143,60 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">c pointer</h1>
+  <h1 class="post-title">mysql this authentication plugin is not supported</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2016-08-21</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> c语言 and pointer
+    <span><i class="fa fa-clock-o"></i> 2019-04-29</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang and mysql
 </span>
   </div>
-  <h3 id="指针相关">指针相关</h3>
-<hr />
+  <p>出现这个是因为你使用MySql 5.7及以上的版本。如果不是就要看了。这篇文章对你没有帮助。</p>
 
-<h4 id="1-glibc-detected--19-munmap_chunk-invalid-pointer-0x00007ffff5cc97b0-">1.<em>** glibc detected **</em> ./19: munmap_chunk(): invalid pointer: 0x00007ffff5cc97b0 ***</h4>
+<p>出现问题原因：
+mysql5.7中user表的password字段已被取消，取而代之的事 authentication_string 字段。
+mysql.user 表中的plugin字段值不对。如果用户对应plugin=caching_sha2_password. 我们遇到的问题是一样的。</p>
 
-<pre><code> a) free释放内存出现，注意free只能释放malloc分配的内存，在function中看到是指针，这个指针有可能是定义的数组，无法释放
+<p>确认方式如下：</p>
+<pre><code class="language-sh">mysql&gt; use mysql;
+mysql&gt; select host,user,plugin from mysql.user;
++-----------+------------------+-----------------------+
+| host      | user             | plugin                |
++-----------+------------------+-----------------------+
+| %         | root             | caching_sha2_password |
+| localhost | mysql.infoschema | caching_sha2_password |
+| localhost | mysql.session    | caching_sha2_password |
+| localhost | mysql.sys        | caching_sha2_password |
++-----------+------------------+-----------------------+
 </code></pre>
 
-<h4 id="2-二维数组和指针的指针区别-type-与-type-">2. 二维数组和指针的指针区别( type [][]与 type **)</h4>
+<p>修复问题方式如下：</p>
+<pre><code class="language-sh">mysql&gt; use mysql;
+mysql&gt; ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
+mysql&gt; flush privileges; 
 
-<pre><code>  虽然两种方式在使用的时候访问方式是通用的，差异主要在内存组织
-
-  二维数组是一个连续的区域，如char a[2][3] 实际上是一个连续的sizeof(char)*2*3的内存区域。在变量定义时候已经确立整数组存储数据集合容纳数据大小，
-  并且没一行数据的个数必须一样，无法扩容;
-
-
-  指针指针是是通过先分配type * 来存储二维数组中一维，然后在分配type 来维持二维数组二维。存储数据集合和动态调整，没一行的个数可以不同。
 </code></pre>
 
-<p>eg:内存组织图，type标识数据类型</p>
+<p>确认方案：</p>
 
-<p><img src="/img/arrayandpointerpointer.png" alt="内存组织图" /></p>
+<p>修改样例（我修改的root用户）：</p>
+<pre><code>mysql&gt; use mysql;
+mysql&gt; ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+mysql&gt; flush privileges; 
 
+</code></pre>
+<p>mysql.user 表中用户对应的plugin 字段是否改变为mysql_native_password</p>
+
+<pre><code class="language-sh">mysql&gt; use mysql;
+mysql&gt; select host,user,plugin from mysql.user;
++-----------+------------------+-----------------------+
+| host      | user             | plugin                |
++-----------+------------------+-----------------------+
+| %         | root             | mysql_native_password |
+| localhost | mysql.infoschema | caching_sha2_password |
+| localhost | mysql.session    | caching_sha2_password |
+| localhost | mysql.sys        | caching_sha2_password |
++-----------+------------------+-----------------------+
+
+</code></pre>
 
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
@@ -181,7 +206,7 @@
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/iterm2/2016/08/11/iterm2keys.html" class="read-more-btn">Read More</a>
+    <a href="/web/2019/04/24/web_error_design.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
     <h3><a href="http://localhost:4000/golang/graceful/2019/10/13/golang_http_graceful.html" title="mysql http 优雅重启">mysql http 优雅重启</a></h3>
@@ -190,13 +215,13 @@
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/golang/mysql/2019/04/29/golang_mysql_conn_err.html" title="mysql this authentication plugin is not supported">mysql this authentication plugin is not supported</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2019-04-29</span>
+      <h4><a href="/web/2019/04/24/web_error_design.html" title="web 服务error的设计">web 服务error的设计</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-04-24</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/web/2019/04/24/web_error_design.html" title="web 服务error的设计">web 服务error的设计</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2019-04-24</span>
+      <h4><a href="/golang/2019/03/16/jsontag.html" title="golang json">golang json</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-03-16</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

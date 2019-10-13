@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="mysql http 优雅重启">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      mysql http 优雅重启 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+    <a class="sidebar-nav-item" href="http://www.rhttp.cn" target="_blank">之前blog</a>
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">mysql http 优雅重启</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2019-10-13</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang
+</span>
+  </div>
+  <h3 id="目标">目标</h3>
+<ol>
+  <li>停止服务（正在处理HTTP 请求不受影响，需要等待其完成）</li>
+  <li>启动服务</li>
+  <li>服务不中断</li>
+</ol>
+
+<h3 id="遇到的问题">遇到的问题</h3>
+
+<h4 id="1-如何知道http-请求是否已经处理结束">1. 如何知道HTTP 请求是否已经处理结束</h4>
+
+<p>这里主要使用Server.Shutdown 方法。 
+使用Shutdown方法要注意一下问：</p>
+<ul>
+  <li>golang 版本必须是1.8及其以上的版本。</li>
+  <li>参数context 使用WithTimeout 生成的时候，如果调用Shutdown后HTTP 请求处理时间， 将不会等待</li>
+  <li>调用shutdown后， 不会接受新的请求， http.Server会收到 http.ErrServerClosed</li>
+  <li>Shutdown 只是关闭socket接受新的请求。 如果有新的请求发来，不会直接拒绝。</li>
+</ul>
+
+<h4 id="2-如何解决在等待http服务结束无法启动服务的问题">2. 如何解决在等待HTTP服务结束，无法启动服务的问题？</h4>
+
+<p>使用以下的方法解决问题：</p>
+
+<ul>
+  <li>exec.Command开启新的服务</li>
+  <li>scoket file descriptor 共享监听</li>
+</ul>
+
+<h3 id="具体实现">具体实现</h3>
+
+<h4 id="优点">优点</h4>
+<ul>
+  <li>对自我的更新</li>
+  <li>服务不中断
+    <h4 id="缺点">缺点</h4>
+  </li>
+  <li>无法使用supervisor管理</li>
+  <li>通过graceful更新的进程父进程会变成init进程</li>
+  <li>在执行shutdown 会有两个进程</li>
+  <li>ps 查看进程，参数会发生变化</li>
+</ul>
+
+<p><a href="https://github.com/rentiansheng/golang-graceful-restart-demo/blob/master/graceful/graceful.go" title="完整的代码">查看完整的代码</a></p>
+
+<p>主要代码如下：</p>
+
+<pre><code class="language-golang">
+var (
+	// 等待更新命令
+	graceful = make(chan bool, 1)
+)
+
+func main() {
+	var graceful bool
+	// 是否通过程序自身完成优雅的重启
+	flag.BoolVar(&amp;graceful, "graceful", false, "graceful start")
+	flag.Parse()
+
+	server := &amp;http.Server{Addr: ":9999"}
+	var listenFile *os.File
+	if graceful {
+		// 使用共享的listen fd， 在执行shutdown的过程中， 
+		// 启动不会收到listen tcp :8080: bind: address already in use
+		// why fd = 3. 
+		// ExtraFiles specifies additional open files to be inherited by the
+        // new process. It does not include standard input, standard output, or
+        // standard error. If non-nil, entry i becomes file descriptor 3+i.
+		listenFile = os.NewFile(3, "")
+	} else {
+		// 首次启动， 需要建立socket 链接
+		listen, err := net.Listen("tcp", ":9999")
+		if err != nil {
+			log.Fatal(err)
+		}
+		l := listen.(*net.TCPListener)
+		listenFile, err = l.File()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	go runWorker(listenFile)
+	httServer(listenFile, server)
+}
+
+// runWorker 启动新的worker 来接受HTTP 请求
+func runWorker(listenFile *os.File) {
+	// 等待更新命令
+	&lt;-graceful
+	fmt.Println("execute start")
+
+	// 使用新的二进制更新本身
+	execFile := "./graceful"
+	execCmd := exec.Command(execFile, "-graceful=true" )
+	// 共享 stdout, stderr
+	execCmd.Stdout = os.Stdout
+	execCmd.Stderr = os.Stderr
+	// 共享socket 链接
+	execCmd.ExtraFiles = []*os.File{listenFile}
+	// 父进程退出，子进程可以接续执行
+	execCmd.SysProcAttr = &amp;syscall.SysProcAttr{
+		Setpgid: true,
+	}
+	// 这里是阻塞，需要注意
+	err := execCmd.Run()
+	// 这里如果想知道进程是否准备好，可以接受新的任务。 
+	// 可以在xecCmd.ExtraFiles 多传入一个file，来处理。相对比较麻烦
+	//  或者通过信号量
+	fmt.Println("execute end", err)
+}
+
+func httServer(file *os.File, server *http.Server) {
+	l, err := net.FileListener(file)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, pid:%d, path:%s, time:%s",os.Getpid(), html.EscapeString(r.URL.Path), time.Now().String())
+	})
+	// 执行优雅的重启 HTTP api
+	http.HandleFunc("/graceful", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, graceful  pid:%s, time:%s", os.Getpid(),time.Now().String())
+		close(graceful)
+	})
+	http.HandleFunc("/sleep", func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(50 * time.Second)
+		fmt.Fprintf(w, "Hello, graceful pid:%d,  time:%s", os.Getpid(),time.Now().String())
+	})
+
+	go func() {
+		err := server.Serve(l)
+		// http.ErrServerClosed 是有http shutdown 引起
+		if err != nil &amp;&amp; err != http.ErrServerClosed {
+			log.Fatalf("listen %s error. err:%s\n", server.Addr, err)
+		}
+		return
+	}()
+	select {
+			case &lt;-shutdown(server):
+	}
+}
+
+func shutdown(server *http.Server) chan bool {
+	// 执行优雅的的命令
+	&lt;-graceful
+	// 这里最好有sleep， 保证接受新服务已经启动,
+	log.Println("Server is shutting down...")
+
+	server.SetKeepAlivesEnabled(false)
+	err := server.Shutdown(context.Background())
+	if err != nil {
+		log.Fatalf("Could not gracefully shutdown the server: %v \n", err)
+	}
+	quitChan := make(chan bool, 1)
+	quitChan &lt;- true
+	return quitChan
+}
+</code></pre>
+
+
+  <div class="post-affix">
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/golang/mysql/2019/04/29/golang_mysql_conn_err.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err.html" title="mysql this authentication plugin is not supported">mysql this authentication plugin is not supported</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/web/2019/04/24/web_error_design.html" title="web 服务error的设计">web 服务error的设计</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-04-24</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/golang/2019/03/16/jsontag.html" title="golang json">golang json</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-03-16</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>

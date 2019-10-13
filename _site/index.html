@@ -161,7 +161,7 @@
           
             <li><a href="categories#服务治理" title="服务治理" rel="4" class="tag">服务治理<span>4</span></a></li>
           
-            <li><a href="categories#golang" title="golang" rel="7" class="tag">golang<span>7</span></a></li>
+            <li><a href="categories#golang" title="golang" rel="8" class="tag">golang<span>8</span></a></li>
           
             <li><a href="categories#excel" title="excel" rel="1" class="tag">excel<span>1</span></a></li>
           
@@ -175,10 +175,34 @@
           
             <li><a href="categories#web" title="web" rel="1" class="tag">web<span>1</span></a></li>
           
+            <li><a href="categories#graceful" title="graceful" rel="1" class="tag">graceful<span>1</span></a></li>
+          
             
         </ul>            
       <div class="container content" >
         <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang/graceful/2019/10/13/golang_http_graceful.html">
+        mysql http 优雅重启
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-10-13</span>
+    目标
+
+  停止服务（正在处理HTTP 请求不受影响，需要等待其完成）
+  启动服务
+  服务不中断
+
+
+遇到的问题
+
+1. 如何知道HTTP 请求是否已经处理结束
+
+这里主要使用Server....
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -241,25 +265,6 @@ s...
 问题三： 不同项目交互出现异常...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/git/2018/12/07/git_commit_format.html">
-        git comMit messge 消息格式规范
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-12-07</span>
-    根据外部文档总结出来git commit 提交的格式规范
-
-git commit messge 消息格式
-  type:messsge issue 
-
-样例
-
-  # 新加一个文档 
-  git...
-  </div>
-  
 </div>
 <div id="post-pagination" class="paginator">
       
@@ -287,7 +292,7 @@ git commit messge 消息格式
       <a href="/page6">6</a>
       
     
-  (共27篇)
+  (共28篇)
 </div>
 
 <!--div class="pagination">
