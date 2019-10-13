@@ -38,7 +38,9 @@ http_code  http response 状态码
 
 ### 3. error 带有的方法
  * **error  code 对应一个format 格式字符串**
-```
+ 
+```code
+
 // 根据错误码和参数生成error
 Errorf(code int, .... interface{}) 
 
