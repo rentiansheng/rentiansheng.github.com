@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  mysql http 优雅重启
+title:  mysql http client 遇到的问题
 category: [golang, http/client]
 tags: [golang]
 ---
