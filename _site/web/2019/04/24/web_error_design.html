@@ -181,29 +181,30 @@
 
 <h3 id="3-error-带有的方法">3. error 带有的方法</h3>
 <ul>
-  <li><strong>error  code 对应一个format 格式字符串</strong>
-```
-// 根据错误码和参数生成error
-Errorf(code int, …. interface{})</li>
+  <li><strong>error  code 对应一个format 格式字符串</strong></li>
 </ul>
 
-<p>// 根据错误生成error
-Error(code int)</p>
+<pre><code class="language-code">
+// 根据错误码和参数生成error
+Errorf(code int, .... interface{}) 
 
-<p>// 根据第三方系统的error code 和error message 生成error
-New(code int, msg string)</p>
+// 根据错误生成error
+Error(code int)
 
-<p>// 打印日志使用
-String ()  string</p>
+// 根据第三方系统的error code 和error message 生成error
+New(code int, msg string)
 
-<p>// error code 
-Code() int</p>
+// 打印日志使用
+String ()  string 
 
-<p>// error message</p>
+// error code 
+Code() int
 
-<p>Message() string</p>
+// error message
 
-<p>```</p>
+Message() string
+
+</code></pre>
 
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>

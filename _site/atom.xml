@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-10-13T17:05:12+08:00</updated>
+ <updated>2019-10-16T17:52:51+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -185,7 +185,7 @@ func shutdown(server *http.Server) chan bool {
    <link href="http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err.html"/>
    <updated>2019-04-29T00:00:00+08:00</updated>
    <id>http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err</id>
-   <content type="html">&lt;p&gt;出现这个是因为你使用MySql 5.7及以上的版本。如果不是就要看了。这篇文章对你没有帮助。&lt;/p&gt;
+   <content type="html">&lt;p&gt;出现这个是因为你使用MySql 5.7及以上的版本。如果不是就不用继续看了。这篇文章对你没有帮助。&lt;/p&gt;
 
 &lt;p&gt;出现问题原因：
 mysql5.7中user表的password字段已被取消，取而代之的事 authentication_string 字段。
@@ -273,29 +273,30 @@ mysql&amp;gt; select host,user,plugin from mysql.user;
 
 &lt;h3 id=&quot;3-error-带有的方法&quot;&gt;3. error 带有的方法&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;error  code 对应一个format 格式字符串&lt;/strong&gt;
-```
-// 根据错误码和参数生成error
-Errorf(code int, …. interface{})&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;error  code 对应一个format 格式字符串&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;// 根据错误生成error
-Error(code int)&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-code&quot;&gt;
+// 根据错误码和参数生成error
+Errorf(code int, .... interface{}) 
 
-&lt;p&gt;// 根据第三方系统的error code 和error message 生成error
-New(code int, msg string)&lt;/p&gt;
+// 根据错误生成error
+Error(code int)
 
-&lt;p&gt;// 打印日志使用
-String ()  string&lt;/p&gt;
+// 根据第三方系统的error code 和error message 生成error
+New(code int, msg string)
 
-&lt;p&gt;// error code 
-Code() int&lt;/p&gt;
+// 打印日志使用
+String ()  string 
 
-&lt;p&gt;// error message&lt;/p&gt;
+// error code 
+Code() int
 
-&lt;p&gt;Message() string&lt;/p&gt;
+// error message
 
-&lt;p&gt;```&lt;/p&gt;
+Message() string
+
+&lt;/code&gt;&lt;/pre&gt;
 </content>
  </entry>
  
@@ -563,6 +564,11 @@ func main() {
       &lt;td&gt;merge&lt;/td&gt;
       &lt;td&gt;不同分支之间的代码合并, issue 内容可以忽略&lt;/td&gt;
       &lt;td&gt;v2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;info&lt;/td&gt;
+      &lt;td&gt;注释等描述类型内容&lt;/td&gt;
+      &lt;td&gt;v3&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
@@ -2192,12 +2198,12 @@ ZEND_GET_MODULE(reage)
    <updated>2015-03-30T00:00:00+08:00</updated>
    <id>http://localhost:4000/mysql/2015/03/30/mysql优化基础知识(-)</id>
    <content type="html">&lt;h4 id=&quot;1-primary-key&quot;&gt;1. primary key&lt;/h4&gt;
-&lt;p&gt;primary key是聚簇索引，聚餐适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
+&lt;p&gt;primary key是聚簇索引，聚簇索引适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
   综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
   主键的优点在于不管表中有多少行数据。通过primary key获取数据都非常快&lt;/p&gt;
 
 &lt;h4 id=&quot;2索引在存储时都是正序存储&quot;&gt;2.索引在存储时都是正序存储&lt;/h4&gt;
-&lt;p&gt;因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra现实这Using filesort&lt;/p&gt;
+&lt;p&gt;因此，就算建立 index idx_score_course(score,course) 索引，使用explain “select * from test order by score desc, course asc”你就会发现并没有到idx_score_course索引，在Extra用的是Using filesort&lt;/p&gt;
 
 &lt;h4 id=&quot;3-where-in&quot;&gt;3. where in&lt;/h4&gt;
 &lt;p&gt;mysql中的where in与or是不同的，mysql不回将where in转换成or，mysql会对where in的条件进行排序，然后做二分查找，这是一个时间复杂度为o(log n)的操作，等价转换成or的查询时间复杂度为o(n)&lt;/p&gt;
