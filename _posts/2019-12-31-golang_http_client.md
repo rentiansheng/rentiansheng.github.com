@@ -14,7 +14,7 @@ tags: [golang]
 
 最后发现是数据被压缩造成。
 
-golang HTTP client 在收到数据的时候，在http response 在Context-Encoding=[giz|deflate|br]的时候也不去解压response body的内容，需要业务方自己去解压。 注意在golang自带有关压缩的实现，没有看到与br压缩的相关类库。
+golang HTTP client 在收到数据的时候，在http response 在Context-Encoding=[giz\|deflate\|br]的时候也不去解压response body的内容，需要业务方自己去解压。 注意在golang自带有关压缩的实现，没有看到与br压缩的相关类库。
 
 
 
