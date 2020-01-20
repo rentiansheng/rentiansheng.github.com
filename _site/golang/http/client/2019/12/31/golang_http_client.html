@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="Home">
+  <meta name="keywords" content="golang  http client 遇到的问题">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      Reage blog &middot; 
+      golang  http client 遇到的问题 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -82,26 +82,6 @@
     
       
         
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
           <a class="sidebar-nav-item" href="/posts/">文档</a>
         
       
@@ -142,131 +122,80 @@
           
         </ul>            
       <div class="container content" style="margin-top:2rem">
-        <div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/git/2018/12/07/git_commit_format.html">
-        git comMit messge 消息格式规范
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-12-07</span>
-    根据外部文档总结出来git commit 提交的格式规范
-
-git commit messge 消息格式
-  type:messsge issue 
-
-样例
-
-  # 新加一个文档 
-  git...
+        <div class="post">
+  <h1 class="post-title">golang  http client 遇到的问题</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2019-12-31</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> golang
+</span>
   </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html">
-        net/http timeout awaiting response headers
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-10-08</span>
-    前提
+  <p>记录最近在使用golang http client 遇到的问题</p>
 
-在做系统压测的是发现有部分接口，返回 net/http: timeout awaiting response headers 错误，
+<h3 id="response-body-乱码">response body 乱码</h3>
 
-分析
+<p>服务线上没有问题， 但是在开发阶段调用第三服务出现返回无法解析的情况。</p>
 
-看到错误首先想到的是http请求超时， 修...
+<p>最后发现是数据被压缩造成。</p>
+
+<p>golang HTTP client 在收到数据的时候，在http response 在Context-Encoding=[giz|deflate|br]的时候也不去解压response body的内容，需要业务方自己去解压。 注意在golang自带有关压缩的实现，没有看到与br压缩的相关类库。</p>
+
+<h3 id="http-client-发送请求连接不上服务">http client 发送请求连接不上服务</h3>
+
+<p>在terminal,浏览器发送请求都可以正常访问，但是在golang服务中的HTTP 请求返回连接不上服务(i/o timeout)。这种情况查看下使用的HTTP 的client中的transport的Proxy 属性是不是给设置为nil，golang的http package中有一个叫ProxyFromEnvironment方法。改方法是从环境变量中获取配置的代理信息的。如果你需要使用系统配置的Proxy可以使用http.ProxyFromEnvironment方法,否则可以实现自己的proxy方法。</p>
+
+
+  <div class="post-affix">
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
   </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/distributed%20lock/2018/09/02/distributedlock.html">
-        共享分布式锁
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-09-02</span>
-    前提
-
-分布式锁是在分布式系统中，我们为了保证分布式系统的效率和数据的正确性，在相同工作的多个节点中不被重复处理而采用的技术的。
-
-使用场景
-
-现在看网上的分布式锁都是现在资源限制。 锁的使用者...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/go%20test/2018/07/24/gotest.html">
-        优雅的写go test
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-07-24</span>
-    go test 介绍
-
-go语言的单元测试采用内置的测试框架,通过引入testing包以及go test来提供测试功能。
-go语言的单元测试是一个个单独的文件。 每一个单元测试文件是与源代码同名...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/excel/2018/07/15/excel_xml.html">
-        excel文件实现包含xml的详情
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-07-15</span>
-    excel 文件描述
-
-excel 是一个包含多个xml文件目录的zip压缩文件。
-/表示为excel文件解压后的根目录
-/docProps 文档相关的属性
-/xl excel  数据相关厨房目...
-  </div>
-  
-</div>
-<div id="post-pagination" class="paginator">
-      
-      <a href="/">1</a>
-      
-
-    
-      
-      <span class="current-page">2</span>
-      
-    
-      
-      <a href="/page3">3</a>
-      
-    
-      
-      <a href="/page4">4</a>
-      
-    
-      
-      <a href="/page5">5</a>
-      
-    
-      
-      <a href="/page6">6</a>
-      
-    
-  (共28篇)
 </div>
 
-<!--div class="pagination">
+<div class="read-more">
   
-    <a class="pagination-item older" href="/page3"><-</a>
+  <div class="read-more-header">
+    <a href="/golang/graceful/2019/10/13/golang_http_graceful.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://localhost:4000/tcp/network/2020/01/20/http_put_request_abort.html" title="调用出现网络错误分析的过程">调用出现网络错误分析的过程</a></h3>
+  </div><!-- /.read-more-content -->
   
-  
+  <div class="read-more-list">
     
-  <a class="pagination-item newer" href="/">-></a>
+    <div class="list-item">
+      <h4><a href="/golang/graceful/2019/10/13/golang_http_graceful.html" title="mysql http 优雅重启">mysql http 优雅重启</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-10-13</span>
+    </div><!-- /.list-item -->
     
+    <div class="list-item">
+      <h4><a href="/golang/mysql/2019/04/29/golang_mysql_conn_err.html" title="mysql this authentication plugin is not supported">mysql this authentication plugin is not supported</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-04-29</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
   
-</div-->
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
 
       </div>
     </div>

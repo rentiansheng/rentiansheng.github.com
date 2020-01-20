@@ -4,13 +4,78 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-10-16T17:52:51+08:00</updated>
+ <updated>2020-01-20T17:15:42+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>调用出现网络错误分析的过程</title>
+   <link href="http://localhost:4000/tcp/network/2020/01/20/http_put_request_abort.html"/>
+   <updated>2020-01-20T00:00:00+08:00</updated>
+   <id>http://localhost:4000/tcp/network/2020/01/20/http_put_request_abort</id>
+   <content type="html">&lt;h4 id=&quot;场景&quot;&gt;场景&lt;/h4&gt;
+&lt;p&gt;描述：HTTP 的PUT 调用提示网络错误。&lt;/p&gt;
+
+&lt;p&gt;具体情况：
+有用户反馈，在使用系统的时候，更新数据出现网络错误。 鉴于其他操作都没有问题，
+由于是更新使用的是HTTP 的PUT 方式，怀疑用户使用的代理或者网络中间件拦截。
+告知用户后，用户说没有使用代理和网络中间件，只能继续找证据，
+最后是网络中的防火墙拦截了。希望对以后类似问题有帮助。 下面记录查找问题的过程。&lt;/p&gt;
+
+&lt;h4 id=&quot;处理过程&quot;&gt;处理过程&lt;/h4&gt;
+
+&lt;h5 id=&quot;查询日志&quot;&gt;查询日志&lt;/h5&gt;
+&lt;p&gt;其实这一步是多余的。 服务端根本没有收到请求&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;没有错误日志，没有访问日志。怀疑HTTP 请求被转发错误机器。&lt;/li&gt;
+  &lt;li&gt;但是使用curl 在服务说在内网调用，操作正常，&lt;/li&gt;
+  &lt;li&gt;再用的机器，用POSTMAN直接指定IP还是没有请求到服务端，基本确定是代理或者网络中间的问题&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;查看web浏览器中network相关信息&quot;&gt;查看web浏览器中network相关信息&lt;/h5&gt;
+
+&lt;p&gt;发现浏览器给出的错误信息是 Failed to load resource: net::ERR_CONNECTION_ABORTED的错误&lt;/p&gt;
+
+&lt;h5 id=&quot;使用wireshark-抓包查看具体的错误&quot;&gt;使用wireshark 抓包查看具体的错误&lt;/h5&gt;
+
+&lt;p&gt;发现抓中包含多个 TCP Retransmission 相关信息. 这里感觉很怪，因为其他请求都没有问题，
+网络也是稳定，所以肯定是网络中间件的问题。&lt;/p&gt;
+
+&lt;h5 id=&quot;查看tcp连接链路&quot;&gt;查看TCP连接链路&lt;/h5&gt;
+
+&lt;p&gt;windows 使用tracert , linux 使用traceroute&lt;/p&gt;
+
+&lt;p&gt;拿到结果后，找到网络管理员，发现在其中的一台中的防火墙中策略是不允许PUT请求。&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>golang  http client 遇到的问题</title>
+   <link href="http://localhost:4000/golang/http/client/2019/12/31/golang_http_client.html"/>
+   <updated>2019-12-31T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/http/client/2019/12/31/golang_http_client</id>
+   <content type="html">&lt;p&gt;记录最近在使用golang http client 遇到的问题&lt;/p&gt;
+
+&lt;h3 id=&quot;response-body-乱码&quot;&gt;response body 乱码&lt;/h3&gt;
+
+&lt;p&gt;服务线上没有问题， 但是在开发阶段调用第三服务出现返回无法解析的情况。&lt;/p&gt;
+
+&lt;p&gt;最后发现是数据被压缩造成。&lt;/p&gt;
+
+&lt;p&gt;golang HTTP client 在收到数据的时候，在http response 在Context-Encoding=[giz|deflate|br]的时候也不去解压response body的内容，需要业务方自己去解压。 注意在golang自带有关压缩的实现，没有看到与br压缩的相关类库。&lt;/p&gt;
+
+&lt;h3 id=&quot;http-client-发送请求连接不上服务&quot;&gt;http client 发送请求连接不上服务&lt;/h3&gt;
+
+&lt;p&gt;在terminal,浏览器发送请求都可以正常访问，但是在golang服务中的HTTP 请求返回连接不上服务(i/o timeout)。这种情况查看下使用的HTTP 的client中的transport的Proxy 属性是不是给设置为nil，golang的http package中有一个叫ProxyFromEnvironment方法。改方法是从环境变量中获取配置的代理信息的。如果你需要使用系统配置的Proxy可以使用http.ProxyFromEnvironment方法,否则可以实现自己的proxy方法。&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>mysql http 优雅重启</title>

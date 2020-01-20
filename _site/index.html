@@ -82,26 +82,6 @@
     
       
         
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
           <a class="sidebar-nav-item" href="/posts/">文档</a>
         
       
@@ -161,7 +141,7 @@
           
             <li><a href="categories#服务治理" title="服务治理" rel="4" class="tag">服务治理<span>4</span></a></li>
           
-            <li><a href="categories#golang" title="golang" rel="8" class="tag">golang<span>8</span></a></li>
+            <li><a href="categories#golang" title="golang" rel="9" class="tag">golang<span>9</span></a></li>
           
             <li><a href="categories#excel" title="excel" rel="1" class="tag">excel<span>1</span></a></li>
           
@@ -177,127 +157,30 @@
           
             <li><a href="categories#graceful" title="graceful" rel="1" class="tag">graceful<span>1</span></a></li>
           
+            <li><a href="categories#http/client" title="http/client" rel="1" class="tag">http/client<span>1</span></a></li>
+          
+            <li><a href="categories#tcp" title="tcp" rel="1" class="tag">tcp<span>1</span></a></li>
+          
+            <li><a href="categories#network" title="network" rel="1" class="tag">network<span>1</span></a></li>
+          
             
         </ul>            
       <div class="container content" >
         <div class="posts">
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/graceful/2019/10/13/golang_http_graceful.html">
-        mysql http 优雅重启
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-10-13</span>
-    目标
-
-  停止服务（正在处理HTTP 请求不受影响，需要等待其完成）
-  启动服务
-  服务不中断
-
-
-遇到的问题
-
-1. 如何知道HTTP 请求是否已经处理结束
-
-这里主要使用Server....
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/mysql/2019/04/29/golang_mysql_conn_err.html">
-        mysql this authentication plugin is not supported
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-04-29</span>
-    出现这个是因为你使用MySql 5.7及以上的版本。如果不是就不用继续看了。这篇文章对你没有帮助。
-
-出现问题原因：
-mysql5.7中user表的password字段已被取消，取而代之的事 a...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/web/2019/04/24/web_error_design.html">
-        web 服务error的设计
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-04-24</span>
-    1. 为什么要设计系统自己的error
-
-我们为什么要设计的系统自己的error，就为了重复造轮子？
-
-每个语言都有自己的error系统，为什么不使用？
-
-要回答这些问题。需要先了解error出...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/2019/03/16/jsontag.html">
-        golang json
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-03-16</span>
-    json 序列化/反序列化规则
-
-bool  for JSON booleans
-float64 for JSON numbers（包含 int,int64,int32,int16 ...）
-s...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/%E5%85%B6%E4%BB%96/2018/12/16/request_id.html">
-        为什么要使用request id
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-12-16</span>
-    1. request id 是为了解决下面问题
-
-问题一： 客户端访问的Web服务时，如何将客户端请求与服务端日志关联 
-问题二： 微服务架构下，访问日志如何查询
-问题三： 不同项目交互出现异常...
-  </div>
-  
 </div>
 <div id="post-pagination" class="paginator">
       
-      <span class="current-page">1</span>
+      <a href="/">1</a>
       
 
     
-      
-      <a href="/page2">2</a>
-      
-    
-      
-      <a href="/page3">3</a>
-      
-    
-      
-      <a href="/page4">4</a>
-      
-    
-      
-      <a href="/page5">5</a>
-      
-    
-      
-      <a href="/page6">6</a>
-      
-    
-  (共28篇)
+  (共篇)
 </div>
 
 <!--div class="pagination">
   
-    <a class="pagination-item older" href="/page2"><-</a>
+    <span class="pagination-item older"><-</span>
   
   
   <span class="pagination-item newer">-></span>
