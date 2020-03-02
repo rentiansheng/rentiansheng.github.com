@@ -4,13 +4,69 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-01-20T17:24:36+08:00</updated>
+ <updated>2020-03-02T20:56:27+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>docker mongodb 集群模式Golang连接不上的问题</title>
+   <link href="http://localhost:4000/tcp/network/2020/03/02/mongoset_con.html"/>
+   <updated>2020-03-02T00:00:00+08:00</updated>
+   <id>http://localhost:4000/tcp/network/2020/03/02/mongoset_con</id>
+   <content type="html">&lt;h4 id=&quot;场景&quot;&gt;场景&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;server selection error: server selection timeout
+current topology: Type: ReplicaSetNoPrimary
+Servers:
+Addr: mongosecond2:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection(mongosecond2:27017[-2108]) connection is closed
+Addr: mongosecond3:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection(mongosecond3:27017[-2110]) connection is closed
+Addr: mongoprimary:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection(mongoprimary:27017[-2109]) connection is closed
+Addr: mongosecond1:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection(mongosecond1:27017[-2107]) connection is closed
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在终端使用使用mongo client 连接操作没有问题。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;rs0:PRIMARY&amp;gt; db.test.insert({&quot;aa&quot;:&quot;111&quot;});
+WriteResult({ &quot;nInserted&quot; : 1 })
+rs0:PRIMARY&amp;gt; db.test.find();
+{ &quot;_id&quot; : ObjectId(&quot;5e5cb62d5a5225dfab47ed44&quot;), &quot;aa&quot; : &quot;111&quot; }
+rs0:PRIMARY&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;分析问题过程&quot;&gt;分析问题过程&lt;/h4&gt;
+
+&lt;p&gt;背景：&lt;/p&gt;
+
+&lt;p&gt;我的项目在宿主机上面运行，数据库mongodb在docker中进行。 mongodb共有四个容器提供服务， 其中一个台是协调者。
+项目中mongodb 的配置都是127.0.0.1地址和mongodb 容器在宿主机上暴露的端口&lt;/p&gt;
+
+&lt;p&gt;eg:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;127.0.0.1:27017
+127.0.0.1:27018
+127.0.0.1:27019
+127.0.0.1:27020
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;####### 可能出现的问题一&lt;/p&gt;
+
+&lt;p&gt;项目中配置的是IP:PORT，但是错误提示中出现是hostname:port.&lt;/p&gt;
+
+&lt;p&gt;hostname 是容器的hostname， 在外侧肯定是无法转换成IP的。 
+配置宿主的hosts&lt;/p&gt;
+
+&lt;p&gt;####### 可能出现的问题二&lt;/p&gt;
+
+&lt;p&gt;我的容器是用docker-compose build 出来. 我在其中使用了
+expose和ports暴露容器的端口, 我本意是expose的端口用来mognodb 集群使用，
+ports的端口给服务使用。 但是具体使用的时候，提示出现了expose的端口。&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>调用出现网络错误分析的过程</title>
