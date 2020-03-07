@@ -229,25 +229,26 @@ bk_login_url = http://127.0.0.1/login/?app_id=%s&amp;c_url=%s
 
 <p>返回值：</p>
 <ul>
-  <li>user 返回当前登录用户的信息
-``` golang struct 
-type LoginUserInfo struct {
- UserName      string                      <code>json:"username"</code> // 用户的英文名，
- ChName        string                      <code>json:"chname"</code>   // 用户的中文名
- Phone         string                      <code>json:"phone"</code>    // 电话号码
- Email         string                      <code>json:"email"</code>    // 用户的邮箱 
- Role          string                      <code>json:"-"</code>        // 已废弃字段
- BkToken       string                      <code>json:"bk_token"</code> // bk_token 用来写入session
- OnwerUin      string                      <code>json:"current_supplier"</code> //预留字段
- OwnerUinArr   []LoginUserInfoOwnerUinList <code>json:"supplier_list"</code> //预留字段
- IsOwner       bool                        <code>json:"-"</code>             // 预留字段
- Extra         map[string]interface{}      <code>json:"extra"</code>         // 预留字段
- Language      string                      <code>json:"-"</code>             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
- AvatarUrl     string                      <code>json:"avatar_url"</code> //用户头像
- SupplierID    int64                       <code>json:"supplier_id"</code> // 预留字段，默认值即可
- MultiSupplier bool                        <code>json:"multi_supplier"</code> // 预留字段，默认值即可
-}</li>
+  <li>user 返回当前登录用户的信息</li>
 </ul>
+
+<p>``` golang struct 
+type LoginUserInfo struct {
+	UserName      string                      <code>json:"username"</code> // 用户的英文名，
+	ChName        string                      <code>json:"chname"</code>   // 用户的中文名
+	Phone         string                      <code>json:"phone"</code>    // 电话号码
+	Email         string                      <code>json:"email"</code>    // 用户的邮箱 
+	Role          string                      <code>json:"-"</code>        // 已废弃字段
+	BkToken       string                      <code>json:"bk_token"</code> // bk_token 用来写入session
+	OnwerUin      string                      <code>json:"current_supplier"</code> //预留字段
+	OwnerUinArr   []LoginUserInfoOwnerUinList <code>json:"supplier_list"</code> //预留字段
+	IsOwner       bool                        <code>json:"-"</code>             // 预留字段
+	Extra         map[string]interface{}      <code>json:"extra"</code>         // 预留字段
+	Language      string                      <code>json:"-"</code>             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
+	AvatarUrl     string                      <code>json:"avatar_url"</code> //用户头像
+	SupplierID    int64                       <code>json:"supplier_id"</code> // 预留字段，默认值即可
+	MultiSupplier bool                        <code>json:"multi_supplier"</code> // 预留字段，默认值即可
+}</p>
 
 <pre><code> - loginSucc 是否登录成功
  

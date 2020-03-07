@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-03-07T17:35:46+08:00</updated>
+ <updated>2020-03-07T17:43:15+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -117,25 +117,26 @@ bk_login_url = http://127.0.0.1/login/?app_id=%s&amp;amp;c_url=%s
 
 &lt;p&gt;返回值：&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;user 返回当前登录用户的信息
-``` golang struct 
-type LoginUserInfo struct {
- UserName      string                      &lt;code&gt;json:&quot;username&quot;&lt;/code&gt; // 用户的英文名，
- ChName        string                      &lt;code&gt;json:&quot;chname&quot;&lt;/code&gt;   // 用户的中文名
- Phone         string                      &lt;code&gt;json:&quot;phone&quot;&lt;/code&gt;    // 电话号码
- Email         string                      &lt;code&gt;json:&quot;email&quot;&lt;/code&gt;    // 用户的邮箱 
- Role          string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;        // 已废弃字段
- BkToken       string                      &lt;code&gt;json:&quot;bk_token&quot;&lt;/code&gt; // bk_token 用来写入session
- OnwerUin      string                      &lt;code&gt;json:&quot;current_supplier&quot;&lt;/code&gt; //预留字段
- OwnerUinArr   []LoginUserInfoOwnerUinList &lt;code&gt;json:&quot;supplier_list&quot;&lt;/code&gt; //预留字段
- IsOwner       bool                        &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 预留字段
- Extra         map[string]interface{}      &lt;code&gt;json:&quot;extra&quot;&lt;/code&gt;         // 预留字段
- Language      string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
- AvatarUrl     string                      &lt;code&gt;json:&quot;avatar_url&quot;&lt;/code&gt; //用户头像
- SupplierID    int64                       &lt;code&gt;json:&quot;supplier_id&quot;&lt;/code&gt; // 预留字段，默认值即可
- MultiSupplier bool                        &lt;code&gt;json:&quot;multi_supplier&quot;&lt;/code&gt; // 预留字段，默认值即可
-}&lt;/li&gt;
+  &lt;li&gt;user 返回当前登录用户的信息&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;``` golang struct 
+type LoginUserInfo struct {
+	UserName      string                      &lt;code&gt;json:&quot;username&quot;&lt;/code&gt; // 用户的英文名，
+	ChName        string                      &lt;code&gt;json:&quot;chname&quot;&lt;/code&gt;   // 用户的中文名
+	Phone         string                      &lt;code&gt;json:&quot;phone&quot;&lt;/code&gt;    // 电话号码
+	Email         string                      &lt;code&gt;json:&quot;email&quot;&lt;/code&gt;    // 用户的邮箱 
+	Role          string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;        // 已废弃字段
+	BkToken       string                      &lt;code&gt;json:&quot;bk_token&quot;&lt;/code&gt; // bk_token 用来写入session
+	OnwerUin      string                      &lt;code&gt;json:&quot;current_supplier&quot;&lt;/code&gt; //预留字段
+	OwnerUinArr   []LoginUserInfoOwnerUinList &lt;code&gt;json:&quot;supplier_list&quot;&lt;/code&gt; //预留字段
+	IsOwner       bool                        &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 预留字段
+	Extra         map[string]interface{}      &lt;code&gt;json:&quot;extra&quot;&lt;/code&gt;         // 预留字段
+	Language      string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
+	AvatarUrl     string                      &lt;code&gt;json:&quot;avatar_url&quot;&lt;/code&gt; //用户头像
+	SupplierID    int64                       &lt;code&gt;json:&quot;supplier_id&quot;&lt;/code&gt; // 预留字段，默认值即可
+	MultiSupplier bool                        &lt;code&gt;json:&quot;multi_supplier&quot;&lt;/code&gt; // 预留字段，默认值即可
+}&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt; - loginSucc 是否登录成功
  

@@ -96,6 +96,7 @@ interface 定义的位置：src/web_server/middleware/user/plugins/manager/manag
  
  返回值：
  - user 返回当前登录用户的信息
+ 
 ``` golang struct 
 type LoginUserInfo struct {
 	UserName      string                      `json:"username"` // 用户的英文名，
