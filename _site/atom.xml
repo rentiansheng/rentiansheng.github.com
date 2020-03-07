@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-03-07T17:44:05+08:00</updated>
+ <updated>2020-03-07T17:46:23+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -120,43 +120,51 @@ bk_login_url = http://127.0.0.1/login/?app_id=%s&amp;amp;c_url=%s
   &lt;li&gt;user 返回当前登录用户的信息&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;``` golang struct 
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt; 
 type LoginUserInfo struct {
-	UserName      string                      &lt;code&gt;json:&quot;username&quot;&lt;/code&gt; // 用户的英文名，
-	ChName        string                      &lt;code&gt;json:&quot;chname&quot;&lt;/code&gt;   // 用户的中文名
-	Phone         string                      &lt;code&gt;json:&quot;phone&quot;&lt;/code&gt;    // 电话号码
-	Email         string                      &lt;code&gt;json:&quot;email&quot;&lt;/code&gt;    // 用户的邮箱 
-	Role          string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;        // 已废弃字段
-	BkToken       string                      &lt;code&gt;json:&quot;bk_token&quot;&lt;/code&gt; // bk_token 用来写入session
-	OnwerUin      string                      &lt;code&gt;json:&quot;current_supplier&quot;&lt;/code&gt; //预留字段
-	OwnerUinArr   []LoginUserInfoOwnerUinList &lt;code&gt;json:&quot;supplier_list&quot;&lt;/code&gt; //预留字段
-	IsOwner       bool                        &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 预留字段
-	Extra         map[string]interface{}      &lt;code&gt;json:&quot;extra&quot;&lt;/code&gt;         // 预留字段
-	Language      string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
-	AvatarUrl     string                      &lt;code&gt;json:&quot;avatar_url&quot;&lt;/code&gt; //用户头像
-	SupplierID    int64                       &lt;code&gt;json:&quot;supplier_id&quot;&lt;/code&gt; // 预留字段，默认值即可
-	MultiSupplier bool                        &lt;code&gt;json:&quot;multi_supplier&quot;&lt;/code&gt; // 预留字段，默认值即可
-}&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; - loginSucc 是否登录成功
- 
- 其他：
- 
- - 登录系统无法在当前bk-cmdb域名的cookie写入bk_token的的时候，可以在这里完成。 
+	UserName      string                      `json:&quot;username&quot;` // 用户的英文名，
+	ChName        string                      `json:&quot;chname&quot;`   // 用户的中文名
+	Phone         string                      `json:&quot;phone&quot;`    // 电话号码
+	Email         string                      `json:&quot;email&quot;`    // 用户的邮箱 
+	Role          string                      `json:&quot;-&quot;`        // 已废弃字段
+	BkToken       string                      `json:&quot;bk_token&quot;` // bk_token 用来写入session
+	OnwerUin      string                      `json:&quot;current_supplier&quot;` //预留字段
+	OwnerUinArr   []LoginUserInfoOwnerUinList `json:&quot;supplier_list&quot;` //预留字段
+	IsOwner       bool                        `json:&quot;-&quot;`             // 预留字段
+	Extra         map[string]interface{}      `json:&quot;extra&quot;`         // 预留字段
+	Language      string                      `json:&quot;-&quot;`             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
+	AvatarUrl     string                      `json:&quot;avatar_url&quot;` //用户头像
+	SupplierID    int64                       `json:&quot;supplier_id&quot;` // 预留字段，默认值即可
+	MultiSupplier bool                        `json:&quot;multi_supplier&quot;` // 预留字段，默认值即可
+}
 
 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;loginSucc 是否登录成功&lt;/li&gt;
+&lt;/ul&gt;
 
-######  GetUserList 从登录系统获取用户列表
+&lt;p&gt;其他：&lt;/p&gt;
 
-参数：
- - c  gin 框架请求相关信息，用来获取request header和cookie信息。 
- - config  web.conf 配置文件内容， eg: map[string]string{&quot;sit.domain_url&quot;:&quot;xx&quot;, &quot;login.version&quot;:&quot;xxxx&quot;}
- 
- 返回值:
- 
-- []*LoginSystemUserInfo 
+&lt;ul&gt;
+  &lt;li&gt;登录系统无法在当前bk-cmdb域名的cookie写入bk_token的的时候，可以在这里完成。&lt;/li&gt;
+&lt;/ul&gt;
 
-``` golang struct 
+&lt;h6 id=&quot;getuserlist-从登录系统获取用户列表&quot;&gt;GetUserList 从登录系统获取用户列表&lt;/h6&gt;
+
+&lt;p&gt;参数：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;c  gin 框架请求相关信息，用来获取request header和cookie信息。&lt;/li&gt;
+  &lt;li&gt;config  web.conf 配置文件内容， eg: map[string]string{“sit.domain_url”:”xx”, “login.version”:”xxxx”}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;返回值:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;[]*LoginSystemUserInfo&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;
 type LoginSystemUserInfo struct {
 	CnName string `json:&quot;chinese_name&quot;` ### 中文名
 	EnName string `json:&quot;english_name&quot;`  ### 英文名

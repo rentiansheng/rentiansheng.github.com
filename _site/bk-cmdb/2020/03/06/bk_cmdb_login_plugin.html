@@ -232,43 +232,51 @@ bk_login_url = http://127.0.0.1/login/?app_id=%s&amp;c_url=%s
   <li>user 返回当前登录用户的信息</li>
 </ul>
 
-<p>``` golang struct 
+<pre><code class="language-golang"> 
 type LoginUserInfo struct {
-	UserName      string                      <code>json:"username"</code> // 用户的英文名，
-	ChName        string                      <code>json:"chname"</code>   // 用户的中文名
-	Phone         string                      <code>json:"phone"</code>    // 电话号码
-	Email         string                      <code>json:"email"</code>    // 用户的邮箱 
-	Role          string                      <code>json:"-"</code>        // 已废弃字段
-	BkToken       string                      <code>json:"bk_token"</code> // bk_token 用来写入session
-	OnwerUin      string                      <code>json:"current_supplier"</code> //预留字段
-	OwnerUinArr   []LoginUserInfoOwnerUinList <code>json:"supplier_list"</code> //预留字段
-	IsOwner       bool                        <code>json:"-"</code>             // 预留字段
-	Extra         map[string]interface{}      <code>json:"extra"</code>         // 预留字段
-	Language      string                      <code>json:"-"</code>             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
-	AvatarUrl     string                      <code>json:"avatar_url"</code> //用户头像
-	SupplierID    int64                       <code>json:"supplier_id"</code> // 预留字段，默认值即可
-	MultiSupplier bool                        <code>json:"multi_supplier"</code> // 预留字段，默认值即可
-}</p>
-
-<pre><code> - loginSucc 是否登录成功
- 
- 其他：
- 
- - 登录系统无法在当前bk-cmdb域名的cookie写入bk_token的的时候，可以在这里完成。 
+	UserName      string                      `json:"username"` // 用户的英文名，
+	ChName        string                      `json:"chname"`   // 用户的中文名
+	Phone         string                      `json:"phone"`    // 电话号码
+	Email         string                      `json:"email"`    // 用户的邮箱 
+	Role          string                      `json:"-"`        // 已废弃字段
+	BkToken       string                      `json:"bk_token"` // bk_token 用来写入session
+	OnwerUin      string                      `json:"current_supplier"` //预留字段
+	OwnerUinArr   []LoginUserInfoOwnerUinList `json:"supplier_list"` //预留字段
+	IsOwner       bool                        `json:"-"`             // 预留字段
+	Extra         map[string]interface{}      `json:"extra"`         // 预留字段
+	Language      string                      `json:"-"`             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
+	AvatarUrl     string                      `json:"avatar_url"` //用户头像
+	SupplierID    int64                       `json:"supplier_id"` // 预留字段，默认值即可
+	MultiSupplier bool                        `json:"multi_supplier"` // 预留字段，默认值即可
+}
 
 
+</code></pre>
+<ul>
+  <li>loginSucc 是否登录成功</li>
+</ul>
 
-######  GetUserList 从登录系统获取用户列表
+<p>其他：</p>
 
-参数：
- - c  gin 框架请求相关信息，用来获取request header和cookie信息。 
- - config  web.conf 配置文件内容， eg: map[string]string{"sit.domain_url":"xx", "login.version":"xxxx"}
- 
- 返回值:
- 
-- []*LoginSystemUserInfo 
+<ul>
+  <li>登录系统无法在当前bk-cmdb域名的cookie写入bk_token的的时候，可以在这里完成。</li>
+</ul>
 
-``` golang struct 
+<h6 id="getuserlist-从登录系统获取用户列表">GetUserList 从登录系统获取用户列表</h6>
+
+<p>参数：</p>
+<ul>
+  <li>c  gin 框架请求相关信息，用来获取request header和cookie信息。</li>
+  <li>config  web.conf 配置文件内容， eg: map[string]string{“sit.domain_url”:”xx”, “login.version”:”xxxx”}</li>
+</ul>
+
+<p>返回值:</p>
+
+<ul>
+  <li>[]*LoginSystemUserInfo</li>
+</ul>
+
+<pre><code class="language-golang">
 type LoginSystemUserInfo struct {
 	CnName string `json:"chinese_name"` ### 中文名
 	EnName string `json:"english_name"`  ### 英文名
