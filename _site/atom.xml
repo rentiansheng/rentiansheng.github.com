@@ -4,13 +4,230 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-03-02T20:56:27+08:00</updated>
+ <updated>2020-03-07T17:35:46+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>蓝鲸配置平台-蓝鲸cmdb开发登录插件</title>
+   <link href="http://localhost:4000/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html"/>
+   <updated>2020-03-06T00:00:00+08:00</updated>
+   <id>http://localhost:4000/bk-cmdb/2020/03/06/bk_cmdb_login_plugin</id>
+   <content type="html">&lt;h4 id=&quot;前提&quot;&gt;前提&lt;/h4&gt;
+
+&lt;p&gt;蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
+是蓝鲸运维体系一部分，蓝鲸社区版本是免费，社区地址&lt;a href=&quot;&quot;&gt;https://bk.tencent.com/&lt;/a&gt;
+并且蓝鲸很多组件已经开源，蓝鲸cmdb就是其中之一，&lt;/p&gt;
+
+&lt;p&gt;蓝鲸配置平台作为蓝鲸一部分登录及用户管理依赖蓝鲸登录及用户组件， 
+如果药蓝鲸cmdb使用其他登录系统，就需要进行第三方开发。&lt;/p&gt;
+
+&lt;h4 id=&quot;准备&quot;&gt;准备&lt;/h4&gt;
+
+&lt;p&gt;开发前，我们需要了解下面的问题：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;bk-cmdb是如何判断用户已经登录？&lt;/li&gt;
+  &lt;li&gt;bk-cmdb是如何跳转到登录系统？&lt;/li&gt;
+  &lt;li&gt;bk-cmdb是如何选择登录组件？&lt;/li&gt;
+  &lt;li&gt;bk-cmdb登录组件需要实现那些接口？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;bk-cmdb-登录流程如下&quot;&gt;bk-cmdb 登录流程如下：&lt;/h5&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;先判断用户session在bk-cmdb是否已经存？&lt;/li&gt;
+  &lt;li&gt;已经存在，且session中的bk_token和cookie相等，转发请求。其他情况执行下一步。&lt;/li&gt;
+  &lt;li&gt;根据配置选择对应登录系统&lt;/li&gt;
+  &lt;li&gt;调用登录系统判断用户是否登录？&lt;/li&gt;
+  &lt;li&gt;如果用户已经登录，转发请求。否则执行下一步&lt;/li&gt;
+  &lt;li&gt;如果没有登录，返回登录系统跳转的地址。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;配置文件讲解&quot;&gt;配置文件讲解，&lt;/h4&gt;
+
+&lt;p&gt;登录系统的配置都在web.conf&lt;/p&gt;
+
+&lt;p&gt;开源版本在cmdb_adminserver/configures&lt;/p&gt;
+
+&lt;p&gt;文件内容解释：（v3.8.x分支，只写出用到参数）&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;site bk-cmdb网站相关的配置&lt;/p&gt;
+
+    &lt;p&gt;site.domain_url bk-cmdb的域名，用来做跳转使用&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;login 登录系统相关的配置&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;
+        &lt;p&gt;login.version 当前系统系统使用的登录方式，现在支持两种blueking,skip-login,
+ 默认是blueking，蓝鲸登录，skip-login 表示没有登录系统，所有请求都是admin账户&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;login配置下其他子项，都是登录系统用到其他的配置，可以根据登录方式组件的需要来配置，
+ 建议有检查是否登录，登录系统跳转的url等相关配置&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;示例:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ini&quot;&gt;
+[site]
+domain_url = http://127.0.0.1:80
+
+[login]
+version=skip-login  
+check_url = http://127.0.0.1/login/accounts/get_user/?bk_token=
+bk_login_url = http://127.0.0.1/login/?app_id=%s&amp;amp;c_url=%s
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;开发登录插件&quot;&gt;开发登录插件&lt;/h4&gt;
+
+&lt;p&gt;需要实现功能：&lt;/p&gt;
+
+&lt;p&gt;interface 定义的位置：src/web_server/middleware/user/plugins/manager/manager.go&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-interface&quot;&gt;
+	LoginUser(c *gin.Context, config map[string]string, isMultiOwner bool) (user *LoginUserInfo, loginSucc bool)
+	GetUserList(c *gin.Context, config map[string]string, params map[string]string) ([]*LoginSystemUserInfo, error)
+	GetLoginUrl(c *gin.Context, config map[string]string, input *LogoutRequestParams) string
+
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&quot;loginuser-判断用户是否登录&quot;&gt;LoginUser 判断用户是否登录&lt;/h6&gt;
+
+&lt;p&gt;参数：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;c  gin 框架请求相关信息，用来获取request header和cookie信息。&lt;/li&gt;
+  &lt;li&gt;config  web.conf 配置文件内容， eg: map[string]string{“sit.domain_url”:”xx”, “login.version”:”xxxx”}&lt;/li&gt;
+  &lt;li&gt;isMultiOwner 保留项目，暂时未启用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;返回值：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;user 返回当前登录用户的信息
+``` golang struct 
+type LoginUserInfo struct {
+ UserName      string                      &lt;code&gt;json:&quot;username&quot;&lt;/code&gt; // 用户的英文名，
+ ChName        string                      &lt;code&gt;json:&quot;chname&quot;&lt;/code&gt;   // 用户的中文名
+ Phone         string                      &lt;code&gt;json:&quot;phone&quot;&lt;/code&gt;    // 电话号码
+ Email         string                      &lt;code&gt;json:&quot;email&quot;&lt;/code&gt;    // 用户的邮箱 
+ Role          string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;        // 已废弃字段
+ BkToken       string                      &lt;code&gt;json:&quot;bk_token&quot;&lt;/code&gt; // bk_token 用来写入session
+ OnwerUin      string                      &lt;code&gt;json:&quot;current_supplier&quot;&lt;/code&gt; //预留字段
+ OwnerUinArr   []LoginUserInfoOwnerUinList &lt;code&gt;json:&quot;supplier_list&quot;&lt;/code&gt; //预留字段
+ IsOwner       bool                        &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 预留字段
+ Extra         map[string]interface{}      &lt;code&gt;json:&quot;extra&quot;&lt;/code&gt;         // 预留字段
+ Language      string                      &lt;code&gt;json:&quot;-&quot;&lt;/code&gt;             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
+ AvatarUrl     string                      &lt;code&gt;json:&quot;avatar_url&quot;&lt;/code&gt; //用户头像
+ SupplierID    int64                       &lt;code&gt;json:&quot;supplier_id&quot;&lt;/code&gt; // 预留字段，默认值即可
+ MultiSupplier bool                        &lt;code&gt;json:&quot;multi_supplier&quot;&lt;/code&gt; // 预留字段，默认值即可
+}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt; - loginSucc 是否登录成功
+ 
+ 其他：
+ 
+ - 登录系统无法在当前bk-cmdb域名的cookie写入bk_token的的时候，可以在这里完成。 
+
+
+
+######  GetUserList 从登录系统获取用户列表
+
+参数：
+ - c  gin 框架请求相关信息，用来获取request header和cookie信息。 
+ - config  web.conf 配置文件内容， eg: map[string]string{&quot;sit.domain_url&quot;:&quot;xx&quot;, &quot;login.version&quot;:&quot;xxxx&quot;}
+ 
+ 返回值:
+ 
+- []*LoginSystemUserInfo 
+
+``` golang struct 
+type LoginSystemUserInfo struct {
+	CnName string `json:&quot;chinese_name&quot;` ### 中文名
+	EnName string `json:&quot;english_name&quot;`  ### 英文名
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;error 错信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;-&lt;/p&gt;
+
+&lt;h6 id=&quot;getloginurl-获取登录系统的地址&quot;&gt;GetLoginUrl 获取登录系统的地址&lt;/h6&gt;
+
+&lt;p&gt;参数：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;c  gin 框架请求相关信息，用来获取request header和cookie信息。&lt;/li&gt;
+  &lt;li&gt;config  web.conf 配置文件内容， eg: map[string]string{“sit.domain_url”:”xx”, “login.version”:”xxxx”}&lt;/li&gt;
+  &lt;li&gt;input 使用的协议， https, http&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;返回值:&lt;/p&gt;
+
+&lt;p&gt;string 跳转到登录系统的地址，&lt;/p&gt;
+
+&lt;p&gt;建议：
+登录系统都支持登录成功后跳转回原有系统，这个要设置好。&lt;/p&gt;
+
+&lt;h5 id=&quot;注册登录插件&quot;&gt;注册登录插件&lt;/h5&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-glang&quot;&gt;package blueking
+
+import (
+	&quot;configcenter/src/web_server/middleware/user/plugins/manager&quot;
+)
+
+func init() {
+	plugin := &amp;amp;metadata.LoginPluginInfo{
+		Name:       &quot;my bk-cmdb login system&quot;, //登录组件的描述
+		Version:    &quot;my-login&quot;,  // 登录组件的名字
+		HandleFunc: &amp;amp;user{},  //提供服务集合, 提供LoginUser，GetUserList，GetLoginUrl功能。
+	}
+	manager.RegisterPlugin(plugin) //想插件管理注册插件
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id=&quot;提供服务&quot;&gt;提供服务&lt;/h5&gt;
+
+&lt;p&gt;去 src/web_server/middleware/user/plugins/register 目录中新加一个文件。导入注册登录插件所在的package&lt;/p&gt;
+
+&lt;p&gt;可以参看blueking的方式。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;package manager
+
+import (
+	_ &quot;configcenter/src/web_server/middleware/user/plugins/method/blueking&quot;
+)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id=&quot;查看效果&quot;&gt;查看效果&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;重新编译webserver服务&lt;/li&gt;
+  &lt;li&gt;修改web.conf的login.version配置项的值等于注册登录插件中的plugin.Version&lt;/li&gt;
+  &lt;li&gt;重启cmdb_adminserver使配置生效&lt;/li&gt;
+  &lt;li&gt;重启cmdb_webserver查看效果&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>docker mongodb 集群模式Golang连接不上的问题</title>

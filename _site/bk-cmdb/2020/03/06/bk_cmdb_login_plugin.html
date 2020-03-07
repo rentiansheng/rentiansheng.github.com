@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="蓝鲸配置平台-蓝鲸cmdb开发登录插件">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      蓝鲸配置平台-蓝鲸cmdb开发登录插件 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+    <a class="sidebar-nav-item" href="http://www.rhttp.cn" target="_blank">之前blog</a>
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">蓝鲸配置平台-蓝鲸cmdb开发登录插件</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2020-03-06</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> bk-cmdb
+</span>
+  </div>
+  <h4 id="前提">前提</h4>
+
+<p>蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
+是蓝鲸运维体系一部分，蓝鲸社区版本是免费，社区地址<a href="">https://bk.tencent.com/</a>
+并且蓝鲸很多组件已经开源，蓝鲸cmdb就是其中之一，</p>
+
+<p>蓝鲸配置平台作为蓝鲸一部分登录及用户管理依赖蓝鲸登录及用户组件， 
+如果药蓝鲸cmdb使用其他登录系统，就需要进行第三方开发。</p>
+
+<h4 id="准备">准备</h4>
+
+<p>开发前，我们需要了解下面的问题：</p>
+
+<ul>
+  <li>bk-cmdb是如何判断用户已经登录？</li>
+  <li>bk-cmdb是如何跳转到登录系统？</li>
+  <li>bk-cmdb是如何选择登录组件？</li>
+  <li>bk-cmdb登录组件需要实现那些接口？</li>
+</ul>
+
+<h5 id="bk-cmdb-登录流程如下">bk-cmdb 登录流程如下：</h5>
+
+<ol>
+  <li>先判断用户session在bk-cmdb是否已经存？</li>
+  <li>已经存在，且session中的bk_token和cookie相等，转发请求。其他情况执行下一步。</li>
+  <li>根据配置选择对应登录系统</li>
+  <li>调用登录系统判断用户是否登录？</li>
+  <li>如果用户已经登录，转发请求。否则执行下一步</li>
+  <li>如果没有登录，返回登录系统跳转的地址。</li>
+</ol>
+
+<h4 id="配置文件讲解">配置文件讲解，</h4>
+
+<p>登录系统的配置都在web.conf</p>
+
+<p>开源版本在cmdb_adminserver/configures</p>
+
+<p>文件内容解释：（v3.8.x分支，只写出用到参数）</p>
+
+<ul>
+  <li>
+    <p>site bk-cmdb网站相关的配置</p>
+
+    <p>site.domain_url bk-cmdb的域名，用来做跳转使用</p>
+  </li>
+  <li>
+    <p>login 登录系统相关的配置</p>
+
+    <ol>
+      <li>
+        <p>login.version 当前系统系统使用的登录方式，现在支持两种blueking,skip-login,
+ 默认是blueking，蓝鲸登录，skip-login 表示没有登录系统，所有请求都是admin账户</p>
+      </li>
+      <li>
+        <p>login配置下其他子项，都是登录系统用到其他的配置，可以根据登录方式组件的需要来配置，
+ 建议有检查是否登录，登录系统跳转的url等相关配置</p>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<p>示例:</p>
+<pre><code class="language-ini">
+[site]
+domain_url = http://127.0.0.1:80
+
+[login]
+version=skip-login  
+check_url = http://127.0.0.1/login/accounts/get_user/?bk_token=
+bk_login_url = http://127.0.0.1/login/?app_id=%s&amp;c_url=%s
+
+
+</code></pre>
+
+<h4 id="开发登录插件">开发登录插件</h4>
+
+<p>需要实现功能：</p>
+
+<p>interface 定义的位置：src/web_server/middleware/user/plugins/manager/manager.go</p>
+
+<pre><code class="language-interface">
+	LoginUser(c *gin.Context, config map[string]string, isMultiOwner bool) (user *LoginUserInfo, loginSucc bool)
+	GetUserList(c *gin.Context, config map[string]string, params map[string]string) ([]*LoginSystemUserInfo, error)
+	GetLoginUrl(c *gin.Context, config map[string]string, input *LogoutRequestParams) string
+
+
+
+</code></pre>
+
+<h6 id="loginuser-判断用户是否登录">LoginUser 判断用户是否登录</h6>
+
+<p>参数：</p>
+<ul>
+  <li>c  gin 框架请求相关信息，用来获取request header和cookie信息。</li>
+  <li>config  web.conf 配置文件内容， eg: map[string]string{“sit.domain_url”:”xx”, “login.version”:”xxxx”}</li>
+  <li>isMultiOwner 保留项目，暂时未启用</li>
+</ul>
+
+<p>返回值：</p>
+<ul>
+  <li>user 返回当前登录用户的信息
+``` golang struct 
+type LoginUserInfo struct {
+ UserName      string                      <code>json:"username"</code> // 用户的英文名，
+ ChName        string                      <code>json:"chname"</code>   // 用户的中文名
+ Phone         string                      <code>json:"phone"</code>    // 电话号码
+ Email         string                      <code>json:"email"</code>    // 用户的邮箱 
+ Role          string                      <code>json:"-"</code>        // 已废弃字段
+ BkToken       string                      <code>json:"bk_token"</code> // bk_token 用来写入session
+ OnwerUin      string                      <code>json:"current_supplier"</code> //预留字段
+ OwnerUinArr   []LoginUserInfoOwnerUinList <code>json:"supplier_list"</code> //预留字段
+ IsOwner       bool                        <code>json:"-"</code>             // 预留字段
+ Extra         map[string]interface{}      <code>json:"extra"</code>         // 预留字段
+ Language      string                      <code>json:"-"</code>             // 用户在在登录系统中的语言，zh-cn,en. zh-cn中文，en英文，默认值zh-cn
+ AvatarUrl     string                      <code>json:"avatar_url"</code> //用户头像
+ SupplierID    int64                       <code>json:"supplier_id"</code> // 预留字段，默认值即可
+ MultiSupplier bool                        <code>json:"multi_supplier"</code> // 预留字段，默认值即可
+}</li>
+</ul>
+
+<pre><code> - loginSucc 是否登录成功
+ 
+ 其他：
+ 
+ - 登录系统无法在当前bk-cmdb域名的cookie写入bk_token的的时候，可以在这里完成。 
+
+
+
+######  GetUserList 从登录系统获取用户列表
+
+参数：
+ - c  gin 框架请求相关信息，用来获取request header和cookie信息。 
+ - config  web.conf 配置文件内容， eg: map[string]string{"sit.domain_url":"xx", "login.version":"xxxx"}
+ 
+ 返回值:
+ 
+- []*LoginSystemUserInfo 
+
+``` golang struct 
+type LoginSystemUserInfo struct {
+	CnName string `json:"chinese_name"` ### 中文名
+	EnName string `json:"english_name"`  ### 英文名
+}
+
+</code></pre>
+
+<ul>
+  <li>error 错信息</li>
+</ul>
+
+<p>-</p>
+
+<h6 id="getloginurl-获取登录系统的地址">GetLoginUrl 获取登录系统的地址</h6>
+
+<p>参数：</p>
+<ul>
+  <li>c  gin 框架请求相关信息，用来获取request header和cookie信息。</li>
+  <li>config  web.conf 配置文件内容， eg: map[string]string{“sit.domain_url”:”xx”, “login.version”:”xxxx”}</li>
+  <li>input 使用的协议， https, http</li>
+</ul>
+
+<p>返回值:</p>
+
+<p>string 跳转到登录系统的地址，</p>
+
+<p>建议：
+登录系统都支持登录成功后跳转回原有系统，这个要设置好。</p>
+
+<h5 id="注册登录插件">注册登录插件</h5>
+
+<pre><code class="language-glang">package blueking
+
+import (
+	"configcenter/src/web_server/middleware/user/plugins/manager"
+)
+
+func init() {
+	plugin := &amp;metadata.LoginPluginInfo{
+		Name:       "my bk-cmdb login system", //登录组件的描述
+		Version:    "my-login",  // 登录组件的名字
+		HandleFunc: &amp;user{},  //提供服务集合, 提供LoginUser，GetUserList，GetLoginUrl功能。
+	}
+	manager.RegisterPlugin(plugin) //想插件管理注册插件
+}
+
+</code></pre>
+
+<h5 id="提供服务">提供服务</h5>
+
+<p>去 src/web_server/middleware/user/plugins/register 目录中新加一个文件。导入注册登录插件所在的package</p>
+
+<p>可以参看blueking的方式。</p>
+
+<pre><code class="language-golang">package manager
+
+import (
+	_ "configcenter/src/web_server/middleware/user/plugins/method/blueking"
+)
+
+</code></pre>
+
+<h5 id="查看效果">查看效果</h5>
+
+<ul>
+  <li>重新编译webserver服务</li>
+  <li>修改web.conf的login.version配置项的值等于注册登录插件中的plugin.Version</li>
+  <li>重启cmdb_adminserver使配置生效</li>
+  <li>重启cmdb_webserver查看效果</li>
+</ul>
+
+  <div class="post-affix">
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/tcp/network/2020/03/02/mongoset_con.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://localhost:4000/tcp/network/2020/03/02/mongoset_con.html" title="docker mongodb 集群模式Golang连接不上的问题">docker mongodb 集群模式Golang连接不上的问题</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/tcp/network/2020/01/20/http_put_request_abort.html" title="调用出现网络错误分析的过程">调用出现网络错误分析的过程</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2020-01-20</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/golang/http/client/2019/12/31/golang_http_client.html" title="golang  http client 遇到的问题">golang  http client 遇到的问题</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2019-12-31</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
