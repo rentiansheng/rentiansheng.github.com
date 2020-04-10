@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  mysql http 优雅重启
+title:  golang http 优雅重启
 category: [golang, graceful]
 tags: [golang]
 ---
