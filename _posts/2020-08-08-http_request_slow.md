@@ -36,7 +36,7 @@ php中 nginx -> php-fpm
 
 golang 中的net/http中的处理逻辑 
 
-#### 实例
+#### 示例代码
 
 我用golang 做了例子
 

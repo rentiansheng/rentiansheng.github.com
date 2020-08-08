@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-08-08T17:53:08+08:00</updated>
+ <updated>2020-08-08T21:52:01+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -49,7 +49,7 @@
 
 &lt;p&gt;golang 中的net/http中的处理逻辑&lt;/p&gt;
 
-&lt;h4 id=&quot;实例&quot;&gt;实例&lt;/h4&gt;
+&lt;h4 id=&quot;示例代码&quot;&gt;示例代码&lt;/h4&gt;
 
 &lt;p&gt;我用golang 做了例子&lt;/p&gt;
 
