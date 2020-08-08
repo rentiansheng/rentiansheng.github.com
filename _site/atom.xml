@@ -4,13 +4,113 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-03-07T18:07:15+08:00</updated>
+ <updated>2020-08-08T17:53:08+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>调用第三方接口返回过慢的分析过程</title>
+   <link href="http://localhost:4000/http/2020/08/08/http_request_slow.html"/>
+   <updated>2020-08-08T00:00:00+08:00</updated>
+   <id>http://localhost:4000/http/2020/08/08/http_request_slow</id>
+   <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;最近在对第三方系统过程中经常某一个请求耗时很长（请求到返回超过2m）。通过验证发现请求流程中网络传输和业务逻辑处理的耗时并不长。那么时间都耗费到什么时间了？&lt;/p&gt;
+
+&lt;h3 id=&quot;查找问题的流程&quot;&gt;查找问题的流程&lt;/h3&gt;
+
+&lt;p&gt;按照个人经验HTTP 的请求流程的耗时是在网络传输和业务逻辑的处理中，现在根据这个流程来确定问题。&lt;/p&gt;
+
+&lt;h4 id=&quot;确定是否网络问题&quot;&gt;确定是否网络问题&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;通过长时间的ping 发现网络质量比较稳定，时间都在3ms 之内。&lt;/li&gt;
+  &lt;li&gt;通过用strace -p pid 发下connect 并没有失败，一直在等待数据数据返回&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;确定是否业务逻辑处理较慢&quot;&gt;确定是否业务逻辑处理较慢&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;日志中返回较慢的请求参数。单独拿出来多次执行，返回情况正常。&lt;/li&gt;
+  &lt;li&gt;与第三方系统沟通，发现出现问题请求的执行逻辑耗时相对比较短，不存在执行比较慢的情况&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;请求时间究竟消耗在什么位置&quot;&gt;请求时间究竟消耗在什么位置&lt;/h3&gt;
+
+&lt;p&gt;整个请求过程中，网络和业务逻辑耗时都没有问题， 但是还是缺少一个环节，因为现在服务都是只负责处理业务逻辑，accept连接和读取HTTP请求的内容，都是有框架或者第三方服务完成. 在上面查找问题缺少的环节就是server端accept请求后，将请求的内容发给服务的时间。 这个部分时间不再网络传输和业务逻辑中提现。因为这一时刻网络已经建立成功， 还没有到业务里面，所以业务逻辑的日志没有&lt;/p&gt;
+
+&lt;p&gt;比如：&lt;/p&gt;
+
+&lt;p&gt;php中 nginx -&amp;gt; php-fpm&lt;/p&gt;
+
+&lt;p&gt;golang 中的net/http中的处理逻辑&lt;/p&gt;
+
+&lt;h4 id=&quot;实例&quot;&gt;实例&lt;/h4&gt;
+
+&lt;p&gt;我用golang 做了例子&lt;/p&gt;
+
+&lt;p&gt;服务端代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;
+func test(w http.ResponseWriter, r *http.Request) {
+	ts := time.Now().Unix()
+	// 这里是业务中执行的耗时
+	w.Write([]byte(fmt.Sprintf(&quot;%d&quot;, time.Now().Unix()-ts)))
+}
+
+func main() {
+	// 限制golang 协程的处理能力
+	runtime.GOMAXPROCS(1)
+
+	http.HandleFunc(&quot;/&quot;, test)
+	if err := http.ListenAndServe(&quot;:51511&quot;, nil); err != nil {
+		fmt.Println(&quot;%s&quot;, err)
+		return
+	} else {
+		return
+	}
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;客户端：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;func main() {
+
+	var exitWait sync.WaitGroup
+	for idx := 0; idx &amp;lt; 1000; idx++ {
+		exitWait.Add(1)
+		go func() {
+			ts := time.Now().Unix()
+			res, err := http.Post(&quot;http://127.0.0.1:51511&quot;, &quot;application/json&quot;, nil)
+			if err != nil {
+				panic(err)
+			}
+			respBody, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				panic(err)
+			}
+			sub := time.Now().Unix() - ts
+
+			fmt.Println(&quot;request time(s):&quot;, sub, &quot;server handle time(s):&quot;, string(respBody))
+			exitWait.Done()
+		}()
+	}
+
+	exitWait.Wait()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;通过执行发现：
+服务端执行在毫秒级别，但是整个请求耗时是在10s&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/http_request_slow_20200807.png&quot; alt=&quot;内存组织图&quot; /&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>蓝鲸配置平台-蓝鲸cmdb开发登录插件</title>
@@ -24,7 +124,7 @@
 并且蓝鲸很多组件已经开源，蓝鲸cmdb就是其中之一，&lt;/p&gt;
 
 &lt;p&gt;蓝鲸配置平台作为蓝鲸一部分登录及用户管理依赖蓝鲸登录及用户组件， 
-如果药蓝鲸cmdb使用其他登录系统，就需要进行第三方开发。&lt;/p&gt;
+如果需要蓝鲸cmdb使用其他登录系统，就需要进行第三方开发。&lt;/p&gt;
 
 &lt;h4 id=&quot;准备&quot;&gt;准备&lt;/h4&gt;
 
@@ -276,14 +376,14 @@ rs0:PRIMARY&amp;gt;
 127.0.0.1:27020
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;####### 可能出现的问题一&lt;/p&gt;
+&lt;h6 id=&quot;可能出现的问题一&quot;&gt;可能出现的问题一&lt;/h6&gt;
 
 &lt;p&gt;项目中配置的是IP:PORT，但是错误提示中出现是hostname:port.&lt;/p&gt;
 
 &lt;p&gt;hostname 是容器的hostname， 在外侧肯定是无法转换成IP的。 
 配置宿主的hosts&lt;/p&gt;
 
-&lt;p&gt;####### 可能出现的问题二&lt;/p&gt;
+&lt;h6 id=&quot;可能出现的问题二&quot;&gt;可能出现的问题二&lt;/h6&gt;
 
 &lt;p&gt;我的容器是用docker-compose build 出来. 我在其中使用了
 expose和ports暴露容器的端口, 我本意是expose的端口用来mognodb 集群使用，
@@ -358,7 +458,7 @@ ports的端口给服务使用。 但是具体使用的时候，提示出现了ex
  </entry>
  
  <entry>
-   <title>mysql http 优雅重启</title>
+   <title>golang http 优雅重启</title>
    <link href="http://localhost:4000/golang/graceful/2019/10/13/golang_http_graceful.html"/>
    <updated>2019-10-13T00:00:00+08:00</updated>
    <id>http://localhost:4000/golang/graceful/2019/10/13/golang_http_graceful</id>
@@ -794,7 +894,7 @@ func main() {
   &lt;li&gt;不同项目交互，如何在并发，错误重试，参数相同的情况下，无法通过关键字，时间来确定日志&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;#####  request id&lt;/p&gt;
+&lt;h5 id=&quot;request-id&quot;&gt;request id&lt;/h5&gt;
 
 &lt;ol&gt;
   &lt;li&gt;当前项目，根据request id 可以找到所有与请求相关的日志&lt;/li&gt;
