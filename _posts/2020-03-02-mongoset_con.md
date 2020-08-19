@@ -49,8 +49,7 @@ eg:
 
 项目中配置的是IP:PORT，但是错误提示中出现是hostname:port.
 
-hostname 是容器的hostname， 在外侧肯定是无法转换成IP的。 
-配置宿主的hosts
+hostname 是容器的hostname或者是容器的IP， 再容器外是访问到mongodb服务的
 
 ###### 可能出现的问题二
 
@@ -62,6 +61,15 @@ ports的端口给服务使用。 但是具体使用的时候，提示出现了ex
 
 
 
+
+#### 总结
+
+出现问题的原因： mongodb golang 的driver再使用rs 集群模式的情况下，只是通过配置mongodb 地址来连接服务，
+然后再通过连接到mongodb server， 取出mongodb rs相关配置， 找到mongodb server 的节点， 
+
+
+##### 解决防范： 
+就是将mongodb 配置rs配置地址， 让服务所再机器的网络可以访问rs 配置的地址即可。
 
 
 
