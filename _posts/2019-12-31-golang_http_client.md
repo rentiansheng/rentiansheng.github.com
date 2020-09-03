@@ -23,3 +23,8 @@ golang HTTP client 在收到数据的时候，在http response 在Context-Encodi
 
 在terminal,浏览器发送请求都可以正常访问，但是在golang服务中的HTTP 请求返回连接不上服务(i/o timeout)。这种情况查看下使用的HTTP 的client中的transport的Proxy 属性是不是给设置为nil，golang的http package中有一个叫ProxyFromEnvironment方法。改方法是从环境变量中获取配置的代理信息的。如果你需要使用系统配置的Proxy可以使用http.ProxyFromEnvironment方法,否则可以实现自己的proxy方法。
 
+
+
+### 出现I/O read timeout 
+
+这个有可能不是服务端引起的。 检查下是否的连接池的中连接是否设置连接的SetReadDeadline的值。 该方法再golang的net package 中的 conn.go 中的Conn对象中
