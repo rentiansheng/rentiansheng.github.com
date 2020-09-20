@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验)">
+  <meta name="keywords" content="调用第三方接口返回过慢的分析过程">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验) &middot; Reage blog
+      调用第三方接口返回过慢的分析过程 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -122,73 +122,103 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验)</h1>
+  <h1 class="post-title">调用第三方接口返回过慢的分析过程</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2018-04-29</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> golang, excel, and 数据验证
+    <span><i class="fa fa-clock-o"></i> 2020-08-08</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> http
 </span>
   </div>
-  <h2 id="完成的功能">完成的功能</h2>
+  <h3 id="背景">背景</h3>
+
+<p>最近在对第三方系统过程中经常某一个请求耗时很长（请求到返回超过2m）。通过验证发现请求流程中网络传输和业务逻辑处理的耗时并不长。那么时间都耗费到什么时间了？</p>
+
+<h3 id="查找问题的流程">查找问题的流程</h3>
+
+<p>按照个人经验HTTP 的请求流程的耗时是在网络传输和业务逻辑的处理中，现在根据这个流程来确定问题。</p>
+
+<h4 id="确定是否网络问题">确定是否网络问题</h4>
 
 <ol>
-  <li>单元格，列支持下拉列表选择</li>
-  <li>单元格，列支持范围校验</li>
-  <li>打开Excel支持单元格，列数据校验读取</li>
+  <li>通过长时间的ping 发现网络质量比较稳定，时间都在3ms 之内。</li>
+  <li>通过用strace -p pid 发下connect 并没有失败，一直在等待数据数据返回</li>
 </ol>
 
-<h2 id="需要注意的项目">需要注意的项目</h2>
+<h4 id="确定是否业务逻辑处理较慢">确定是否业务逻辑处理较慢</h4>
 
 <ol>
-  <li>Excel 数据校验支持设置校验字符的长度为255，</li>
-  <li>不支持Excel通过选择工作簿中的单元格作为校验条件</li>
+  <li>日志中返回较慢的请求参数。单独拿出来多次执行，返回情况正常。</li>
+  <li>与第三方系统沟通，发现出现问题请求的执行逻辑耗时相对比较短，不存在执行比较慢的情况</li>
 </ol>
 
-<h2 id="1-前提">1. 前提</h2>
-<hr />
+<h3 id="请求时间究竟消耗在什么位置">请求时间究竟消耗在什么位置</h3>
 
-<p>最近Golang开发的项目中用到excel 导入，导出。数据导出没什么问题， 直接写excel 就行了。但是导入模版遇到一些问题。</p>
+<p>整个请求过程中，网络和业务逻辑耗时都没有问题， 但是还是缺少一个环节，因为现在服务都是只负责处理业务逻辑，accept连接和读取HTTP请求的内容，都是有框架或者第三方服务完成. 在上面查找问题缺少的环节就是server端accept请求后，将请求的内容发给服务的时间。 这个部分时间不再网络传输和业务逻辑中提现。因为这一时刻网络已经建立成功， 还没有到业务里面，所以业务逻辑的日志没有</p>
 
-<p>问题如下：</p>
+<p>比如：</p>
 
-<pre><code>1. db中数据定义为字符串，字段如果用户填写都是数字，获取数据的时候，该字段就是数字，需要后端转换
-2. 枚举类型字段，填写难度过大。用户需要知道对应的值
-3. 字段范围值，填写比较困难，（如用户，类型等）
-3. 无法限定字段填写内容的长度
-4. 无法限定数字填写范围
+<p>php中 nginx -&gt; php-fpm</p>
+
+<p>golang 中的net/http中的处理逻辑</p>
+
+<h4 id="示例代码">示例代码</h4>
+
+<p>我用golang 做了例子</p>
+
+<p>服务端代码：</p>
+<pre><code class="language-golang">
+func test(w http.ResponseWriter, r *http.Request) {
+	ts := time.Now().Unix()
+	// 这里是业务中执行的耗时
+	w.Write([]byte(fmt.Sprintf("%d", time.Now().Unix()-ts)))
+}
+
+func main() {
+	// 限制golang 协程的处理能力
+	runtime.GOMAXPROCS(1)
+
+	http.HandleFunc("/", test)
+	if err := http.ListenAndServe(":51511", nil); err != nil {
+		fmt.Println("%s", err)
+		return
+	} else {
+		return
+	}
+
+}
+
 </code></pre>
 
-<p>为什么不直接放一个excel文件， 项目中数据导入，导出字段是不固定，需要根据个人的配置实字段来导入，导出</p>
+<p>客户端：</p>
+<pre><code class="language-golang">func main() {
 
-<h2 id="2-golang-excel-类库选择">2. Golang EXCEL 类库选择</h2>
-<hr />
+	var exitWait sync.WaitGroup
+	for idx := 0; idx &lt; 1000; idx++ {
+		exitWait.Add(1)
+		go func() {
+			ts := time.Now().Unix()
+			res, err := http.Post("http://127.0.0.1:51511", "application/json", nil)
+			if err != nil {
+				panic(err)
+			}
+			respBody, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				panic(err)
+			}
+			sub := time.Now().Unix() - ts
 
-<p>经过上网查找发现两个现在使用比较多golang 操作 excel 类库</p>
-<ol>
-  <li><a href="https://github.com/360EntSecGroup-Skylar/excelize">excelize</a></li>
-  <li><a href="https://github.com/tealeg/xlsx">xlsx</a></li>
-</ol>
+			fmt.Println("request time(s):", sub, "server handle time(s):", string(respBody))
+			exitWait.Done()
+		}()
+	}
 
-<p>最总，选择了xlsx, xlsx在star 和fork 比 excelle多。但是excelize最近活跃度上更活跃，文档更详细（有中文）</p>
+	exitWait.Wait()
+}
+</code></pre>
 
-<h2 id="3-使用excel-数据验证">3. 使用EXCEL 数据验证</h2>
-<hr />
-<p>xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能基于xlsx自己实现。</p>
+<p>通过执行发现：
+服务端执行在毫秒级别，但是整个请求耗时是在10s</p>
 
-<p>实现功能代码在：
-<a href="https://github.com/rentiansheng/xlsx">支持数据验证</a> 代码已经提交PR,但是未合并。
-现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。</p>
-
-<p>关于数据校验的代码的测试例子在<a href="https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go">数据验证test代码</a>
-可以go test 查看生产excel内容。</p>
-
-<h2 id="4-开发excel-需要准备的">4. 开发EXCEL 需要准备的</h2>
-<hr />
-
-<p>excel 是openxml 来描述的一个zip压缩文件。
-office中的文件都是类似的。 微软已经将文档公开。</p>
-
-<p>工具：
-open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供校验，文档，生成代码功能（不是golang）</p>
+<p><img src="/img/http_request_slow_20200807.png" alt="内存组织图" /></p>
 
 
   <div class="post-affix">
@@ -199,7 +229,7 @@ open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供�
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/golang/2018/03/16/godownfilecontenttype.html" class="read-more-btn">Read More</a>
+    <a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
     <h3><a href="http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html" title="read preference in a transaction must be primary">read preference in a transaction must be primary</a></h3>
@@ -208,13 +238,13 @@ open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供�
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/http/2020/08/08/http_request_slow.html" title="调用第三方接口返回过慢的分析过程">调用第三方接口返回过慢的分析过程</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2020-08-08</span>
+      <h4><a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html" title="蓝鲸配置平台-蓝鲸cmdb开发登录插件">蓝鲸配置平台-蓝鲸cmdb开发登录插件</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2020-03-06</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html" title="蓝鲸配置平台-蓝鲸cmdb开发登录插件">蓝鲸配置平台-蓝鲸cmdb开发登录插件</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2020-03-06</span>
+      <h4><a href="/tcp/network/2020/03/02/mongoset_con.html" title="docker mongodb 集群模式Golang连接不上的问题">docker mongodb 集群模式Golang连接不上的问题</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2020-03-02</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

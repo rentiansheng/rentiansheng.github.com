@@ -4,13 +4,93 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-08-09T17:43:10+08:00</updated>
+ <updated>2020-09-20T16:08:49+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>read preference in a transaction must be primary</title>
+   <link href="http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html"/>
+   <updated>2020-09-20T00:00:00+08:00</updated>
+   <id>http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary</id>
+   <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
+事务中的查询语句会出现read preference in a transaction must be primary的问题&lt;/p&gt;
+
+&lt;h3 id=&quot;解决方案&quot;&gt;解决方案&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;修改操作数据的逻辑&lt;/li&gt;
+  &lt;li&gt;修改mongodb driver事务内节点直接使用primary 节点操作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;修改操作数据的逻辑&quot;&gt;修改操作数据的逻辑&lt;/h4&gt;
+
+&lt;p&gt;思想：&lt;/p&gt;
+
+&lt;p&gt;mongodb driver 在对mongodb driver 中的 DataBase,Collection的对象操作的时候允许通过Option 来在设定执行的ReadPrefernce的。&lt;/p&gt;
+
+&lt;p&gt;mongodb driver 关于DataBase，Collection 对象操作的定义如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Database(name string, opts ...*options.DatabaseOptions) *Database
+Collection(name string, opts ...*options.CollectionOptions) *Collection
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;具体实现 ：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;修改连接方法， 设置连接mongodb 使用Option 中的ReadPrefernce值为SecondaryPreferred&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;根据ctx 判断当前是否位事务， 如果是设置  DataBase或Collection的Option中的ReadPrefernce值为SecondaryPreferred&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;方案优点：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;逻辑简单&lt;/li&gt;
+  &lt;li&gt;对业务逻辑没有侵入性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;方案确定：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;可移植性差&lt;/li&gt;
+  &lt;li&gt;不支持标准事务&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;修改mongodb-driver&quot;&gt;修改mongodb driver&lt;/h4&gt;
+
+&lt;p&gt;思想：&lt;/p&gt;
+
+&lt;p&gt;ReadPrefernce 配置主要设置mongodb driver 在query 数据的时候选择使用连接的策略。 理论上事务内的查询和写操作是一样，必须要走Primary节点， 所以可以在driver中将事务的查询的方法强制设置位Primary即可。&lt;/p&gt;
+
+&lt;p&gt;代码如下：
+&lt;a href=&quot;https://github.com/mongodb/mongo-go-driver/pull/501&quot;&gt;修改代码连接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;方案优点：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;对业务逻辑没有侵入性&lt;/li&gt;
+  &lt;li&gt;可移植性&lt;/li&gt;
+  &lt;li&gt;支持标准事务&lt;/li&gt;
+  &lt;li&gt;逻辑简单&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;方案确定：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;非官方修改，兼容性未知&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>调用第三方接口返回过慢的分析过程</title>
@@ -380,14 +460,21 @@ rs0:PRIMARY&amp;gt;
 
 &lt;p&gt;项目中配置的是IP:PORT，但是错误提示中出现是hostname:port.&lt;/p&gt;
 
-&lt;p&gt;hostname 是容器的hostname， 在外侧肯定是无法转换成IP的。 
-配置宿主的hosts&lt;/p&gt;
+&lt;p&gt;hostname 是容器的hostname或者是容器的IP， 再容器外是访问到mongodb服务的&lt;/p&gt;
 
 &lt;h6 id=&quot;可能出现的问题二&quot;&gt;可能出现的问题二&lt;/h6&gt;
 
 &lt;p&gt;我的容器是用docker-compose build 出来. 我在其中使用了
 expose和ports暴露容器的端口, 我本意是expose的端口用来mognodb 集群使用，
 ports的端口给服务使用。 但是具体使用的时候，提示出现了expose的端口。&lt;/p&gt;
+
+&lt;h4 id=&quot;总结&quot;&gt;总结&lt;/h4&gt;
+
+&lt;p&gt;出现问题的原因： mongodb golang 的driver再使用rs 集群模式的情况下，只是通过配置mongodb 地址来连接服务，
+然后再通过连接到mongodb server， 取出mongodb rs相关配置， 找到mongodb server 的节点，&lt;/p&gt;
+
+&lt;h5 id=&quot;解决防范&quot;&gt;解决防范：&lt;/h5&gt;
+&lt;p&gt;就是将mongodb 配置rs配置地址， 让服务所再机器的网络可以访问rs 配置的地址即可。&lt;/p&gt;
 
 </content>
  </entry>
@@ -454,6 +541,9 @@ ports的端口给服务使用。 但是具体使用的时候，提示出现了ex
 
 &lt;p&gt;在terminal,浏览器发送请求都可以正常访问，但是在golang服务中的HTTP 请求返回连接不上服务(i/o timeout)。这种情况查看下使用的HTTP 的client中的transport的Proxy 属性是不是给设置为nil，golang的http package中有一个叫ProxyFromEnvironment方法。改方法是从环境变量中获取配置的代理信息的。如果你需要使用系统配置的Proxy可以使用http.ProxyFromEnvironment方法,否则可以实现自己的proxy方法。&lt;/p&gt;
 
+&lt;h3 id=&quot;出现io-read-timeout&quot;&gt;出现I/O read timeout&lt;/h3&gt;
+
+&lt;p&gt;这个有可能不是服务端引起的。 检查下是否的连接池的中连接是否设置连接的SetReadDeadline的值。 该方法再golang的net package 中的 conn.go 中的Conn对象中&lt;/p&gt;
 </content>
  </entry>
  

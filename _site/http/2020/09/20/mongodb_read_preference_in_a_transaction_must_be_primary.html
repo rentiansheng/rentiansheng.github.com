@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验)">
+  <meta name="keywords" content="read preference in a transaction must be primary">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验) &middot; Reage blog
+      read preference in a transaction must be primary &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -122,74 +122,84 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验)</h1>
+  <h1 class="post-title">read preference in a transaction must be primary</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2018-04-29</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> golang, excel, and 数据验证
+    <span><i class="fa fa-clock-o"></i> 2020-09-20</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> http
 </span>
   </div>
-  <h2 id="完成的功能">完成的功能</h2>
+  <h3 id="背景">背景</h3>
 
-<ol>
-  <li>单元格，列支持下拉列表选择</li>
-  <li>单元格，列支持范围校验</li>
-  <li>打开Excel支持单元格，列数据校验读取</li>
-</ol>
+<p>项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
+事务中的查询语句会出现read preference in a transaction must be primary的问题</p>
 
-<h2 id="需要注意的项目">需要注意的项目</h2>
+<h3 id="解决方案">解决方案</h3>
 
-<ol>
-  <li>Excel 数据校验支持设置校验字符的长度为255，</li>
-  <li>不支持Excel通过选择工作簿中的单元格作为校验条件</li>
-</ol>
+<ul>
+  <li>修改操作数据的逻辑</li>
+  <li>修改mongodb driver事务内节点直接使用primary 节点操作</li>
+</ul>
 
-<h2 id="1-前提">1. 前提</h2>
-<hr />
+<h4 id="修改操作数据的逻辑">修改操作数据的逻辑</h4>
 
-<p>最近Golang开发的项目中用到excel 导入，导出。数据导出没什么问题， 直接写excel 就行了。但是导入模版遇到一些问题。</p>
+<p>思想：</p>
 
-<p>问题如下：</p>
+<p>mongodb driver 在对mongodb driver 中的 DataBase,Collection的对象操作的时候允许通过Option 来在设定执行的ReadPrefernce的。</p>
 
-<pre><code>1. db中数据定义为字符串，字段如果用户填写都是数字，获取数据的时候，该字段就是数字，需要后端转换
-2. 枚举类型字段，填写难度过大。用户需要知道对应的值
-3. 字段范围值，填写比较困难，（如用户，类型等）
-3. 无法限定字段填写内容的长度
-4. 无法限定数字填写范围
+<p>mongodb driver 关于DataBase，Collection 对象操作的定义如下：</p>
+
+<pre><code>Database(name string, opts ...*options.DatabaseOptions) *Database
+Collection(name string, opts ...*options.CollectionOptions) *Collection
 </code></pre>
 
-<p>为什么不直接放一个excel文件， 项目中数据导入，导出字段是不固定，需要根据个人的配置实字段来导入，导出</p>
+<p>具体实现 ：</p>
 
-<h2 id="2-golang-excel-类库选择">2. Golang EXCEL 类库选择</h2>
-<hr />
+<ul>
+  <li>
+    <ol>
+      <li>修改连接方法， 设置连接mongodb 使用Option 中的ReadPrefernce值为SecondaryPreferred</li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>根据ctx 判断当前是否位事务， 如果是设置  DataBase或Collection的Option中的ReadPrefernce值为SecondaryPreferred</li>
+    </ol>
+  </li>
+</ul>
 
-<p>经过上网查找发现两个现在使用比较多golang 操作 excel 类库</p>
-<ol>
-  <li><a href="https://github.com/360EntSecGroup-Skylar/excelize">excelize</a></li>
-  <li><a href="https://github.com/tealeg/xlsx">xlsx</a></li>
-</ol>
+<p>方案优点：</p>
+<ul>
+  <li>逻辑简单</li>
+  <li>对业务逻辑没有侵入性</li>
+</ul>
 
-<p>最总，选择了xlsx, xlsx在star 和fork 比 excelle多。但是excelize最近活跃度上更活跃，文档更详细（有中文）</p>
+<p>方案确定：</p>
+<ul>
+  <li>可移植性差</li>
+  <li>不支持标准事务</li>
+</ul>
 
-<h2 id="3-使用excel-数据验证">3. 使用EXCEL 数据验证</h2>
-<hr />
-<p>xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能基于xlsx自己实现。</p>
+<h4 id="修改mongodb-driver">修改mongodb driver</h4>
 
-<p>实现功能代码在：
-<a href="https://github.com/rentiansheng/xlsx">支持数据验证</a> 代码已经提交PR,但是未合并。
-现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。</p>
+<p>思想：</p>
 
-<p>关于数据校验的代码的测试例子在<a href="https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go">数据验证test代码</a>
-可以go test 查看生产excel内容。</p>
+<p>ReadPrefernce 配置主要设置mongodb driver 在query 数据的时候选择使用连接的策略。 理论上事务内的查询和写操作是一样，必须要走Primary节点， 所以可以在driver中将事务的查询的方法强制设置位Primary即可。</p>
 
-<h2 id="4-开发excel-需要准备的">4. 开发EXCEL 需要准备的</h2>
-<hr />
+<p>代码如下：
+<a href="https://github.com/mongodb/mongo-go-driver/pull/501">修改代码连接</a></p>
 
-<p>excel 是openxml 来描述的一个zip压缩文件。
-office中的文件都是类似的。 微软已经将文档公开。</p>
+<p>方案优点：</p>
+<ul>
+  <li>对业务逻辑没有侵入性</li>
+  <li>可移植性</li>
+  <li>支持标准事务</li>
+  <li>逻辑简单</li>
+</ul>
 
-<p>工具：
-open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供校验，文档，生成代码功能（不是golang）</p>
-
+<p>方案确定：</p>
+<ul>
+  <li>非官方修改，兼容性未知</li>
+</ul>
 
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
@@ -199,22 +209,22 @@ open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供�
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/golang/2018/03/16/godownfilecontenttype.html" class="read-more-btn">Read More</a>
+    <a href="/http/2020/08/08/http_request_slow.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html" title="read preference in a transaction must be primary">read preference in a transaction must be primary</a></h3>
+    <h3><a href="http://localhost:4000/http/2020/08/08/http_request_slow.html" title="调用第三方接口返回过慢的分析过程">调用第三方接口返回过慢的分析过程</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/http/2020/08/08/http_request_slow.html" title="调用第三方接口返回过慢的分析过程">调用第三方接口返回过慢的分析过程</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2020-08-08</span>
+      <h4><a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html" title="蓝鲸配置平台-蓝鲸cmdb开发登录插件">蓝鲸配置平台-蓝鲸cmdb开发登录插件</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2020-03-06</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html" title="蓝鲸配置平台-蓝鲸cmdb开发登录插件">蓝鲸配置平台-蓝鲸cmdb开发登录插件</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2020-03-06</span>
+      <h4><a href="/tcp/network/2020/03/02/mongoset_con.html" title="docker mongodb 集群模式Golang连接不上的问题">docker mongodb 集群模式Golang连接不上的问题</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2020-03-02</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
