@@ -4,13 +4,87 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-09-20T16:08:49+08:00</updated>
+ <updated>2020-10-11T19:06:19+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发</title>
+   <link href="http://localhost:4000/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy.html"/>
+   <updated>2020-10-11T00:00:00+08:00</updated>
+   <id>http://localhost:4000/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy</id>
+   <content type="html">&lt;h4 id=&quot;前提&quot;&gt;前提&lt;/h4&gt;
+
+&lt;p&gt;蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
+是蓝鲸运维体系一部分，蓝鲸社区版本是免费，社区地址&lt;a href=&quot;&quot;&gt;https://bk.tencent.com/&lt;/a&gt;
+并且蓝鲸很多组件已经开源，蓝鲸cmdb就是其中之一，&lt;/p&gt;
+
+&lt;p&gt;蓝鲸配置平台接入层API server目前仅支持对场景层开发，无法对第三方开发的场景层做代理转发。&lt;/p&gt;
+
+&lt;h4 id=&quot;目标&quot;&gt;目标&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;实现项目模块&lt;/li&gt;
+  &lt;li&gt;降低模块接入成本&lt;/li&gt;
+  &lt;li&gt;完善模块文档&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;需要做的工作&quot;&gt;需要做的工作&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;服务的动态发现&lt;/li&gt;
+  &lt;li&gt;根据规则转发请求&lt;/li&gt;
+  &lt;li&gt;auth 设计（暂不支持）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;接入层apiserver-对第三方组件访问的转发开发实例&quot;&gt;接入层（apiserver） 对第三方组件访问的转发开发实例&lt;/h4&gt;
+
+&lt;p&gt;代码放到 src/apiserver/service/match/目录中即可&lt;/p&gt;
+
+&lt;h6 id=&quot;使用服务发现发现服务&quot;&gt;使用服务发现发现服务&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;	RegisterService(服务名字, 实现URL匹配方法)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h6 id=&quot;实现url匹配方法&quot;&gt;实现URL匹配方法&lt;/h6&gt;
+
+&lt;pre&gt;&lt;code&gt;func MatchMigrate(req *restful.Request) (from, to string, isHit bool) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;eg:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;package match
+import (
+	&quot;strings&quot;
+	&quot;configcenter/src/common/types&quot;
+	&quot;github.com/emicklei/go-restful&quot;
+)
+func init() {
+	RegisterService(types.CC_MODULE_MIGRATE, MatchMigrate)
+}
+func MatchMigrate(req *restful.Request) (from, to string, isHit bool) {
+	uri := req.Request.RequestURI
+	from, to = RootPath, &quot;/migrate/v3&quot;
+	switch {
+		
+	case strings.HasPrefix(uri, RootPath+&quot;/authcenter/init&quot;):
+	// 将请求URL未/api/v3/authcenter/init，转发到当前服务
+		isHit = true
+	case strings.HasPrefix(uri, RootPath+&quot;/find/system/config_admin&quot;):
+		// 将请求URL未/api/v3/find/system/config_admin，转发到当前服务
+		isHit = true
+	default:
+		isHit = false
+	}
+	return from, to, isHit
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
  
  <entry>
    <title>read preference in a transaction must be primary</title>

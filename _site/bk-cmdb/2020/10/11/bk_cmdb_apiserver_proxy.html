@@ -7,12 +7,12 @@
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="keywords" content="read preference in a transaction must be primary">
+  <meta name="keywords" content="蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发">
   <meta name="description" content="">
   <meta name="author" content="Reage">
   <title>
     
-      read preference in a transaction must be primary &middot; Reage blog
+      蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发 &middot; Reage blog
     
   </title>
   <!-- CSS -->
@@ -122,84 +122,78 @@
         </ul>            
       <div class="container content" style="margin-top:2rem">
         <div class="post">
-  <h1 class="post-title">read preference in a transaction must be primary</h1>
+  <h1 class="post-title">蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发</h1>
   <div class="post-date">
-    <span><i class="fa fa-clock-o"></i> 2020-09-20</span>
-  <span class="extra-right"><i class="fa fa-tags"></i> http
+    <span><i class="fa fa-clock-o"></i> 2020-10-11</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> bk-cmdb
 </span>
   </div>
-  <h3 id="背景">背景</h3>
+  <h4 id="前提">前提</h4>
 
-<p>项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
-事务中的查询语句会出现read preference in a transaction must be primary的问题</p>
+<p>蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
+是蓝鲸运维体系一部分，蓝鲸社区版本是免费，社区地址<a href="">https://bk.tencent.com/</a>
+并且蓝鲸很多组件已经开源，蓝鲸cmdb就是其中之一，</p>
 
-<h3 id="解决方案">解决方案</h3>
+<p>蓝鲸配置平台接入层API server目前仅支持对场景层开发，无法对第三方开发的场景层做代理转发。</p>
+
+<h4 id="目标">目标</h4>
 
 <ul>
-  <li>修改操作数据的逻辑</li>
-  <li>修改mongodb driver事务内节点直接使用primary 节点操作</li>
+  <li>实现项目模块</li>
+  <li>降低模块接入成本</li>
+  <li>完善模块文档</li>
 </ul>
 
-<h4 id="修改操作数据的逻辑">修改操作数据的逻辑</h4>
+<h4 id="需要做的工作">需要做的工作</h4>
 
-<p>思想：</p>
+<ul>
+  <li>服务的动态发现</li>
+  <li>根据规则转发请求</li>
+  <li>auth 设计（暂不支持）</li>
+</ul>
 
-<p>mongodb driver 在对mongodb driver 中的 DataBase,Collection的对象操作的时候允许通过Option 来在设定执行的ReadPrefernce的。</p>
+<h4 id="接入层apiserver-对第三方组件访问的转发开发实例">接入层（apiserver） 对第三方组件访问的转发开发实例</h4>
 
-<p>mongodb driver 关于DataBase，Collection 对象操作的定义如下：</p>
+<p>代码放到 src/apiserver/service/match/目录中即可</p>
 
-<pre><code>Database(name string, opts ...*options.DatabaseOptions) *Database
-Collection(name string, opts ...*options.CollectionOptions) *Collection
+<h6 id="使用服务发现发现服务">使用服务发现发现服务</h6>
+
+<pre><code>	RegisterService(服务名字, 实现URL匹配方法)
 </code></pre>
 
-<p>具体实现 ：</p>
+<h6 id="实现url匹配方法">实现URL匹配方法</h6>
 
-<ul>
-  <li>
-    <ol>
-      <li>修改连接方法， 设置连接mongodb 使用Option 中的ReadPrefernce值为SecondaryPreferred</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>根据ctx 判断当前是否位事务， 如果是设置  DataBase或Collection的Option中的ReadPrefernce值为SecondaryPreferred</li>
-    </ol>
-  </li>
-</ul>
+<pre><code>func MatchMigrate(req *restful.Request) (from, to string, isHit bool) 
+</code></pre>
 
-<p>方案优点：</p>
-<ul>
-  <li>逻辑简单</li>
-  <li>对业务逻辑没有侵入性</li>
-</ul>
+<p>eg:</p>
 
-<p>方案确定：</p>
-<ul>
-  <li>可移植性差</li>
-  <li>不支持标准事务</li>
-</ul>
-
-<h4 id="修改mongodb-driver">修改mongodb driver</h4>
-
-<p>思想：</p>
-
-<p>ReadPrefernce 配置主要设置mongodb driver 在query 数据的时候选择使用连接的策略。 理论上事务内的查询和写操作是一样，必须要走Primary节点， 所以可以在driver中将事务的查询的方法强制设置位Primary即可。</p>
-
-<p>代码如下：
-<a href="https://github.com/mongodb/mongo-go-driver/pull/501">修改代码连接</a></p>
-
-<p>方案优点：</p>
-<ul>
-  <li>对业务逻辑没有侵入性</li>
-  <li>可移植性</li>
-  <li>支持标准事务</li>
-  <li>逻辑简单</li>
-</ul>
-
-<p>方案确定：</p>
-<ul>
-  <li>非官方修改，兼容性未知</li>
-</ul>
+<pre><code class="language-golang">package match
+import (
+	"strings"
+	"configcenter/src/common/types"
+	"github.com/emicklei/go-restful"
+)
+func init() {
+	RegisterService(types.CC_MODULE_MIGRATE, MatchMigrate)
+}
+func MatchMigrate(req *restful.Request) (from, to string, isHit bool) {
+	uri := req.Request.RequestURI
+	from, to = RootPath, "/migrate/v3"
+	switch {
+		
+	case strings.HasPrefix(uri, RootPath+"/authcenter/init"):
+	// 将请求URL未/api/v3/authcenter/init，转发到当前服务
+		isHit = true
+	case strings.HasPrefix(uri, RootPath+"/find/system/config_admin"):
+		// 将请求URL未/api/v3/find/system/config_admin，转发到当前服务
+		isHit = true
+	default:
+		isHit = false
+	}
+	return from, to, isHit
+}
+</code></pre>
 
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
@@ -209,10 +203,10 @@ Collection(name string, opts ...*options.CollectionOptions) *Collection
 <div class="read-more">
   
   <div class="read-more-header">
-    <a href="/http/2020/08/08/http_request_slow.html" class="read-more-btn">Read More</a>
+    <a href="/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://localhost:4000/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy.html" title="蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发">蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发</a></h3>
+    <h3><a href="http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html" title="read preference in a transaction must be primary">read preference in a transaction must be primary</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
