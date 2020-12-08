@@ -49,8 +49,6 @@ tags: [golang, excel, 数据验证]
 ---
 xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能基于xlsx自己实现。
 
-实现功能代码在：
-[支持数据验证](https://github.com/rentiansheng/xlsx) 代码已经提交PR,但是未合并。
 现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。 
 
 关于数据校验的代码的测试例子在[数据验证test代码](https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go)
