@@ -5,7 +5,7 @@ category: [项目使用]
 tags: [项目使用]
 ---
 
-[中文](http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction.html)
+[中文](mongodb_go_driver_distributed_transaction_cn.html)
 
 ## Use mongodb driver to solve distributed transactions
 
