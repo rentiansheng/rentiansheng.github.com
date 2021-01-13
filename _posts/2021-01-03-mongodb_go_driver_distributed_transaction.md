@@ -24,7 +24,7 @@ mongodb server对事务所在的session没有严格绑定和 mongodb driver 可�
 ###### mongodb golang driver 代码扩展内容
 
 
-[具体代码在 https://github.com/rentiansheng/mongodb_driver_transaction/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85](https://github.com/rentiansheng/mongodb_driver_transaction/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85)
+[具体代码在 https://github.com/rentiansheng/mongodb_driver_transaction/commit/314f4f3263953ea9e6588993975c44cb894e9831](https://github.com/rentiansheng/mongodb_driver_transaction/commit/314f4f3263953ea9e6588993975c44cb894e9831)
 
 
 扩展代码：
