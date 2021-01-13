@@ -19,12 +19,12 @@ tags: [项目使用]
 
 mongodb server对事务所在的session没有严格绑定和 mongodb driver 可以发起事务的规则来实现。
 改该解决方案会对mongodb golang driver 代码扩展，
-在mongodb driver 1.1.2 release 与mongodb 4.0.x-4.2.x replic-set 模式验证可以使用
+在mongodb driver 1.1.2 release 与mongodb 4.0.x-4.2.x replica-set 模式验证可以使用
 
 ###### mongodb golang driver 代码扩展内容
 
 
-[具体代码在 https://github.com/rentiansheng/mongodb_driver_transcation/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85](https://github.com/rentiansheng/mongodb_driver_transcation/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85)
+[具体代码在 https://github.com/rentiansheng/mongodb_driver_transaction/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85](https://github.com/rentiansheng/mongodb_driver_transaction/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85)
 
 
 扩展代码：
@@ -39,14 +39,14 @@ mongodb server对事务所在的session没有严格绑定和 mongodb driver 可�
 相关测试用例：
 
 ```
-transcation/transcation_test.go
+transaction/transaction_test.go
 
 ```
 
 上层使用逻辑：
 
 ```
-transcation/transcation.go
+transaction/transaction.go
 ```
 
 封装业务逻辑，实现业务层面需要开启，提交，回滚事务等管理接口， 并且提供一个关于事务uuid 与 事务内语句执行游标id记录操作接口。
@@ -55,10 +55,10 @@ transcation/transcation.go
 
 ###### 具体的实现
 
-1.  激活一个事务， 生成一个事务uuid（mongodb driver 提供生成方法）, transcation/transcation.go: StartTransaction
-2. 通过事务的uuid， 激活一个session， 加入mongodb server 的一个事务中，transcation/transcation.go: ReloadSession
+1.  激活一个事务， 生成一个事务uuid（mongodb driver 提供生成方法）, transaction/transaction.go: StartTransaction
+2. 通过事务的uuid， 激活一个session， 加入mongodb server 的一个事务中，transaction/transaction.go: ReloadSession
 3. 将事务与session绑定， 获取SessionContext， mongo/session_exposer.go:TxnContextWithSession
-4. 事务执行需要移动游标， transcation/transcation.go: NextTransactionCursor
+4. 事务执行需要移动游标， transaction/transaction.go: NextTransactionCursor
 5. 执行curl 操作
 
 

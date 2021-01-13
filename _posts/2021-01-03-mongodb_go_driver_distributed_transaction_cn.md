@@ -20,12 +20,12 @@ This project can only solve distributed transactions in multiple tables in the s
 
 The mongodb server does not strictly bind the transaction in which the transaction is in, and the mongodb driver can initiate transactions to achieve this.
 Changing this solution will extend the mongodb golang driver code,
-It can be used for verification in mongodb driver 1.1.2 release and mongodb 4.0.x-4.2.x replic-set mode
+It can be used for verification in mongodb driver 1.1.2 release and mongodb 4.0.x-4.2.x replica-set mode
 
 ###### mongodb golang driver code extension content
 
 
-[The specific code is at https://github.com/rentiansheng/mongodb_driver_transcation/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85](https://github.com/rentiansheng/mongodb_driver_transcation/commit/0f07c8db55b526857095d2a85)
+[The specific code is at https://github.com/rentiansheng/mongodb_driver_transaction/commit/0f07c8db55b26857095d2a2e2c9a5bc5baa02a85](https://github.com/rentiansheng/mongodb_driver_transcation/commit/0f07c8db55b526857095d2a85)
 
 
 Extension code:
@@ -40,14 +40,14 @@ The extension code is mainly the underlying logic, used to activate the transact
 Related test cases:
 
 ```
-transcation/transcation_test.go
+transcation/transaction_test.go
 
 ```
 
 Upper-level use logic:
 
 ```
-transcation/transcation.go
+transcation/transaction.go
 ```
 
 Encapsulate business logic, realize business-level management interfaces such as opening, committing, and rolling back transactions, and provide an operation interface for the transaction uuid and the cursor id record operation of the statement execution within the transaction.
@@ -56,10 +56,10 @@ In actual use, the transaction uuid and in-service statement execution cursor id
 
 ###### Specific implementation
 
-1. Activate a transaction, generate a transaction uuid (mongodb driver provides the generation method), transcation/transcation.go: StartTransaction
-2. Activate a session through the uuid of the transaction and join a transaction of the mongodb server, transcation/transcation.go: ReloadSession
+1. Activate a transaction, generate a transaction uuid (mongodb driver provides the generation method), transaction/transaction.go: StartTransaction
+2. Activate a session through the uuid of the transaction and join a transaction of the mongodb server, transaction/transaction.go: ReloadSession
 3. Bind the transaction to the session, get the SessionContext, mongo/session_exposer.go:TxnContextWithSession
-4. Transaction execution needs to move the cursor, transcation/transcation.go: NextTransactionCursor
+4. Transaction execution needs to move the cursor, transaction/transaction.go: NextTransactionCursor
 5. Perform curl operations
 
 
