@@ -5,7 +5,7 @@ category: [monstache]
 tags: [monstache]
 ---
 
-###  背景
+###  1. 背景
 
 目前所在做的项目是做资产管理， 随着变化数据越来越多， 单一类型的资产数据无法在同一张表存储，后需经过使用多个表， 
 之前为了实现全局的全文搜索， 是通过monstache将mongodb 中资产的实例的数据同步到Elasticsearch。
@@ -16,9 +16,9 @@ tags: [monstache]
 - monstache mapping 建立Elasticsearch 索引的时候不支持按collection 名字前缀进行聚合
 
 
-### 如何解决问题？
+### 2 如何解决问题？
 
-#### 解决 monstache 无法按照 mongodb collection 名字前缀进行数据的问题？ 
+#### 2.1 解决 monstache 无法按照 mongodb collection 名字前缀进行数据的问题？ 
 
 
 monstache 在启动的时候是支持按正则来过滤不同步的collection 名字的配置项目（direct-read-dynamic-exclude-regex ）， 
@@ -34,7 +34,7 @@ monstache 在启动的时候是支持按正则来过滤不同步的collection �
 已提交PR， 并且合并[https://github.com/rwynn/monstache/pull/491](https://github.com/rwynn/monstache/pull/491). 
 欢迎大家使用
 
-#### 解决 monstache 无法按照 mongodb collection 名字前缀进行数据的问题？ 
+#### 2.2 解决 monstache 无法按照 mongodb collection 名字前缀进行数据的问题？ 
 
 monstache 在将mongodb collection中同步到Elasticsearch中的时候， 默认情况下会使用mongodb collection namespace 作为索引名字。 
 也可以通过配置mapping 来做 mongodb collection namespace 到指定Elasticsearch索引中， 但是mapping 不支持按照正则或者前缀的方式。 
