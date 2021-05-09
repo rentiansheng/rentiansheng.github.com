@@ -63,18 +63,11 @@ transaction/transaction.go
 
 
 
-#### 需要注意
-
-- 当前代码中TxnNumber 仅供测试使用，不可用于线上多服务的场景
-- TxnNumber 中uuid 一定要使用go.mongodb.org/mongo-driver/x/mongo/driver/uuid base64 编码后string值
-
-
-
-
 
 #### 方案发现和落地
 
 参与人员：
+
 [rentiansheng](https://github.com/rentiansheng)
 [wusendong](https://github.com/wusendong)
 [breezelxp](https://github.com/breezelxp)
