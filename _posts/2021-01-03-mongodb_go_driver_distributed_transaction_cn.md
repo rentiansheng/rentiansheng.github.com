@@ -53,21 +53,14 @@ transcation/transaction.go
 Encapsulate business logic, realize business-level management interfaces such as opening, committing, and rolling back transactions, and provide an operation interface for the transaction uuid and the cursor id record operation of the statement execution within the transaction.
 In actual use, the transaction uuid and in-service statement execution cursor id need to be stored centrally, and all service instances need to be available and used. You can use redis and mysql as central storage
 
+Now that the real transaction id of mongodb is directly exposed, there may be security risks in passing between different service nodes.
 
 ###### Specific implementation
 
 1. Activate a transaction, generate a transaction uuid (mongodb driver provides the generation method), transaction/transaction.go: StartTransaction
 2. Activate a session through the uuid of the transaction and join a transaction of the mongodb server, transaction/transaction.go: ReloadSession
 3. Bind the transaction to the session, get the SessionContext, mongo/session_exposer.go:TxnContextWithSession
-4. Transaction execution needs to move the cursor, transaction/transaction.go: NextTransactionCursor
-5. Perform curl operations
-
-
-
-#### requires attention
-
--The TxnNumber in the current code is only for testing and cannot be used in online multi-service scenarios
--Uuid in TxnNumber must use go.mongodb.org/mongo-driver/x/mongo/driver/uuid base64 encoded string value
+4. Perform curl operations
 
 
 
@@ -76,6 +69,7 @@ In actual use, the transaction uuid and in-service statement execution cursor id
 #### Solution discovery and implementation
 
 participants:
+
 [rentiansheng](https://github.com/rentiansheng)
 [wusendong](https://github.com/wusendong)
 [breezelxp](https://github.com/breezelxp)
@@ -83,7 +77,7 @@ participants:
 Use items:
 
 
-[Blue Whale Configuration Platform](https://github.com/Tencent/bk-cmdb)
+[Blueking Configuration Platform](https://github.com/Tencent/bk-cmdb)
 
 
 #### Drainage

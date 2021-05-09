@@ -52,14 +52,14 @@ transaction/transaction.go
 封装业务逻辑，实现业务层面需要开启，提交，回滚事务等管理接口， 并且提供一个关于事务uuid 与 事务内语句执行游标id记录操作接口。
 在实际使用的时候， 事务uuid 和务内语句执行游标id 要做中心化存储，需要刚让所有服务实例可以获取和使用。 可以用redis， mysql 作为中心存储
 
+现在直接将mongodb 真是的事务id暴露出来，在不同服务节点之间传递可能存在安全风险。
 
 ###### 具体的实现
 
 1.  激活一个事务， 生成一个事务uuid（mongodb driver 提供生成方法）, transaction/transaction.go: StartTransaction
 2. 通过事务的uuid， 激活一个session， 加入mongodb server 的一个事务中，transaction/transaction.go: ReloadSession
 3. 将事务与session绑定， 获取SessionContext， mongo/session_exposer.go:TxnContextWithSession
-4. 事务执行需要移动游标， transaction/transaction.go: NextTransactionCursor
-5. 执行curl 操作
+4. 执行curl 操作
 
 
 
