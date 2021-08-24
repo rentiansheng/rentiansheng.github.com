@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="Use mongodb driver to solve distributed transactions">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      Use mongodb driver to solve distributed transactions &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">Use mongodb driver to solve distributed transactions</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2021-01-03</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 项目使用
+</span>
+  </div>
+  <p><a href="mongodb_go_driver_distributed_transaction_cn.html">中文</a></p>
+
+<h2 id="use-mongodb-driver-to-solve-distributed-transactions">Use mongodb driver to solve distributed transactions</h2>
+
+<h4 id="solving-distributed-transaction-scenarios">Solving distributed transaction scenarios</h4>
+
+<p>This project can only solve distributed transactions in multiple tables in the same database in the same replica-set in mongodb.</p>
+
+<h4 id="main-principles">Main principles</h4>
+
+<p>The mongodb server does not strictly bind the transaction in which the transaction is in, and the mongodb driver can initiate transactions to achieve this.
+Changing this solution will extend the mongodb golang driver code,
+It can be used for verification in mongodb driver 1.1.2 release and mongodb 4.0.x-4.2.x replica-set mode</p>
+
+<h6 id="mongodb-golang-driver-code-extension-content">mongodb golang driver code extension content</h6>
+
+<p><a href="https://github.com/rentiansheng/mongodb_driver_transcation/commit/314f4f3263953ea9e6588993975c44cb894e9831">The specific code is at https://github.com/rentiansheng/mongodb_driver_transaction/commit/314f4f3263953ea9e6588993975c44cb894e9831</a></p>
+
+<p>Extension code:</p>
+<pre><code> mongo/session_exposer.go
+ x/mongo/driver/session/session_ext.go
+</code></pre>
+<p>The extension code is mainly the underlying logic, used to activate the transaction and bind the transaction. Does not contain business logic</p>
+
+<p>Related test cases:</p>
+
+<pre><code>transcation/transaction_test.go
+
+</code></pre>
+
+<p>Upper-level use logic:</p>
+
+<pre><code>transcation/transaction.go
+</code></pre>
+
+<p>Encapsulate business logic, realize business-level management interfaces such as opening, committing, and rolling back transactions, and provide an operation interface for the transaction uuid and the cursor id record operation of the statement execution within the transaction.
+In actual use, the transaction uuid and in-service statement execution cursor id need to be stored centrally, and all service instances need to be available and used. You can use redis and mysql as central storage</p>
+
+<p>Now that the real transaction id of mongodb is directly exposed, there may be security risks in passing between different service nodes.</p>
+
+<h6 id="specific-implementation">Specific implementation</h6>
+
+<ol>
+  <li>Activate a transaction, generate a transaction uuid (mongodb driver provides the generation method), transaction/transaction.go: StartTransaction</li>
+  <li>Activate a session through the uuid of the transaction and join a transaction of the mongodb server, transaction/transaction.go: ReloadSession</li>
+  <li>Bind the transaction to the session, get the SessionContext, mongo/session_exposer.go:TxnContextWithSession</li>
+  <li>Perform curl operations</li>
+</ol>
+
+<h4 id="solution-discovery-and-implementation">Solution discovery and implementation</h4>
+
+<p>participants:</p>
+
+<p><a href="https://github.com/rentiansheng">rentiansheng</a>
+<a href="https://github.com/wusendong">wusendong</a>
+<a href="https://github.com/breezelxp">breezelxp</a></p>
+
+<p>Use items:</p>
+
+<p><a href="https://github.com/Tencent/bk-cmdb">Blueking Configuration Platform</a></p>
+
+<h4 id="drainage">Drainage</h4>
+<p><a href="https://github.com/rentiansheng/bson-register">bson decode register</a></p>
+
+<p>Bson decoding interface priority uses the actual type as the final object, such as slice, map
+In the mongodb golang official driver, when bson uses interface at the top level, it puts slice and map in an object called primitive.D (golang []interface type).</p>
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/go/2021/08/19/go_fork_pipe.html" title="go exec.Command使用pipe做数据交换遇到的问题">go exec.Command使用pipe做数据交换遇到的问题</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/qa/2021/04/02/qa.html" title="遇到问题集合">遇到问题集合</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-04-02</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/monstache/2021/03/19/monstache_split_table_conf.html" title="解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch">解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-03-19</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>

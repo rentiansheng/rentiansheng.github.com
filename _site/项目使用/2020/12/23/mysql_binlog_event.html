@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="多个不兼容版本数据同步（mysql 向 mongodb 数据同步）">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      多个不兼容版本数据同步（mysql 向 mongodb 数据同步） &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">多个不兼容版本数据同步（mysql 向 mongodb 数据同步）</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2020-12-23</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> 项目使用
+</span>
+  </div>
+  <h4 id="背景">背景</h4>
+
+<p>客观原因项目项目多版本共存，并且用户短时间内无法迁移到新版本上面并且数据会按照一定纬度（项目中成为业务）灰度到新版使用。
+最终解决方案：业务数据未灰度前，只在旧版中对数据修改， 但是修改的结果在新旧版本中同时生效， 
+具体操作是未灰度到新版本中业务的数据修改操作都在旧版本中操作， 将变更的内容同步到新版中。</p>
+
+<h4 id="解决方案">解决方案</h4>
+
+<p>主要面临的问题是以下：</p>
+
+<ul>
+  <li>旧系统数据变化同步实时性</li>
+  <li>数据关系的处理</li>
+  <li>边界数据的修改</li>
+</ul>
+
+<h5 id="旧系统数据变化同步">旧系统数据变化同步</h5>
+
+<p>在版本灰度方案，给周边系统的承诺数据在新版本中生效的时间&lt;=15s的前提下， 下面的方案都是不可用的：</p>
+
+<ul>
+  <li>由于旧系统使用的是mysql， 不提供数据变更通知功能</li>
+  <li>且旧版本本身数据变更推送服务是异步任务， 修改变更后从操作日志中提取变更再推送，延时比较大且推送事件的数据缺少部分数据无法使用。</li>
+  <li>定时全量同步更不符合预期， 原因：mysql中需要同步的数据总量多余5kw, 对于数据库压力过大和数据的实时性太低。</li>
+</ul>
+
+<p>基于数据实时性的要求，必须要找一个基于事件数据增量同步的方案， 经过查找资料发现一个能实时读取MySQL二进制日志binlog，
+并生成 JSON 格式的数据的工具maxwell。 maxwell 完全可以数据的变更推送出来做增量同步。</p>
+
+<p>目前，关于数据同步实时性的可度量指标还没有收集， 正在开发中。实际使用统计数据同步小于1s。</p>
+
+<h5 id="数据关系的处理">数据关系的处理</h5>
+
+<ul>
+  <li>数据合并及分裂， 主要新旧版数据字典定义差异， 造成多个table数据合并，分离，</li>
+  <li>数据形态发生变化，主要由于业务形态的变化，数据出现不兼容的情况</li>
+  <li>关联数据的变更，  主要是数据变更印象到所有相关联的节点数据。</li>
+</ul>
+
+<p>这个主要是业务逻辑，需要基于一个数据为中心处理新旧系统数据库中多表， 特别是树形关联关系中某个节点删除后，下级节点数据处理。</p>
+
+<h5 id="边界数据的修改">边界数据的修改</h5>
+
+<ul>
+  <li>新旧版本数据交换， 新-&gt; 旧， 旧-&gt;新</li>
+  <li>未灰度业务的数据，在新版本修改，删除，新加数据</li>
+</ul>
+
+<p>这个主要是业务逻辑，主要是确定一个规则，需要在开发前与PM，使用方确定好即可</p>
+
+<h4 id="开发中遇到问题">开发中遇到问题</h4>
+
+<h5 id="实时性如何保证">实时性如何保证？</h5>
+
+<p>maxwell能实时读取MySQL二进制日志binlog， maxwell 是以slave db instance 连接到mysql master db 上面直接获取binlog</p>
+
+<h5 id="如何保证mysql-数据变更事件不丢失">如何保证mysql 数据变更事件不丢失</h5>
+
+<ul>
+  <li>
+    <p>binlog 事件不丢失
+maxwell 会落地存储当前处理mysql binlog offset， 重启后根据落地offset 继续处理 mysql binlog ，</p>
+  </li>
+  <li>
+    <p>事件处理不丢失
+maxwell 支持将binlog 变更内容推动 kafka, RabbitMQ, Redis 等多种中间中，目前，使用是将数据推送到redis list，使用redis 两个list 做推送事件的ack，</p>
+  </li>
+</ul>
+
+<p>redis ack 队列的实现：</p>
+
+<pre><code> 1. maxwell push event redis list key1
+ 2. 使用 redis  RPopLPush 命令同获取到数据的同时放到 第二个list key2的队列中
+ 3. 事件处理完成后，删除第二list key2中的数据， 如果出现意外情况，等待事件补偿方法处理list key2的事件
+</code></pre>
+
+<ul>
+  <li>数据全量同步</li>
+</ul>
+
+<p>作为一种补偿机制，每周执行一次，保证数据的准确性，
+用户也可以强制发起基于业务的下数据同步</p>
+
+<h5 id="如何全量同步和增量同步数据冲">如何全量同步和增量同步数据冲？</h5>
+
+<p>全量同步时候， 暂停增量事件同步</p>
+
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/go/2021/08/19/go_fork_pipe.html" title="go exec.Command使用pipe做数据交换遇到的问题">go exec.Command使用pipe做数据交换遇到的问题</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/qa/2021/04/02/qa.html" title="遇到问题集合">遇到问题集合</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-04-02</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/monstache/2021/03/19/monstache_split_table_conf.html" title="解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch">解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-03-19</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>

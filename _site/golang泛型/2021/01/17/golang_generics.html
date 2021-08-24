@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="golang 泛型">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      golang 泛型 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">golang 泛型</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2021-01-17</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> go
+</span>
+  </div>
+  <h3 id="背景">背景</h3>
+
+<p>目前所在项目是关于资产管理，经常会有更重数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。</p>
+
+<p>由于在目前的golang 版本不支持多态， 只能人工的方式来实现。效果如下：
+<img src="https://lh3.googleusercontent.com/-5Vz_puoHe7o/WMJukhX878I/AAAAAAAADRI/9nn3cse3gkYrZ--aVfWaofUFGaRb49MtACLcB/s1600/Animation.gif" alt="人工泛型" />
+（图片来源）https://groups.google.com/g/golang-nuts/c/j_3n5wAZaXw/m/YkOdbCppAQAJ</p>
+
+<h3 id="泛型实现">泛型实现</h3>
+
+<ul>
+  <li>多态</li>
+  <li>类型推导</li>
+  <li>操作符重载</li>
+</ul>
+
+<h3 id="golang-实现">golang 实现</h3>
+
+<p>golang 目前完成的主要是类型推导</p>
+
+<h3 id="如何使用golang">如何使用golang</h3>
+
+<h5 id="编译支持golang的版本">编译支持golang的版本</h5>
+
+<pre><code class="language-angular2html">git clone https://github.com/golang/go
+git checkout dev.go2go
+cd src
+./all.bash 
+
+go tool go2go run xx.go2
+</code></pre>
+
+<h5 id="例子">例子</h5>
+
+<p>(https://go2goplay.golang.org/)[官方实例]</p>
+
+<p>数据类型的Join. file name: intJoin.go2</p>
+
+<pre><code class="language-go">package main
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+
+	str := Join([]int64{1,2,3,4});
+	fmt.Println("int64", str)
+	str = Join([]int32{1,2,3,4});
+	fmt.Println("int32", str)
+
+	str = JoinNumber([]int64{1,2,3,4});
+	fmt.Println("int64", str)
+	str = JoinNumber([]int32{1,2,3,4});
+	fmt.Println("int32", str)
+
+	// NOTICE: ERROR. 类型不匹配时候的问题
+    /* 
+	str = JoinNumber([]string{"1","2","3","4"});
+	fmt.Println("int32", str) 
+	*/
+}
+
+func Join[T any](arr []T) string {
+	str := ""
+	for _, v := range arr {
+		str = fmt.Sprintf("%s,%v", str,v)
+	}
+
+	return strings.Trim(str, ",")
+}
+
+type numeric interface {
+	type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64
+}
+
+func JoinNumber[T numeric](arr []T) string {
+	str := ""
+	for _, v := range arr {
+		str = fmt.Sprintf("%s,%v", str,v)
+	}
+
+	return strings.Trim(str, ",")
+}
+</code></pre>
+
+<p>数组结构体多态实例， file: struct.go2</p>
+
+<pre><code class="language-go">package main
+
+import ("fmt")
+
+type Pair[T1 , T2 any] struct {
+    ID T1
+    Val T2
+}
+
+type MapArr[T1, T2 any] struct {
+    s []Pair[T1, T2]
+}
+
+func (m * MapArr[T1,T2]) Set(k T1, v T2) {
+    m.s = append(m.s, Pair[T1,T2]{k,v})
+}
+
+func (m * MapArr[T1,T2]) Print()  {
+    for _, p := range m.s {
+        fmt.Printf(" info:(id: %s, val:%v)", p.ID, p.Val)
+    }
+
+    fmt.Printf("\n")
+}
+
+
+func main() {
+  kvArr := &amp;MapArr[string, int]{}
+  kvArr.s  = []Pair[string, int]{}
+  kvArr.Set("k1", int(1))
+  kvArr.Set("k2", int(2))
+  fmt.Printf("str,int")
+  kvArr.Print()
+
+  kvArr1 := &amp;MapArr[string, string]{}
+  kvArr1.s  = []Pair[string, string]{}
+  kvArr1.Set("k1", "v1")
+  kvArr1.Set("k2", "v2")
+  fmt.Printf("str,str")
+  kvArr1.Print()
+
+}
+
+</code></pre>
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/mgo.v2/2021/01/14/golang_mgo_session_timeout.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/go/2021/08/19/go_fork_pipe.html" title="go exec.Command使用pipe做数据交换遇到的问题">go exec.Command使用pipe做数据交换遇到的问题</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/qa/2021/04/02/qa.html" title="遇到问题集合">遇到问题集合</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-04-02</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/monstache/2021/03/19/monstache_split_table_conf.html" title="解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch">解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-03-19</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
