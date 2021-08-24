@@ -70,6 +70,38 @@
     
       
         
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -99,7 +131,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -166,24 +198,152 @@
           
             <li><a href="categories#http" title="http" rel="2" class="tag">http<span>2</span></a></li>
           
+            <li><a href="categories#项目使用" title="项目使用" rel="3" class="tag">项目使用<span>3</span></a></li>
+          
+            <li><a href="categories#mgo.v2" title="mgo.v2" rel="1" class="tag">mgo.v2<span>1</span></a></li>
+          
+            <li><a href="categories#golang泛型" title="golang泛型" rel="1" class="tag">golang泛型<span>1</span></a></li>
+          
+            <li><a href="categories#golang 动态结构体" title="golang 动态结构体" rel="1" class="tag">golang 动态结构体<span>1</span></a></li>
+          
+            <li><a href="categories#monstache" title="monstache" rel="1" class="tag">monstache<span>1</span></a></li>
+          
+            <li><a href="categories#qa" title="qa" rel="1" class="tag">qa<span>1</span></a></li>
+          
+            <li><a href="categories#go" title="go" rel="1" class="tag">go<span>1</span></a></li>
+          
             
         </ul>            
       <div class="container content" >
         <div class="posts">
   
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/go/2021/08/19/go_fork_pipe.html">
+        go exec.Command使用pipe做数据交换遇到的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-08-19</span>
+    背景
+
+使用exec.Command 实现syscall.ForkExec功能，为了让master与child数据交互的能力，
+最终exec.Command.ExtraFiles 来传递pipe...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/qa/2021/04/02/qa.html">
+        遇到问题集合
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-04-02</span>
+    1. linux 执行命令卡住
+
+
+  执行ps -aux 卡住没有返回
+  执行ps -ef 卡住没有返回
+  ls -lha /proc/pid/ 卡住没有返回
+
+
+使用 strace 查看...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/monstache/2021/03/19/monstache_split_table_conf.html">
+        解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-03-19</span>
+    1. 背景
+
+目前所在做的项目是做资产管理， 随着变化数据越来越多， 单一类型的资产数据无法在同一张表存储，后需经过使用多个表， 
+之前为了实现全局的全文搜索， 是通过monstache将mon...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html">
+        golang 动态结构体
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-02-10</span>
+    背景
+
+语言： golang
+
+目前项目允许业务自定自己业务下私有字段。 造成同一类型实例数据，在不同的业务下字段是不一样。 在实际处理中无法使用struct来定义。
+当实例数据在不同服务之间数...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang%E6%B3%9B%E5%9E%8B/2021/01/17/golang_generics.html">
+        golang 泛型
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-01-17</span>
+    背景
+
+目前所在项目是关于资产管理，经常会有更重数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。
+
+由于在目前的golang 版本不支持多态， 只能人工的方式来实...
+  </div>
+  
 </div>
+
+
+
+
 <div id="post-pagination" class="paginator">
       
-      <a href="/">1</a>
+      <span class="current-page">1</span>
       
 
     
-  (共篇)
+      
+      <a href="/page2">2</a>
+      
+    
+      
+      <a href="/page3">3</a>
+      
+    
+      
+      <a href="/page4">4</a>
+      
+    
+      
+      <a href="/page5">5</a>
+      
+    
+      
+      <a href="/page6">6</a>
+      
+    
+      
+      <a href="/page7">7</a>
+      
+    
+      
+      <a href="/page8">8</a>
+      
+    
+      
+      <a href="/page9">9</a>
+      
+    
+  (共44篇)
 </div>
 
 <!--div class="pagination">
   
-    <span class="pagination-item older"><-</span>
+    <a class="pagination-item older" href="/page2"><-</a>
   
   
   <span class="pagination-item newer">-></span>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="go exec.Command使用pipe做数据交换遇到的问题">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      go exec.Command使用pipe做数据交换遇到的问题 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">go exec.Command使用pipe做数据交换遇到的问题</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2021-08-19</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> go
+</span>
+  </div>
+  <h3 id="背景">背景</h3>
+
+<p>使用exec.Command 实现syscall.ForkExec功能，为了让master与child数据交互的能力，
+最终exec.Command.ExtraFiles 来传递pipe 的fd 来实现，
+但是实际使用遇到几个奇怪的问题，感觉和系统实现的有些差别。
+使用不好会卡到数据交互。比如卡到数据的读，读到数据为空</p>
+
+<h3 id="例子">例子</h3>
+<p>也不知道怎么描述， 直接上代码</p>
+
+<pre><code class="language-go">package main
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+)
+func execChildFunc() bool{
+	aa := os.Getenv("aa")
+	if aa != "" {
+		file := os.NewFile(3, "")
+		readFile := os.NewFile(4, "")
+		file.Write([]byte("test success"))
+		paramBytes, _ := ioutil.ReadAll(readFile)
+		file.Write(paramBytes)
+		return true
+	}
+	return false
+}
+func pipe() (*os.File,*os.File,*os.File,*os.File, error ) {
+	masterRead, childWrite, err := os.Pipe()
+	if err != nil {
+		return nil, nil, nil, nil, err
+	}
+	childRead, masterWrite, err := os.Pipe()
+	if err != nil {
+		return nil, nil, nil, nil, err
+	}
+	return  masterRead, childWrite,childRead, masterWrite, nil
+}
+func main() {
+	// fork
+	if execChildFunc() {
+		return
+	}
+	self, err := os.Executable()
+	if err != nil {
+		fmt.Println("get self path error.",err)
+		return
+	}
+	masterRead, childWrite,childRead, masterWrite, err := pipe()
+	if err != nil {
+		fmt.Println("pipe init error.",err)
+		return
+	}
+	masterWrite.Write([]byte(" test master params"))
+	execCmd := exec.Command(self, os.Args...)
+	execCmd.Env = append(os.Environ(), "aa=2222222")
+	execCmd.Stderr = os.Stderr
+	execCmd.Stdout = os.Stdout
+	execCmd.ExtraFiles = []*os.File{childWrite,childRead}
+	err = execCmd.Start()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// 必须关闭，会卡到masterRead read 位置
+	childWrite.Close()
+	// 关不关闭对流程没有影响
+	childRead.Close()
+	// 不关闭  会卡子进程read 数据， 子进程无法退出
+	masterWrite.Close()
+	if err :=execCmd.Wait(); err != nil {
+		fmt.Println(err )
+	}
+	rsp, err := ioutil.ReadAll(masterRead)
+	if err != nil {
+		fmt.Println("read child result error.",err)
+		return
+	}
+	fmt.Println("child result : ",string(rsp))
+}
+</code></pre>
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/qa/2021/04/02/qa.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/qa/2021/04/02/qa.html" title="遇到问题集合">遇到问题集合</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/monstache/2021/03/19/monstache_split_table_conf.html" title="解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch">解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-03-19</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html" title="golang 动态结构体">golang 动态结构体</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-02-10</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>

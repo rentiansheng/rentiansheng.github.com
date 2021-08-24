@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="Home">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      Reage blog &middot; 
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>      
+      
+        <ul class="entry-meta inline-list" style="text-align: center;">
+          
+        </ul>            
+      <div class="container content" style="margin-top:2rem">
+        <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html">
+        read preference in a transaction must be primary
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-09-20</span>
+    背景
+
+项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
+事务中的查询语句会出...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/http/2020/08/08/http_request_slow.html">
+        调用第三方接口返回过慢的分析过程
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-08-08</span>
+    背景
+
+最近在对第三方系统过程中经常某一个请求耗时很长（请求到返回超过2m）。通过验证发现请求流程中网络传输和业务逻辑处理的耗时并不长。那么时间都耗费到什么时间了？
+
+查找问题的流程
+
+按照个人...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html">
+        蓝鲸配置平台-蓝鲸cmdb开发登录插件
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-03-06</span>
+    前提
+
+蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
+是蓝鲸运维体系一部分，蓝鲸社区版本是免费，社区地址https://bk.tencent.com/
+并且蓝鲸很多组...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/tcp/network/2020/03/02/mongoset_con.html">
+        docker mongodb 集群模式Golang连接不上的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-03-02</span>
+    场景
+
+server selection error: server selection timeout
+current topology: Type: ReplicaSetNoPrimary
+...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/tcp/network/2020/01/20/http_put_request_abort.html">
+        调用出现网络错误分析的过程
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-01-20</span>
+    场景
+描述：HTTP 的PUT 调用提示网络错误。
+
+具体情况：
+有用户反馈，在使用系统的时候，更新数据出现网络错误。 鉴于其他操作都没有问题，
+由于是更新使用的是HTTP 的PUT 方式，怀疑...
+  </div>
+  
+</div>
+
+
+
+
+<div id="post-pagination" class="paginator">
+      
+      <a href="/">1</a>
+      
+
+    
+      
+      <a href="/page2">2</a>
+      
+    
+      
+      <span class="current-page">3</span>
+      
+    
+      
+      <a href="/page4">4</a>
+      
+    
+      
+      <a href="/page5">5</a>
+      
+    
+      
+      <a href="/page6">6</a>
+      
+    
+      
+      <a href="/page7">7</a>
+      
+    
+      
+      <a href="/page8">8</a>
+      
+    
+      
+      <a href="/page9">9</a>
+      
+    
+  (共44篇)
+</div>
+
+<!--div class="pagination">
+  
+    <a class="pagination-item older" href="/page4"><-</a>
+  
+  
+    
+  <a class="pagination-item newer" href="/page2">-></a>
+    
+  
+</div-->
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>

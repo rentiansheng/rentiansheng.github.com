@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Reage blog</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <link href="http://localhost:4000/"/>
- <updated>2020-10-11T19:11:05+08:00</updated>
- <id>http://localhost:4000</id>
+ <link href="http://www.ireage.com/atom.xml" rel="self"/>
+ <link href="http://www.ireage.com/"/>
+ <updated>2021-08-20T15:58:56+08:00</updated>
+ <id>http://www.ireage.com</id>
  <author>
    <name></name>
    <email></email>
@@ -13,10 +13,787 @@
 
  
  <entry>
+   <title>go exec.Command使用pipe做数据交换遇到的问题</title>
+   <link href="http://www.ireage.com/go/2021/08/19/go_fork_pipe.html"/>
+   <updated>2021-08-19T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/go/2021/08/19/go_fork_pipe</id>
+   <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;使用exec.Command 实现syscall.ForkExec功能，为了让master与child数据交互的能力，
+最终exec.Command.ExtraFiles 来传递pipe 的fd 来实现，
+但是实际使用遇到几个奇怪的问题，感觉和系统实现的有些差别。
+使用不好会卡到数据交互。比如卡到数据的读，读到数据为空&lt;/p&gt;
+
+&lt;h3 id=&quot;例子&quot;&gt;例子&lt;/h3&gt;
+&lt;p&gt;也不知道怎么描述， 直接上代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;package main
+import (
+	&quot;fmt&quot;
+	&quot;io/ioutil&quot;
+	&quot;os&quot;
+	&quot;os/exec&quot;
+)
+func execChildFunc() bool{
+	aa := os.Getenv(&quot;aa&quot;)
+	if aa != &quot;&quot; {
+		file := os.NewFile(3, &quot;&quot;)
+		readFile := os.NewFile(4, &quot;&quot;)
+		file.Write([]byte(&quot;test success&quot;))
+		paramBytes, _ := ioutil.ReadAll(readFile)
+		file.Write(paramBytes)
+		return true
+	}
+	return false
+}
+func pipe() (*os.File,*os.File,*os.File,*os.File, error ) {
+	masterRead, childWrite, err := os.Pipe()
+	if err != nil {
+		return nil, nil, nil, nil, err
+	}
+	childRead, masterWrite, err := os.Pipe()
+	if err != nil {
+		return nil, nil, nil, nil, err
+	}
+	return  masterRead, childWrite,childRead, masterWrite, nil
+}
+func main() {
+	// fork
+	if execChildFunc() {
+		return
+	}
+	self, err := os.Executable()
+	if err != nil {
+		fmt.Println(&quot;get self path error.&quot;,err)
+		return
+	}
+	masterRead, childWrite,childRead, masterWrite, err := pipe()
+	if err != nil {
+		fmt.Println(&quot;pipe init error.&quot;,err)
+		return
+	}
+	masterWrite.Write([]byte(&quot; test master params&quot;))
+	execCmd := exec.Command(self, os.Args...)
+	execCmd.Env = append(os.Environ(), &quot;aa=2222222&quot;)
+	execCmd.Stderr = os.Stderr
+	execCmd.Stdout = os.Stdout
+	execCmd.ExtraFiles = []*os.File{childWrite,childRead}
+	err = execCmd.Start()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// 必须关闭，会卡到masterRead read 位置
+	childWrite.Close()
+	// 关不关闭对流程没有影响
+	childRead.Close()
+	// 不关闭  会卡子进程read 数据， 子进程无法退出
+	masterWrite.Close()
+	if err :=execCmd.Wait(); err != nil {
+		fmt.Println(err )
+	}
+	rsp, err := ioutil.ReadAll(masterRead)
+	if err != nil {
+		fmt.Println(&quot;read child result error.&quot;,err)
+		return
+	}
+	fmt.Println(&quot;child result : &quot;,string(rsp))
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>遇到问题集合</title>
+   <link href="http://www.ireage.com/qa/2021/04/02/qa.html"/>
+   <updated>2021-04-02T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/qa/2021/04/02/qa</id>
+   <content type="html">&lt;h3 id=&quot;1-linux-执行命令卡住&quot;&gt;1. linux 执行命令卡住&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;执行ps -aux 卡住没有返回&lt;/li&gt;
+  &lt;li&gt;执行ps -ef 卡住没有返回&lt;/li&gt;
+  &lt;li&gt;ls -lha /proc/pid/ 卡住没有返回&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;使用 strace 查看后发现卡住在 read(“/prox/pid/cmdline”, …..&lt;/p&gt;
+
+&lt;p&gt;cd /proc/pid&lt;/p&gt;
+
+&lt;p&gt;cat status&lt;/p&gt;
+
+&lt;p&gt;看下State 字段值：&lt;/p&gt;
+
+&lt;p&gt;State:	D (disk sleep)&lt;/p&gt;
+
+&lt;p&gt;解决方案：
+https://bugs.centos.org/view.php?id=15252&lt;/p&gt;
+
+&lt;h3 id=&quot;2-mongodb-用户权限的问题&quot;&gt;2. mongodb 用户权限的问题&lt;/h3&gt;
+
+&lt;p&gt;mongodb 用户是属于db， 在这个库里面创建的账号，其他db 是不可见的。&lt;/p&gt;
+
+&lt;p&gt;比如。 在db1, db2 都创建了user 帐户， 使用user 连接db1. 并没有操作db2权限&lt;/p&gt;
+
+&lt;p&gt;在db1中执行下面的命令。帐户就可以db1,db2：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bazaar&quot;&gt;db.createUser({user: &quot;user&quot;,pwd: &quot;pwd&quot;,roles: [ { role: &quot;readWrite&quot;, db: &quot;db1&quot; },{ role: &quot;readWrite&quot;, db: &quot;db1&quot; } ]})
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;3-go-mod-遇到的问题&quot;&gt;3. go mod 遇到的问题&lt;/h3&gt;
+
+&lt;p&gt;go mod edit  -replace=xx=xx
+编译报”is replaced in go.mod, but not marked as replaced in？”
+原因：
+编译或者运行的时，使用 -mod=vendor， 在这中情况下需要更新项目的vendor 目录。
+执行 &lt;code&gt;go mod vendor&lt;/code&gt; 需要将go mod edi replace 相关的内容更新到vendor中
+包含modules.txt和 项目代码.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;github.com/rs/cors@v1.7.0: is explicitly required in go.mod, but not marked as explicit in vendor/modules.txt
+        github.com/rs/cors@v1.7.0: is replaced in go.mod, but not marked as replaced in vendor/modules.txt
+
+        To ignore the vendor directory, use -mod=readonly or -mod=mod.
+        To sync the vendor directory, run:
+                go mod vendor
+&lt;/code&gt;&lt;/pre&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</title>
+   <link href="http://www.ireage.com/monstache/2021/03/19/monstache_split_table_conf.html"/>
+   <updated>2021-03-19T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/monstache/2021/03/19/monstache_split_table_conf</id>
+   <content type="html">&lt;h3 id=&quot;1-背景&quot;&gt;1. 背景&lt;/h3&gt;
+
+&lt;p&gt;目前所在做的项目是做资产管理， 随着变化数据越来越多， 单一类型的资产数据无法在同一张表存储，后需经过使用多个表， 
+之前为了实现全局的全文搜索， 是通过monstache将mongodb 中资产的实例的数据同步到Elasticsearch。&lt;/p&gt;
+
+&lt;p&gt;分表后在使用monstache 出现两个：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;不支持按照mongodb collection 名字前缀进行数据&lt;/li&gt;
+  &lt;li&gt;monstache mapping 建立Elasticsearch 索引的时候不支持按collection 名字前缀进行聚合&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;2-如何解决问题&quot;&gt;2 如何解决问题？&lt;/h3&gt;
+
+&lt;h4 id=&quot;21-解决-monstache-无法按照-mongodb-collection-名字前缀进行数据的问题&quot;&gt;2.1 解决 monstache 无法按照 mongodb collection 名字前缀进行数据的问题？&lt;/h4&gt;
+
+&lt;p&gt;monstache 在启动的时候是支持按正则来过滤不同步的collection 名字的配置项目（direct-read-dynamic-exclude-regex ），&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;方法1：使用正则中的非来完成按照前缀的同步。 例如： “?!prefix” 正则表示所有非pregfix 前缀名字的collection都不同步。 
+但是golang regex panic 不支持。&lt;/li&gt;
+  &lt;li&gt;方法2： 将所有不需要同步的表名字全写direct-read-dynamic-exclude-regex， 耦合太紧，后需需要新加表都需要改配置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最终方案： 
+在和monstache 作者沟通后，作者也认为上面的解决方案不可取，可以新建相应的功能。最后新加一个配置 direct-read-dynamic-include-regex
+用来配置再启动的时候，按照配置的正则将符合条件名字的collection 中的数据同步到Elasticsearch中。
+已提交PR， 并且合并&lt;a href=&quot;https://github.com/rwynn/monstache/pull/491&quot;&gt;https://github.com/rwynn/monstache/pull/491&lt;/a&gt;. 
+欢迎大家使用&lt;/p&gt;
+
+&lt;h4 id=&quot;22-解决-monstache-无法按照-mongodb-collection-名字前缀进行数据的问题&quot;&gt;2.2 解决 monstache 无法按照 mongodb collection 名字前缀进行数据的问题？&lt;/h4&gt;
+
+&lt;p&gt;monstache 在将mongodb collection中同步到Elasticsearch中的时候， 默认情况下会使用mongodb collection namespace 作为索引名字。 
+也可以通过配置mapping 来做 mongodb collection namespace 到指定Elasticsearch索引中， 但是mapping 不支持按照正则或者前缀的方式。&lt;/p&gt;
+
+&lt;p&gt;但是我们可以通过插件的方式来实现。 目前monstache 支持js和golang 开发的插件
+为了降低部署成本。我这边使用的是js 的插件。直接在配置文件中写即可：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-angular2html&quot;&gt;
+enable-patches = true
+
+[[script]]
+# namespace 限定js 插件处理的范围， 不填写的时候，是所有的表
+#namespace = &quot;&quot;
+
+routing = true 
+script = &quot;&quot;&quot;
+
+var re = new RegExp(&quot;prefix&quot;)
+module.exports = function(doc, ns, updateDesc) {
+
+    // 找到满足条件的表
+    if(re.test(ns)) {
+        // _meta_monstache key是 monstache 自己描述字段， 其中的index 表示这个doc数据写到Elasticsearch用的索引
+        doc[&quot;_meta_monstache&quot;] = {&quot;index&quot;:&quot;es_index&quot;};
+    }
+    
+    return  doc 
+}
+&quot;&quot;&quot;
+
+
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>golang 动态结构体</title>
+   <link href="http://www.ireage.com/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html"/>
+   <updated>2021-02-10T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct</id>
+   <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;语言： golang&lt;/p&gt;
+
+&lt;p&gt;目前项目允许业务自定自己业务下私有字段。 造成同一类型实例数据，在不同的业务下字段是不一样。 在实际处理中无法使用struct来定义。
+当实例数据在不同服务之间数据传递， 只能用key-val结构(map[string]interface{})来描述，在实际处理中非常不变，
+需要大量判断数据类型和类型转换代码，整体使用起来比较麻烦。&lt;/p&gt;
+
+&lt;p&gt;eg:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;
+    inst := make(map[string]interface{},0)
+    err := json.Unmarshal([]byte(....), &amp;amp;inst)
+    if err != nil {
+        return 
+    }
+    var name string 
+    if iName := inst[&quot;name&quot;]; iName != nil {
+        id, ok := inst[&quot;id&quot;].(string)
+        if !ok {
+           return errors.New(&quot;invalid&quot;)
+        }
+    }
+   
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;如何解决大量类型转换和判断数据类型这个问题&quot;&gt;如何解决大量类型转换和判断数据类型这个问题？&lt;/h3&gt;
+
+&lt;p&gt;struct 在我们使用的时候之所以方便，简洁就是在做反序列的时候根据结构的定义字段和类型。 因此在使用的可以不用在做类型判断和数据校验
+如果可以做一个dynamic struct，这个struct字段是根据执行逻辑动态调整字段和字段类型即可。&lt;/p&gt;
+
+&lt;h3 id=&quot;最终实现&quot;&gt;最终实现&lt;/h3&gt;
+
+&lt;p&gt;最终的实现定一个DStruct 结构， 给DStruct结构实现基于byte stream json 反序列， 利用golang可以自定义struct UnmarshalJSON的特性，
+当做json Unmarshal调用DStruct 根据用户定义的配置项目反序列化。 &lt;a href=&quot;https://github.com/rentiansheng/dstruct&quot;&gt;项目地址&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;eg:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;
+ 
+	testStrJSONBytes := `{&quot;int&quot;:1,&quot;str&quot;:&quot;str&quot;,&quot;bl&quot;:true, &quot;arr_str&quot;:[&quot;1&quot;,&quot;2&quot;],&quot;arr_int&quot;:[1,2], &quot;map&quot;:{&quot;a&quot;:1,&quot;b&quot;:64}, ` +
+		`&quot;test_struct&quot;:{&quot;str&quot;:&quot;string&quot;, &quot;int&quot;:1},&quot;interface&quot;:{&quot;str&quot;:&quot;string&quot;, &quot;bl&quot;:true}}`
+		// define a dynamic structure
+	ds := &amp;amp;DStruct{}
+	var i interface{}
+	// define the fields of the dynamic structure
+	ds.SetFields(map[string]reflect.Type{
+		&quot;int&quot;:         TypeInt,
+		&quot;str&quot;:         TypeString,
+		&quot;bl&quot;:          TypeBool,
+		&quot;arr_str&quot;:     TypeArrayStr,
+		&quot;arr_int&quot;:     TypeArrayInt,
+		&quot;map&quot;:         reflect.TypeOf(map[string]int64{}),
+		&quot;interface&quot;:   reflect.TypeOf(i),
+	})
+	// Unmarshal dynamic structure, you can directly use golang official
+	err := json.Unmarshal([]byte(testStrJSONBytes), ds)
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+    intVal, err := ds.Int64(&quot;int&quot;)
+    if err != nil {
+		fmt.Error(err.Error())
+		return
+	}
+		fmt.Println(&quot;int test, err: &quot;, err, &quot;val: &quot;, intVal)
+	str, err := ds.Str(&quot;str&quot;)
+	if err != nil {
+		fmt.Error(err.Error())
+		return
+	}
+	fmt.Println(&quot;str test, err: &quot;, err, &quot;val: &quot;, str)
+	exists, err := ds.Value(&quot;interface&quot;, &amp;amp;i)
+	if err != nil {
+		fmt.Error(err.Error())
+		return
+	}
+	fmt.Println(&quot;exist field: &quot;, exists, &quot;val: &quot;, i)
+&lt;/code&gt;&lt;/pre&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>golang 泛型</title>
+   <link href="http://www.ireage.com/golang%E6%B3%9B%E5%9E%8B/2021/01/17/golang_generics.html"/>
+   <updated>2021-01-17T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/golang%E6%B3%9B%E5%9E%8B/2021/01/17/golang_generics</id>
+   <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;目前所在项目是关于资产管理，经常会有更重数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。&lt;/p&gt;
+
+&lt;p&gt;由于在目前的golang 版本不支持多态， 只能人工的方式来实现。效果如下：
+&lt;img src=&quot;https://lh3.googleusercontent.com/-5Vz_puoHe7o/WMJukhX878I/AAAAAAAADRI/9nn3cse3gkYrZ--aVfWaofUFGaRb49MtACLcB/s1600/Animation.gif&quot; alt=&quot;人工泛型&quot; /&gt;
+（图片来源）https://groups.google.com/g/golang-nuts/c/j_3n5wAZaXw/m/YkOdbCppAQAJ&lt;/p&gt;
+
+&lt;h3 id=&quot;泛型实现&quot;&gt;泛型实现&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;多态&lt;/li&gt;
+  &lt;li&gt;类型推导&lt;/li&gt;
+  &lt;li&gt;操作符重载&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;golang-实现&quot;&gt;golang 实现&lt;/h3&gt;
+
+&lt;p&gt;golang 目前完成的主要是类型推导&lt;/p&gt;
+
+&lt;h3 id=&quot;如何使用golang&quot;&gt;如何使用golang&lt;/h3&gt;
+
+&lt;h5 id=&quot;编译支持golang的版本&quot;&gt;编译支持golang的版本&lt;/h5&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-angular2html&quot;&gt;git clone https://github.com/golang/go
+git checkout dev.go2go
+cd src
+./all.bash 
+
+go tool go2go run xx.go2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id=&quot;例子&quot;&gt;例子&lt;/h5&gt;
+
+&lt;p&gt;(https://go2goplay.golang.org/)[官方实例]&lt;/p&gt;
+
+&lt;p&gt;数据类型的Join. file name: intJoin.go2&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;package main
+import (
+	&quot;fmt&quot;
+	&quot;strings&quot;
+)
+
+func main() {
+
+	str := Join([]int64{1,2,3,4});
+	fmt.Println(&quot;int64&quot;, str)
+	str = Join([]int32{1,2,3,4});
+	fmt.Println(&quot;int32&quot;, str)
+
+	str = JoinNumber([]int64{1,2,3,4});
+	fmt.Println(&quot;int64&quot;, str)
+	str = JoinNumber([]int32{1,2,3,4});
+	fmt.Println(&quot;int32&quot;, str)
+
+	// NOTICE: ERROR. 类型不匹配时候的问题
+    /* 
+	str = JoinNumber([]string{&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;});
+	fmt.Println(&quot;int32&quot;, str) 
+	*/
+}
+
+func Join[T any](arr []T) string {
+	str := &quot;&quot;
+	for _, v := range arr {
+		str = fmt.Sprintf(&quot;%s,%v&quot;, str,v)
+	}
+
+	return strings.Trim(str, &quot;,&quot;)
+}
+
+type numeric interface {
+	type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64
+}
+
+func JoinNumber[T numeric](arr []T) string {
+	str := &quot;&quot;
+	for _, v := range arr {
+		str = fmt.Sprintf(&quot;%s,%v&quot;, str,v)
+	}
+
+	return strings.Trim(str, &quot;,&quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;数组结构体多态实例， file: struct.go2&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;package main
+
+import (&quot;fmt&quot;)
+
+type Pair[T1 , T2 any] struct {
+    ID T1
+    Val T2
+}
+
+type MapArr[T1, T2 any] struct {
+    s []Pair[T1, T2]
+}
+
+func (m * MapArr[T1,T2]) Set(k T1, v T2) {
+    m.s = append(m.s, Pair[T1,T2]{k,v})
+}
+
+func (m * MapArr[T1,T2]) Print()  {
+    for _, p := range m.s {
+        fmt.Printf(&quot; info:(id: %s, val:%v)&quot;, p.ID, p.Val)
+    }
+
+    fmt.Printf(&quot;\n&quot;)
+}
+
+
+func main() {
+  kvArr := &amp;amp;MapArr[string, int]{}
+  kvArr.s  = []Pair[string, int]{}
+  kvArr.Set(&quot;k1&quot;, int(1))
+  kvArr.Set(&quot;k2&quot;, int(2))
+  fmt.Printf(&quot;str,int&quot;)
+  kvArr.Print()
+
+  kvArr1 := &amp;amp;MapArr[string, string]{}
+  kvArr1.s  = []Pair[string, string]{}
+  kvArr1.Set(&quot;k1&quot;, &quot;v1&quot;)
+  kvArr1.Set(&quot;k2&quot;, &quot;v2&quot;)
+  fmt.Printf(&quot;str,str&quot;)
+  kvArr1.Print()
+
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>使用mgo.v2 出现 i/o timeout session 问题</title>
+   <link href="http://www.ireage.com/mgo.v2/2021/01/14/golang_mgo_session_timeout.html"/>
+   <updated>2021-01-14T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/mgo.v2/2021/01/14/golang_mgo_session_timeout</id>
+   <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;使用mgo.v2 操作数据库，一直报 i/o timeout session 问题出错如下:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-code&quot;&gt;read tcp 127.0.0.1:42577-&amp;gt;127.0.0.1:27017: i/o timeout
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;原因&quot;&gt;原因&lt;/h3&gt;
+
+&lt;p&gt;再上层使用的时候， 先connect mongodb server , 然后 cache connect session.&lt;/p&gt;
+
+&lt;p&gt;再使用mgo.v2 去操作mongodb 的时候，我门都设置操作执行的超时时间， 再超时后mgo.v2 回关闭这个连接，
+mgo.v2 只是关闭这个连接，后需通过这个session 或者是 Clone出来的session都是回出现i/o timeout，
+mongodb server 日志会有 ` Error sending response to client: SocketException: Broken pipe.` 的错误&lt;/p&gt;
+
+&lt;p&gt;参考代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-golang&quot;&gt;1. 获取网络数据失败或者超时错误，  readLoop(), https://github.com/go-mgo/mgo/blob/v2/socket.go#L551
+2. 处理出错连接，  kill(err error, abend bool) https://github.com/go-mgo/mgo/blob/v2/socket.go#L319
+3. 再连接上执行语句直接报错的位置， Query(ops ...interface{}) ， https://github.com/go-mgo/mgo/blob/v2/socket.go#L491
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;解决方案&quot;&gt;解决方案&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;
+1. 获取session 的时候, 不使用原有session上Clone 使用Copy 方法获取
+2. 获取session 的时候， 通过原有session 上clone 出来的 Session， 需要是用Refresh 方法，
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;以上的方法存在性能问题， 每次获取session 都需要和mongodb 进行一次认证服务。 （之前遇到的问题，当时的数据忘记留存了，QPS增高后，严重性能下降）&lt;/p&gt;
+
+&lt;p&gt;专用解决方案：
+为了快速解决这个问题，并且少修改业务代码和mgo.v2 的代码。
+为了保证性能， 对mgo.v2  session 进行扩展， 可以获取session 对应的连接是否已经关闭， 如果关闭再Refresh session。&lt;/p&gt;
+
+&lt;p&gt;在mgo.v2/session.go 新加方法&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;// 检查session 中连接是否已经dead
+func (s *Session) IsDead() bool {
+	if s.masterSocket != nil {
+		s.masterSocket.Lock()
+		if s.masterSocket.dead != nil {
+			s.masterSocket.Unlock()
+			return true
+		}
+		s.masterSocket.Unlock()
+	}
+	if s.slaveSocket != nil {
+		s.slaveSocket.Lock()
+		if s.slaveSocket.dead != nil {
+			s.slaveSocket.Unlock()
+			return true
+		}
+		s.slaveSocket.Unlock()
+	}
+
+	return false
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;具体使用方法：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;//  如果发现session 中 conn 对象已经dead， 刷新下连接
+func (c *MyMongo) refreshDBSess(sess *mgo.Session) *mgo.Session {
+	if sess.IsDead() {
+		sess.Refresh()
+	}
+	return sess	
+}	
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id=&quot;其他问题&quot;&gt;其他问题&lt;/h5&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;clone session 扩散I/O timeout 和设置 readPreference 也有关， Eventual 不会出现问题（没太关注这个逻辑，按照mgo.v2 通用处理的逻辑，这个是有性能问题）&lt;/li&gt;
+  &lt;li&gt;clone session 在mongodb server 重新选择也会有问题。 也可以按照上面的方案解决&lt;/li&gt;
+  &lt;li&gt;没有看到mgo.v2 连接池的作用&lt;/li&gt;
+&lt;/ol&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Use mongodb driver to solve distributed transactions</title>
+   <link href="http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction_en.html"/>
+   <updated>2021-01-03T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction_en</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;mongodb_go_driver_distributed_transaction_cn.html&quot;&gt;中文&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;use-mongodb-driver-to-solve-distributed-transactions&quot;&gt;Use mongodb driver to solve distributed transactions&lt;/h2&gt;
+
+&lt;h4 id=&quot;solving-distributed-transaction-scenarios&quot;&gt;Solving distributed transaction scenarios&lt;/h4&gt;
+
+&lt;p&gt;This project can only solve distributed transactions in multiple tables in the same database in the same replica-set in mongodb.&lt;/p&gt;
+
+&lt;h4 id=&quot;main-principles&quot;&gt;Main principles&lt;/h4&gt;
+
+&lt;p&gt;The mongodb server does not strictly bind the transaction in which the transaction is in, and the mongodb driver can initiate transactions to achieve this.
+Changing this solution will extend the mongodb golang driver code,
+It can be used for verification in mongodb driver 1.1.2 release and mongodb 4.0.x-4.2.x replica-set mode&lt;/p&gt;
+
+&lt;h6 id=&quot;mongodb-golang-driver-code-extension-content&quot;&gt;mongodb golang driver code extension content&lt;/h6&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/mongodb_driver_transcation/commit/314f4f3263953ea9e6588993975c44cb894e9831&quot;&gt;The specific code is at https://github.com/rentiansheng/mongodb_driver_transaction/commit/314f4f3263953ea9e6588993975c44cb894e9831&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Extension code:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; mongo/session_exposer.go
+ x/mongo/driver/session/session_ext.go
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The extension code is mainly the underlying logic, used to activate the transaction and bind the transaction. Does not contain business logic&lt;/p&gt;
+
+&lt;p&gt;Related test cases:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;transcation/transaction_test.go
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Upper-level use logic:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;transcation/transaction.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Encapsulate business logic, realize business-level management interfaces such as opening, committing, and rolling back transactions, and provide an operation interface for the transaction uuid and the cursor id record operation of the statement execution within the transaction.
+In actual use, the transaction uuid and in-service statement execution cursor id need to be stored centrally, and all service instances need to be available and used. You can use redis and mysql as central storage&lt;/p&gt;
+
+&lt;p&gt;Now that the real transaction id of mongodb is directly exposed, there may be security risks in passing between different service nodes.&lt;/p&gt;
+
+&lt;h6 id=&quot;specific-implementation&quot;&gt;Specific implementation&lt;/h6&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Activate a transaction, generate a transaction uuid (mongodb driver provides the generation method), transaction/transaction.go: StartTransaction&lt;/li&gt;
+  &lt;li&gt;Activate a session through the uuid of the transaction and join a transaction of the mongodb server, transaction/transaction.go: ReloadSession&lt;/li&gt;
+  &lt;li&gt;Bind the transaction to the session, get the SessionContext, mongo/session_exposer.go:TxnContextWithSession&lt;/li&gt;
+  &lt;li&gt;Perform curl operations&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;solution-discovery-and-implementation&quot;&gt;Solution discovery and implementation&lt;/h4&gt;
+
+&lt;p&gt;participants:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng&quot;&gt;rentiansheng&lt;/a&gt;
+&lt;a href=&quot;https://github.com/wusendong&quot;&gt;wusendong&lt;/a&gt;
+&lt;a href=&quot;https://github.com/breezelxp&quot;&gt;breezelxp&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Use items:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Tencent/bk-cmdb&quot;&gt;Blueking Configuration Platform&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;drainage&quot;&gt;Drainage&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/bson-register&quot;&gt;bson decode register&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Bson decoding interface priority uses the actual type as the final object, such as slice, map
+In the mongodb golang official driver, when bson uses interface at the top level, it puts slice and map in an object called primitive.D (golang []interface type).&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>使用mongodb driver 解决分布式事务</title>
+   <link href="http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction.html"/>
+   <updated>2021-01-03T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction</id>
+   <content type="html">&lt;h2 id=&quot;使用mongodb-driver-解决分布式事务&quot;&gt;使用mongodb driver 解决分布式事务&lt;/h2&gt;
+
+&lt;h4 id=&quot;解决分布式事务的场景&quot;&gt;解决分布式事务的场景&lt;/h4&gt;
+
+&lt;p&gt;本项目只能解决在mongodb 同一个replica-set 中同一个database中多个表中的分布式事务。&lt;/p&gt;
+
+&lt;h4 id=&quot;主要原理&quot;&gt;主要原理&lt;/h4&gt;
+
+&lt;p&gt;mongodb server对事务所在的session没有严格绑定和 mongodb driver 可以发起事务的规则来实现。
+改该解决方案会对mongodb golang driver 代码扩展，
+在mongodb driver 1.1.2 release 与mongodb 4.0.x-4.2.x replica-set 模式验证可以使用&lt;/p&gt;
+
+&lt;h6 id=&quot;mongodb-golang-driver-代码扩展内容&quot;&gt;mongodb golang driver 代码扩展内容&lt;/h6&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/mongodb_driver_transaction/commit/314f4f3263953ea9e6588993975c44cb894e9831&quot;&gt;具体代码在 https://github.com/rentiansheng/mongodb_driver_transaction/commit/314f4f3263953ea9e6588993975c44cb894e9831&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;扩展代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; mongo/session_exposer.go
+ x/mongo/driver/session/session_ext.go
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;扩展代码主要是底层逻辑，用来激活事务， 绑定事务。 不包含业务逻辑&lt;/p&gt;
+
+&lt;p&gt;相关测试用例：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;transaction/transaction_test.go
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上层使用逻辑：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;transaction/transaction.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;封装业务逻辑，实现业务层面需要开启，提交，回滚事务等管理接口， 并且提供一个关于事务uuid 与 事务内语句执行游标id记录操作接口。
+在实际使用的时候， 事务uuid 和务内语句执行游标id 要做中心化存储，需要刚让所有服务实例可以获取和使用。 可以用redis， mysql 作为中心存储&lt;/p&gt;
+
+&lt;p&gt;现在直接将mongodb 真是的事务id暴露出来，在不同服务节点之间传递可能存在安全风险。&lt;/p&gt;
+
+&lt;h6 id=&quot;具体的实现&quot;&gt;具体的实现&lt;/h6&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;激活一个事务， 生成一个事务uuid（mongodb driver 提供生成方法）, transaction/transaction.go: StartTransaction&lt;/li&gt;
+  &lt;li&gt;通过事务的uuid， 激活一个session， 加入mongodb server 的一个事务中，transaction/transaction.go: ReloadSession&lt;/li&gt;
+  &lt;li&gt;将事务与session绑定， 获取SessionContext， mongo/session_exposer.go:TxnContextWithSession&lt;/li&gt;
+  &lt;li&gt;执行curl 操作&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;方案发现和落地&quot;&gt;方案发现和落地&lt;/h4&gt;
+
+&lt;p&gt;参与人员：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng&quot;&gt;rentiansheng&lt;/a&gt;
+&lt;a href=&quot;https://github.com/wusendong&quot;&gt;wusendong&lt;/a&gt;
+&lt;a href=&quot;https://github.com/breezelxp&quot;&gt;breezelxp&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;使用项目：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Tencent/bk-cmdb&quot;&gt;蓝鲸配置平台&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;引流&quot;&gt;引流&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/bson-register&quot;&gt;bson decode register&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;bson解码interface优先级使用实际类型最为最终对象， 比如：slice，map
+mongodb golang 官方driver中bson在顶层使用interface的时候，会将slice, map 放到一个叫primitive.D的对象中（golang []interface类型）。&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>多个不兼容版本数据同步（mysql 向 mongodb 数据同步）</title>
+   <link href="http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2020/12/23/mysql_binlog_event.html"/>
+   <updated>2020-12-23T00:00:00+08:00</updated>
+   <id>http://www.ireage.com/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2020/12/23/mysql_binlog_event</id>
+   <content type="html">&lt;h4 id=&quot;背景&quot;&gt;背景&lt;/h4&gt;
+
+&lt;p&gt;客观原因项目项目多版本共存，并且用户短时间内无法迁移到新版本上面并且数据会按照一定纬度（项目中成为业务）灰度到新版使用。
+最终解决方案：业务数据未灰度前，只在旧版中对数据修改， 但是修改的结果在新旧版本中同时生效， 
+具体操作是未灰度到新版本中业务的数据修改操作都在旧版本中操作， 将变更的内容同步到新版中。&lt;/p&gt;
+
+&lt;h4 id=&quot;解决方案&quot;&gt;解决方案&lt;/h4&gt;
+
+&lt;p&gt;主要面临的问题是以下：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;旧系统数据变化同步实时性&lt;/li&gt;
+  &lt;li&gt;数据关系的处理&lt;/li&gt;
+  &lt;li&gt;边界数据的修改&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;旧系统数据变化同步&quot;&gt;旧系统数据变化同步&lt;/h5&gt;
+
+&lt;p&gt;在版本灰度方案，给周边系统的承诺数据在新版本中生效的时间&amp;lt;=15s的前提下， 下面的方案都是不可用的：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;由于旧系统使用的是mysql， 不提供数据变更通知功能&lt;/li&gt;
+  &lt;li&gt;且旧版本本身数据变更推送服务是异步任务， 修改变更后从操作日志中提取变更再推送，延时比较大且推送事件的数据缺少部分数据无法使用。&lt;/li&gt;
+  &lt;li&gt;定时全量同步更不符合预期， 原因：mysql中需要同步的数据总量多余5kw, 对于数据库压力过大和数据的实时性太低。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;基于数据实时性的要求，必须要找一个基于事件数据增量同步的方案， 经过查找资料发现一个能实时读取MySQL二进制日志binlog，
+并生成 JSON 格式的数据的工具maxwell。 maxwell 完全可以数据的变更推送出来做增量同步。&lt;/p&gt;
+
+&lt;p&gt;目前，关于数据同步实时性的可度量指标还没有收集， 正在开发中。实际使用统计数据同步小于1s。&lt;/p&gt;
+
+&lt;h5 id=&quot;数据关系的处理&quot;&gt;数据关系的处理&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;数据合并及分裂， 主要新旧版数据字典定义差异， 造成多个table数据合并，分离，&lt;/li&gt;
+  &lt;li&gt;数据形态发生变化，主要由于业务形态的变化，数据出现不兼容的情况&lt;/li&gt;
+  &lt;li&gt;关联数据的变更，  主要是数据变更印象到所有相关联的节点数据。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这个主要是业务逻辑，需要基于一个数据为中心处理新旧系统数据库中多表， 特别是树形关联关系中某个节点删除后，下级节点数据处理。&lt;/p&gt;
+
+&lt;h5 id=&quot;边界数据的修改&quot;&gt;边界数据的修改&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;新旧版本数据交换， 新-&amp;gt; 旧， 旧-&amp;gt;新&lt;/li&gt;
+  &lt;li&gt;未灰度业务的数据，在新版本修改，删除，新加数据&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这个主要是业务逻辑，主要是确定一个规则，需要在开发前与PM，使用方确定好即可&lt;/p&gt;
+
+&lt;h4 id=&quot;开发中遇到问题&quot;&gt;开发中遇到问题&lt;/h4&gt;
+
+&lt;h5 id=&quot;实时性如何保证&quot;&gt;实时性如何保证？&lt;/h5&gt;
+
+&lt;p&gt;maxwell能实时读取MySQL二进制日志binlog， maxwell 是以slave db instance 连接到mysql master db 上面直接获取binlog&lt;/p&gt;
+
+&lt;h5 id=&quot;如何保证mysql-数据变更事件不丢失&quot;&gt;如何保证mysql 数据变更事件不丢失&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;binlog 事件不丢失
+maxwell 会落地存储当前处理mysql binlog offset， 重启后根据落地offset 继续处理 mysql binlog ，&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;事件处理不丢失
+maxwell 支持将binlog 变更内容推动 kafka, RabbitMQ, Redis 等多种中间中，目前，使用是将数据推送到redis list，使用redis 两个list 做推送事件的ack，&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;redis ack 队列的实现：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; 1. maxwell push event redis list key1
+ 2. 使用 redis  RPopLPush 命令同获取到数据的同时放到 第二个list key2的队列中
+ 3. 事件处理完成后，删除第二list key2中的数据， 如果出现意外情况，等待事件补偿方法处理list key2的事件
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;数据全量同步&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;作为一种补偿机制，每周执行一次，保证数据的准确性，
+用户也可以强制发起基于业务的下数据同步&lt;/p&gt;
+
+&lt;h5 id=&quot;如何全量同步和增量同步数据冲&quot;&gt;如何全量同步和增量同步数据冲？&lt;/h5&gt;
+
+&lt;p&gt;全量同步时候， 暂停增量事件同步&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
    <title>蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发</title>
-   <link href="http://localhost:4000/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy.html"/>
+   <link href="http://www.ireage.com/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy.html"/>
    <updated>2020-10-11T00:00:00+08:00</updated>
-   <id>http://localhost:4000/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy</id>
+   <id>http://www.ireage.com/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy</id>
    <content type="html">&lt;h4 id=&quot;前提&quot;&gt;前提&lt;/h4&gt;
 
 &lt;p&gt;蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
@@ -87,9 +864,9 @@ func MatchMigrate(req *restful.Request) (from, to string, isHit bool) {
  
  <entry>
    <title>read preference in a transaction must be primary</title>
-   <link href="http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html"/>
+   <link href="http://www.ireage.com/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html"/>
    <updated>2020-09-20T00:00:00+08:00</updated>
-   <id>http://localhost:4000/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary</id>
+   <id>http://www.ireage.com/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary</id>
    <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
 
 &lt;p&gt;项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
@@ -167,9 +944,9 @@ Collection(name string, opts ...*options.CollectionOptions) *Collection
  
  <entry>
    <title>调用第三方接口返回过慢的分析过程</title>
-   <link href="http://localhost:4000/http/2020/08/08/http_request_slow.html"/>
+   <link href="http://www.ireage.com/http/2020/08/08/http_request_slow.html"/>
    <updated>2020-08-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/http/2020/08/08/http_request_slow</id>
+   <id>http://www.ireage.com/http/2020/08/08/http_request_slow</id>
    <content type="html">&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
 
 &lt;p&gt;最近在对第三方系统过程中经常某一个请求耗时很长（请求到返回超过2m）。通过验证发现请求流程中网络传输和业务逻辑处理的耗时并不长。那么时间都耗费到什么时间了？&lt;/p&gt;
@@ -267,9 +1044,9 @@ func main() {
  
  <entry>
    <title>蓝鲸配置平台-蓝鲸cmdb开发登录插件</title>
-   <link href="http://localhost:4000/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html"/>
+   <link href="http://www.ireage.com/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html"/>
    <updated>2020-03-06T00:00:00+08:00</updated>
-   <id>http://localhost:4000/bk-cmdb/2020/03/06/bk_cmdb_login_plugin</id>
+   <id>http://www.ireage.com/bk-cmdb/2020/03/06/bk_cmdb_login_plugin</id>
    <content type="html">&lt;h4 id=&quot;前提&quot;&gt;前提&lt;/h4&gt;
 
 &lt;p&gt;蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
@@ -491,9 +1268,9 @@ import (
  
  <entry>
    <title>docker mongodb 集群模式Golang连接不上的问题</title>
-   <link href="http://localhost:4000/tcp/network/2020/03/02/mongoset_con.html"/>
+   <link href="http://www.ireage.com/tcp/network/2020/03/02/mongoset_con.html"/>
    <updated>2020-03-02T00:00:00+08:00</updated>
-   <id>http://localhost:4000/tcp/network/2020/03/02/mongoset_con</id>
+   <id>http://www.ireage.com/tcp/network/2020/03/02/mongoset_con</id>
    <content type="html">&lt;h4 id=&quot;场景&quot;&gt;场景&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;server selection error: server selection timeout
@@ -554,9 +1331,9 @@ ports的端口给服务使用。 但是具体使用的时候，提示出现了ex
  
  <entry>
    <title>调用出现网络错误分析的过程</title>
-   <link href="http://localhost:4000/tcp/network/2020/01/20/http_put_request_abort.html"/>
+   <link href="http://www.ireage.com/tcp/network/2020/01/20/http_put_request_abort.html"/>
    <updated>2020-01-20T00:00:00+08:00</updated>
-   <id>http://localhost:4000/tcp/network/2020/01/20/http_put_request_abort</id>
+   <id>http://www.ireage.com/tcp/network/2020/01/20/http_put_request_abort</id>
    <content type="html">&lt;h4 id=&quot;场景&quot;&gt;场景&lt;/h4&gt;
 &lt;p&gt;描述：HTTP 的PUT 调用提示网络错误。&lt;/p&gt;
 
@@ -597,9 +1374,9 @@ ports的端口给服务使用。 但是具体使用的时候，提示出现了ex
  
  <entry>
    <title>golang  http client 遇到的问题</title>
-   <link href="http://localhost:4000/golang/http/client/2019/12/31/golang_http_client.html"/>
+   <link href="http://www.ireage.com/golang/http/client/2019/12/31/golang_http_client.html"/>
    <updated>2019-12-31T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/http/client/2019/12/31/golang_http_client</id>
+   <id>http://www.ireage.com/golang/http/client/2019/12/31/golang_http_client</id>
    <content type="html">&lt;p&gt;记录最近在使用golang http client 遇到的问题&lt;/p&gt;
 
 &lt;h3 id=&quot;response-body-乱码&quot;&gt;response body 乱码&lt;/h3&gt;
@@ -622,9 +1399,9 @@ ports的端口给服务使用。 但是具体使用的时候，提示出现了ex
  
  <entry>
    <title>golang http 优雅重启</title>
-   <link href="http://localhost:4000/golang/graceful/2019/10/13/golang_http_graceful.html"/>
+   <link href="http://www.ireage.com/golang/graceful/2019/10/13/golang_http_graceful.html"/>
    <updated>2019-10-13T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/graceful/2019/10/13/golang_http_graceful</id>
+   <id>http://www.ireage.com/golang/graceful/2019/10/13/golang_http_graceful</id>
    <content type="html">&lt;h3 id=&quot;目标&quot;&gt;目标&lt;/h3&gt;
 &lt;ol&gt;
   &lt;li&gt;停止服务（正在处理HTTP 请求不受影响，需要等待其完成）&lt;/li&gt;
@@ -790,9 +1567,9 @@ func shutdown(server *http.Server) chan bool {
  
  <entry>
    <title>mysql this authentication plugin is not supported</title>
-   <link href="http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err.html"/>
+   <link href="http://www.ireage.com/golang/mysql/2019/04/29/golang_mysql_conn_err.html"/>
    <updated>2019-04-29T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/mysql/2019/04/29/golang_mysql_conn_err</id>
+   <id>http://www.ireage.com/golang/mysql/2019/04/29/golang_mysql_conn_err</id>
    <content type="html">&lt;p&gt;出现这个是因为你使用MySql 5.7及以上的版本。如果不是就不用继续看了。这篇文章对你没有帮助。&lt;/p&gt;
 
 &lt;p&gt;出现问题原因：
@@ -814,7 +1591,7 @@ mysql&amp;gt; select host,user,plugin from mysql.user;
 
 &lt;p&gt;修复问题方式如下：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;mysql&amp;gt; use mysql;
-mysql&amp;gt; ALTER USER 'user name'@'host' IDENTIFIED WITH mysql_native_password BY 'user new password';
+mysql&amp;gt; ALTER USER &apos;user name&apos;@&apos;host&apos; IDENTIFIED WITH mysql_native_password BY &apos;user new password&apos;;
 mysql&amp;gt; flush privileges; 
 
 &lt;/code&gt;&lt;/pre&gt;
@@ -823,7 +1600,7 @@ mysql&amp;gt; flush privileges;
 
 &lt;p&gt;修改样例（我修改的root用户）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;mysql&amp;gt; use mysql;
-mysql&amp;gt; ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpassword';
+mysql&amp;gt; ALTER USER &apos;root&apos;@&apos;%&apos; IDENTIFIED WITH mysql_native_password BY &apos;newpassword&apos;;
 mysql&amp;gt; flush privileges; 
 
 &lt;/code&gt;&lt;/pre&gt;
@@ -846,9 +1623,9 @@ mysql&amp;gt; select host,user,plugin from mysql.user;
  
  <entry>
    <title>web 服务error的设计</title>
-   <link href="http://localhost:4000/web/2019/04/24/web_error_design.html"/>
+   <link href="http://www.ireage.com/web/2019/04/24/web_error_design.html"/>
    <updated>2019-04-24T00:00:00+08:00</updated>
-   <id>http://localhost:4000/web/2019/04/24/web_error_design</id>
+   <id>http://www.ireage.com/web/2019/04/24/web_error_design</id>
    <content type="html">&lt;h2 id=&quot;1-为什么要设计系统自己的error&quot;&gt;1. 为什么要设计系统自己的error&lt;/h2&gt;
 
 &lt;p&gt;我们为什么要设计的系统自己的error，就为了重复造轮子？&lt;/p&gt;
@@ -910,9 +1687,9 @@ Message() string
  
  <entry>
    <title>golang json</title>
-   <link href="http://localhost:4000/golang/2019/03/16/jsontag.html"/>
+   <link href="http://www.ireage.com/golang/2019/03/16/jsontag.html"/>
    <updated>2019-03-16T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/2019/03/16/jsontag</id>
+   <id>http://www.ireage.com/golang/2019/03/16/jsontag</id>
    <content type="html">&lt;h3 id=&quot;json-序列化反序列化规则&quot;&gt;json 序列化/反序列化规则&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;bool  for JSON booleans
@@ -1033,9 +1810,9 @@ func main() {
  
  <entry>
    <title>为什么要使用request id</title>
-   <link href="http://localhost:4000/%E5%85%B6%E4%BB%96/2018/12/16/request_id.html"/>
+   <link href="http://www.ireage.com/%E5%85%B6%E4%BB%96/2018/12/16/request_id.html"/>
    <updated>2018-12-16T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E5%85%B6%E4%BB%96/2018/12/16/request_id</id>
+   <id>http://www.ireage.com/%E5%85%B6%E4%BB%96/2018/12/16/request_id</id>
    <content type="html">&lt;h4 id=&quot;1-request-id-是为了解决下面问题&quot;&gt;1. request id 是为了解决下面问题&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code&gt;问题一： 客户端访问的Web服务时，如何将客户端请求与服务端日志关联 
@@ -1093,9 +1870,9 @@ func main() {
  
  <entry>
    <title>git comMit messge 消息格式规范</title>
-   <link href="http://localhost:4000/git/2018/12/07/git_commit_format.html"/>
+   <link href="http://www.ireage.com/git/2018/12/07/git_commit_format.html"/>
    <updated>2018-12-07T00:00:00+08:00</updated>
-   <id>http://localhost:4000/git/2018/12/07/git_commit_format</id>
+   <id>http://www.ireage.com/git/2018/12/07/git_commit_format</id>
    <content type="html">&lt;p&gt;根据外部文档总结出来git commit 提交的格式规范&lt;/p&gt;
 
 &lt;h1 id=&quot;git-commit-messge-消息格式&quot;&gt;git commit messge 消息格式&lt;/h1&gt;
@@ -1191,9 +1968,9 @@ func main() {
  
  <entry>
    <title>net/http timeout awaiting response headers</title>
-   <link href="http://localhost:4000/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html"/>
+   <link href="http://www.ireage.com/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html"/>
    <updated>2018-10-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers</id>
+   <id>http://www.ireage.com/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers</id>
    <content type="html">&lt;h3 id=&quot;前提&quot;&gt;前提&lt;/h3&gt;
 
 &lt;p&gt;在做系统压测的是发现有部分接口，返回 &lt;strong&gt;net/http: timeout awaiting response headers&lt;/strong&gt; 错误，&lt;/p&gt;
@@ -1279,9 +2056,9 @@ func httpClient() {
  
  <entry>
    <title>共享分布式锁</title>
-   <link href="http://localhost:4000/distributed%20lock/2018/09/02/distributedlock.html"/>
+   <link href="http://www.ireage.com/distributed%20lock/2018/09/02/distributedlock.html"/>
    <updated>2018-09-02T00:00:00+08:00</updated>
-   <id>http://localhost:4000/distributed%20lock/2018/09/02/distributedlock</id>
+   <id>http://www.ireage.com/distributed%20lock/2018/09/02/distributedlock</id>
    <content type="html">&lt;h4 id=&quot;前提&quot;&gt;前提&lt;/h4&gt;
 
 &lt;p&gt;分布式锁是在分布式系统中，我们为了保证分布式系统的效率和数据的正确性，在相同工作的多个节点中不被重复处理而采用的技术的。&lt;/p&gt;
@@ -1368,9 +2145,9 @@ type LockResult struct {
  
  <entry>
    <title>优雅的写go test</title>
-   <link href="http://localhost:4000/golang/go%20test/2018/07/24/gotest.html"/>
+   <link href="http://www.ireage.com/golang/go%20test/2018/07/24/gotest.html"/>
    <updated>2018-07-24T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/go%20test/2018/07/24/gotest</id>
+   <id>http://www.ireage.com/golang/go%20test/2018/07/24/gotest</id>
    <content type="html">&lt;h3 id=&quot;go-test-介绍&quot;&gt;go test 介绍&lt;/h3&gt;
 
 &lt;p&gt;go语言的单元测试采用内置的测试框架,通过引入testing包以及go test来提供测试功能。
@@ -1387,9 +2164,9 @@ go语言的单元测试是一个个单独的文件。 每一个单元测试文�
  
  <entry>
    <title>excel文件实现包含xml的详情</title>
-   <link href="http://localhost:4000/excel/2018/07/15/excel_xml.html"/>
+   <link href="http://www.ireage.com/excel/2018/07/15/excel_xml.html"/>
    <updated>2018-07-15T00:00:00+08:00</updated>
-   <id>http://localhost:4000/excel/2018/07/15/excel_xml</id>
+   <id>http://www.ireage.com/excel/2018/07/15/excel_xml</id>
    <content type="html">&lt;h3 id=&quot;excel-文件描述&quot;&gt;excel 文件描述&lt;/h3&gt;
 
 &lt;p&gt;excel 是一个包含多个xml文件目录的zip压缩文件。&lt;/p&gt;
@@ -1616,9 +2393,9 @@ distributed
  
  <entry>
    <title>The Golang operation EXCEL  library  for columns and cell  supports data validation  (drop-down list, numeric text length check)</title>
-   <link href="http://localhost:4000/golang/2018/04/29/golangexceldatavalidation_en.html"/>
+   <link href="http://www.ireage.com/golang/2018/04/29/golangexceldatavalidation_en.html"/>
    <updated>2018-04-29T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/2018/04/29/golangexceldatavalidation_en</id>
+   <id>http://www.ireage.com/golang/2018/04/29/golangexceldatavalidation_en</id>
    <content type="html">&lt;h3 id=&quot;completed-function&quot;&gt;completed function&lt;/h3&gt;
 
 &lt;p&gt;   1. Cell, column support drop-down list selection&lt;/p&gt;
@@ -1665,9 +2442,7 @@ distributed
 &lt;hr /&gt;
 &lt;p&gt;In the use of xlsx, there is no problem with basic functions, but when doing advanced functions, it is found that many advanced functions do not have time, and some implementations are too rude. The data verification function is not implemented at all. Originally wanted to copy excelize the code, and found that they did not achieve, still lying in the todo list. Helplessness can only be implemented on xlsx itself.&lt;/p&gt;
 
-&lt;p&gt;Implement the function code in:
-The &lt;a href=&quot;https://github.com/rentiansheng/xlsx&quot;&gt;support data validation&lt;/a&gt; code has been submitted to the PR but has not been merged.
-Now it’s simple and crude to implement the list of excel data validation, rang validation (time, date need to be converted to numbers, now unimplemented) has confirmed that available data validation has list (display dorp box), rang (number, decimal, text length ), User input will be prompted for incorrect content.&lt;/p&gt;
+&lt;p&gt;Now it’s simple and crude to implement the list of excel data validation, rang validation (time, date need to be converted to numbers, now unimplemented) has confirmed that available data validation has list (display dorp box), rang (number, decimal, text length ), User input will be prompted for incorrect content.&lt;/p&gt;
 
 &lt;p&gt;An example of a test code for data validation is at &lt;a href=&quot;https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go&quot;&gt;data validation test code&lt;/a&gt;
 You can go test to view the production excel content.&lt;/p&gt;
@@ -1685,9 +2460,9 @@ Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verifica
  
  <entry>
    <title>Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验)</title>
-   <link href="http://localhost:4000/golang/2018/04/29/golangexceldatavalidation.html"/>
+   <link href="http://www.ireage.com/golang/2018/04/29/golangexceldatavalidation.html"/>
    <updated>2018-04-29T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/2018/04/29/golangexceldatavalidation</id>
+   <id>http://www.ireage.com/golang/2018/04/29/golangexceldatavalidation</id>
    <content type="html">&lt;h2 id=&quot;完成的功能&quot;&gt;完成的功能&lt;/h2&gt;
 
 &lt;ol&gt;
@@ -1734,9 +2509,7 @@ Open xml sdk 2.0 tool, can view the openxml code of excel file, provide verifica
 &lt;hr /&gt;
 &lt;p&gt;xlsx在使用中，基本功能没什么问题，但是在做高级功能的时候，发现很多高级功能没有时间，有的实现过于粗暴。 数据校验功能根本没有实现。本来想去copy excelize的代码，结果，发现他们也没有实现， 还在todo列表中躺着。无奈只能基于xlsx自己实现。&lt;/p&gt;
 
-&lt;p&gt;实现功能代码在：
-&lt;a href=&quot;https://github.com/rentiansheng/xlsx&quot;&gt;支持数据验证&lt;/a&gt; 代码已经提交PR,但是未合并。
-现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。&lt;/p&gt;
+&lt;p&gt;现在简单粗暴的实现 excel 数据校验中的list，rang 验证（时间，日期 需要转换成数字，现在未实现）已经确认可用数据校验有 list（展示dorp box ），rang(数字，小数，文本长度)， 用户输入的内容不对会有提示。&lt;/p&gt;
 
 &lt;p&gt;关于数据校验的代码的测试例子在&lt;a href=&quot;https://github.com/rentiansheng/xlsx/blob/dev_master/datavalidation_test.go&quot;&gt;数据验证test代码&lt;/a&gt;
 可以go test 查看生产excel内容。&lt;/p&gt;
@@ -1755,9 +2528,9 @@ open xml sdk 2.0 的工具，可以查看excel 文件的openxml代码，提供�
  
  <entry>
    <title>golang 下载文件格式错误</title>
-   <link href="http://localhost:4000/golang/2018/03/16/godownfilecontenttype.html"/>
+   <link href="http://www.ireage.com/golang/2018/03/16/godownfilecontenttype.html"/>
    <updated>2018-03-16T00:00:00+08:00</updated>
-   <id>http://localhost:4000/golang/2018/03/16/godownfilecontenttype</id>
+   <id>http://www.ireage.com/golang/2018/03/16/godownfilecontenttype</id>
    <content type="html">&lt;h3 id=&quot;场景&quot;&gt;场景&lt;/h3&gt;
 
 &lt;p&gt;最近在使用golang做一个cmdb，系统中有大量的数据需要导出下载。
@@ -1784,14 +2557,14 @@ content-type格式不对， 使用curl -v 请求后发现返回数据如下&lt;/
 &lt;p&gt;通过curl 调用确认了是content-type的问题。
 看了golang关于http package的介绍没有设置mime.type的地方。
 因为go语言使用的是系统的mime，不像nginx，apache有自己的mime配置文件。 
-所以使用golang 的http package功能在不同系统上由于系统的mine.types
+所以使用golang 的http package功能在不同系统上由于系统的mime.types
 差异影响系统功能。 系统的mime.types在/etc/mime.types大家可以自由查看&lt;/p&gt;
 
 &lt;h3 id=&quot;解决方法&quot;&gt;解决方法&lt;/h3&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
-    &lt;p&gt;更新系统的/etc/mine.types&lt;/p&gt;
+    &lt;p&gt;更新系统的/etc/mime.types&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;通过代码解决&lt;/p&gt;
@@ -1839,9 +2612,9 @@ http.ServeFile -&amp;gt; serveFile-&amp;gt; serveContent&lt;/p&gt;
  
  <entry>
    <title>服务治理</title>
-   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html"/>
+   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger.html"/>
    <updated>2016-11-16T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger</id>
+   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/16/servicemangger</id>
    <content type="html">&lt;h1 id=&quot;服务治理&quot;&gt;服务治理&lt;/h1&gt;
 
 &lt;h2 id=&quot;为什么要做服务治理&quot;&gt;为什么要做服务治理&lt;/h2&gt;
@@ -2108,9 +2881,9 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
  
  <entry>
    <title>服务治理之zookeeper使用中遇到的问题及设计</title>
-   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html"/>
+   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper.html"/>
    <updated>2016-11-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper</id>
+   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/08/service_zookeeper</id>
    <content type="html">&lt;h1 id=&quot;如何规划需要管理配置&quot;&gt;如何规划需要管理配置&lt;/h1&gt;
 
 &lt;p&gt;根据需求将所有的信息分成四类&lt;/p&gt;
@@ -2237,9 +3010,9 @@ Every node in ZooKeeper’s name space is identified by a path.&lt;/p&gt;
  
  <entry>
    <title>服务治理之服务管理</title>
-   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html"/>
+   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86.html"/>
    <updated>2016-11-07T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/服务治理之服务管理</id>
+   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/11/07/服务治理之服务管理</id>
    <content type="html">&lt;h2 id=&quot;如何管理服务&quot;&gt;如何管理服务&lt;/h2&gt;
 &lt;hr /&gt;
 
@@ -2303,9 +3076,9 @@ eureka
  
  <entry>
    <title>服务治理之开发环境配置解决</title>
-   <link href="http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html"/>
+   <link href="http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E4%B9%8B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html"/>
    <updated>2016-10-06T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/服务治理之开发环境配置</id>
+   <id>http://www.ireage.com/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/2016/10/06/服务治理之开发环境配置</id>
    <content type="html">&lt;h3 id=&quot;出现的问题&quot;&gt;出现的问题&lt;/h3&gt;
 
 &lt;ol&gt;
@@ -2380,13 +3153,13 @@ eureka
  
  <entry>
    <title>react</title>
-   <link href="http://localhost:4000/react/2016/09/27/reacterr.html"/>
+   <link href="http://www.ireage.com/react/2016/09/27/reacterr.html"/>
    <updated>2016-09-27T00:00:00+08:00</updated>
-   <id>http://localhost:4000/react/2016/09/27/reacterr</id>
+   <id>http://www.ireage.com/react/2016/09/27/reacterr</id>
    <content type="html">&lt;h3 id=&quot;同一个commpont多次使用出现的错误&quot;&gt;同一个commpont多次使用出现的错误&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;错误提示如下：
- Only a ReactOwner can have refs. You might be adding a ref to a component that was not created inside a component's `render` method, or you have multiple copies of React loaded
+ Only a ReactOwner can have refs. You might be adding a ref to a component that was not created inside a component&apos;s `render` method, or you have multiple copies of React loaded
 
  解决方法如下
  npm uninstall react react-dom
@@ -2411,9 +3184,9 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  
  <entry>
    <title>PHP VS GO</title>
-   <link href="http://localhost:4000/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html"/>
+   <link href="http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo.html"/>
    <updated>2016-08-30T00:00:00+08:00</updated>
-   <id>http://localhost:4000/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo</id>
+   <id>http://www.ireage.com/%E6%9D%82%E8%B0%88/2016/08/30/phpvsgo</id>
    <content type="html">&lt;h4 id=&quot;整体印象&quot;&gt;整体印象&lt;/h4&gt;
 &lt;p&gt;PHP：&lt;/p&gt;
 
@@ -2493,9 +3266,9 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  
  <entry>
    <title>c pointer</title>
-   <link href="http://localhost:4000/c/2016/08/21/cpointer.html"/>
+   <link href="http://www.ireage.com/c/2016/08/21/cpointer.html"/>
    <updated>2016-08-21T00:00:00+08:00</updated>
-   <id>http://localhost:4000/c/2016/08/21/cpointer</id>
+   <id>http://www.ireage.com/c/2016/08/21/cpointer</id>
    <content type="html">&lt;h3 id=&quot;指针相关&quot;&gt;指针相关&lt;/h3&gt;
 &lt;hr /&gt;
 
@@ -2524,9 +3297,9 @@ componentWillMount和componentDidMount只有在组件切换时执行，同一组
  
  <entry>
    <title>iterm2 快捷键</title>
-   <link href="http://localhost:4000/iterm2/2016/08/11/iterm2keys.html"/>
+   <link href="http://www.ireage.com/iterm2/2016/08/11/iterm2keys.html"/>
    <updated>2016-08-11T00:00:00+08:00</updated>
-   <id>http://localhost:4000/iterm2/2016/08/11/iterm2keys</id>
+   <id>http://www.ireage.com/iterm2/2016/08/11/iterm2keys</id>
    <content type="html">&lt;p&gt;最近买了一个键盘，操作触控就不方便了，只能在键盘下功夫了。&lt;/p&gt;
 
 &lt;p&gt;本人系统shell是zsh&lt;/p&gt;
@@ -2609,9 +3382,9 @@ command + /: 显示光标的位置
  
  <entry>
    <title>json_decode解析失败</title>
-   <link href="http://localhost:4000/php/2016/02/24/json_decode.html"/>
+   <link href="http://www.ireage.com/php/2016/02/24/json_decode.html"/>
    <updated>2016-02-24T00:00:00+08:00</updated>
-   <id>http://localhost:4000/php/2016/02/24/json_decode</id>
+   <id>http://www.ireage.com/php/2016/02/24/json_decode</id>
    <content type="html">&lt;p&gt;最近，一直在使用的系统突然出现一个奇怪的问题。一个商户信息总是没法展示的，两个系统采用json做的数据交换，
 线上日志记录到模块是接受导数据，但是在后面的日志中，发现数据为空。经过在线上加log发现json_decode失败的返回值为NULL。
 随后把log中的日志拿出来，json_decode没有问题的。&lt;/p&gt;
@@ -2640,9 +3413,9 @@ command + /: 显示光标的位置
  
  <entry>
    <title>php extensions(二) phpinfo输出内容</title>
-   <link href="http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html"/>
+   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(%E4%BA%8C)phpinfo%E6%B7%BB%E5%8A%A0%E4%BF%A1%E6%81%AF.html"/>
    <updated>2015-04-18T00:00:00+08:00</updated>
-   <id>http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php扩展开发学习(二)phpinfo添加信息</id>
+   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/18/php扩展开发学习(二)phpinfo添加信息</id>
    <content type="html">&lt;h3 id=&quot;php-extensions二--phpinfo输出内容&quot;&gt;php extensions(二)  phpinfo输出内容&lt;/h3&gt;
 
 &lt;h4 id=&quot;引言&quot;&gt;引言&lt;/h4&gt;
@@ -2700,9 +3473,9 @@ php_info_print_table_end();
  
  <entry>
    <title>php extensions(-) 代码目录结构</title>
-   <link href="http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html"/>
+   <link href="http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0(-).html"/>
    <updated>2015-04-08T00:00:00+08:00</updated>
-   <id>http://localhost:4000/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php扩展开发学习(-)</id>
+   <id>http://www.ireage.com/php%20extension/c/%E5%BC%80%E6%BA%90/2015/04/08/php扩展开发学习(-)</id>
    <content type="html">&lt;h3 id=&quot;php-extensions--代码目录结构&quot;&gt;php extensions(-) 代码目录结构&lt;/h3&gt;
 
 &lt;h4 id=&quot;引言&quot;&gt;引言&lt;/h4&gt;
@@ -2802,9 +3575,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>mysql 优化基础知识（-）</title>
-   <link href="http://localhost:4000/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"/>
+   <link href="http://www.ireage.com/mysql/2015/03/30/mysql%E4%BC%98%E5%8C%96%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86(-).html"/>
    <updated>2015-03-30T00:00:00+08:00</updated>
-   <id>http://localhost:4000/mysql/2015/03/30/mysql优化基础知识(-)</id>
+   <id>http://www.ireage.com/mysql/2015/03/30/mysql优化基础知识(-)</id>
    <content type="html">&lt;h4 id=&quot;1-primary-key&quot;&gt;1. primary key&lt;/h4&gt;
 &lt;p&gt;primary key是聚簇索引，聚簇索引适用I/O密集型的应用，由于底层存储及实现的原因，聚簇索引严重依赖顺序存储，聚簇索引列更新代价比较高，聚簇索引列在尾部以外插入新的row代价比较高的
   综上所述，在使用primary key列一般都是用int类型auto_increment，这样保证所有的值都是顺序插入的，auto_increment在高并发的应用下肯定会有争用问题。
@@ -2821,9 +3594,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>codeigniter rabbitmq lirary</title>
-   <link href="http://localhost:4000/php/2014/11/28/codeigniter-rabbitmq-library.html"/>
+   <link href="http://www.ireage.com/php/2014/11/28/codeigniter-rabbitmq-library.html"/>
    <updated>2014-11-28T00:00:00+08:00</updated>
-   <id>http://localhost:4000/php/2014/11/28/codeigniter rabbitmq library</id>
+   <id>http://www.ireage.com/php/2014/11/28/codeigniter rabbitmq library</id>
    <content type="html">&lt;p&gt;简介
 &lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;_&lt;/p&gt;
 
@@ -2921,9 +3694,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>览器桌面通知（notifications）</title>
-   <link href="http://localhost:4000/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html"/>
+   <link href="http://www.ireage.com/js/2014/05/28/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%A1%8C%E9%9D%A2%E9%80%9A%E7%9F%A5-notifications.html"/>
    <updated>2014-05-28T00:00:00+08:00</updated>
-   <id>http://localhost:4000/js/2014/05/28/浏览器桌面通知（notifications）</id>
+   <id>http://www.ireage.com/js/2014/05/28/浏览器桌面通知（notifications）</id>
    <content type="html">&lt;h1 id=&quot;chrome-浏览器桌面通知&quot;&gt;chrome 浏览器桌面通知&lt;/h1&gt;
 
 &lt;p&gt;最近在做公司后台管理系统，当有任务到来时，需要通知当事人，但是，当事人有可能在做别的事情，更糟糕的是浏览器有可能会被最小化，
@@ -3033,9 +3806,9 @@ ZEND_GET_MODULE(reage)
  
  <entry>
    <title>c语言 sizeof函数认知</title>
-   <link href="http://localhost:4000/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html"/>
+   <link href="http://www.ireage.com/c/2012/09/06/c-sizeof%E5%87%BD%E6%95%B0%E7%9A%84%E8%AE%A4%E7%9F%A5.html"/>
    <updated>2012-09-06T00:00:00+08:00</updated>
-   <id>http://localhost:4000/c/2012/09/06/c sizeof函数的认知</id>
+   <id>http://www.ireage.com/c/2012/09/06/c sizeof函数的认知</id>
    <content type="html">&lt;p&gt;下面仅为个人理解，编译器中验证外，没有任何理论依靠，若有错误请指出。&lt;/p&gt;
 
 &lt;p&gt;## 首先
