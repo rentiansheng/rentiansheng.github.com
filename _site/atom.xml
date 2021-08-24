@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2021-08-20T15:58:56+08:00</updated>
+ <updated>2021-08-24T14:24:45+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -23,6 +23,11 @@
 最终exec.Command.ExtraFiles 来传递pipe 的fd 来实现，
 但是实际使用遇到几个奇怪的问题，感觉和系统实现的有些差别。
 使用不好会卡到数据交互。比如卡到数据的读，读到数据为空&lt;/p&gt;
+
+&lt;p&gt;注意：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;ioutil.ReadAll 需要读到EOF 才会结束， 如果使用pipe，就需要关闭 write 通道&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h3 id=&quot;例子&quot;&gt;例子&lt;/h3&gt;
 &lt;p&gt;也不知道怎么描述， 直接上代码&lt;/p&gt;
