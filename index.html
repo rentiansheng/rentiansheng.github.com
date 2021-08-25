@@ -31,10 +31,11 @@ title: Home
       {% if count == paginator.page %}
       <span class="current-page">{{count}}</span>
       {% else %}
-      <a href="/page{{count}}">{{count}}</a>
+      <a href="/blog/page{{count}}">{{count}}</a>
       {% endif %}
     {% endfor %}
   (共{{ paginator.total_posts }}篇)
+
 </div>
 
 <!--div class="pagination">
