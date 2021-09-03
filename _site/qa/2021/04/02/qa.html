@@ -209,6 +209,23 @@ https://bugs.centos.org/view.php?id=15252</p>
                 go mod vendor
 </code></pre>
 
+<h3 id="4-ls--文件权限描述中出现at符号的含义">4. ls  文件权限描述中出现at(@)符号的含义</h3>
+
+<p>at(@) symbol in the description of ls file permissions
+eg:</p>
+<pre><code class="language-angular2html">-rwxr-xr-x@
+</code></pre>
+<p>用来表示文件有metadata 描述， 可以xattr 命令来查看</p>
+
+<pre><code class="language-angular2html"># Disply the metadata attributes
+xattr -l &lt;file ...&gt;
+    
+# Remove the metadata attributes
+xattr -c &lt;file ...&gt;
+
+# Remove the file ACL(s)
+chmod -N &lt;file ...&gt;
+</code></pre>
 
   <div class="post-affix">
     <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
