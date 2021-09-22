@@ -9,7 +9,7 @@ tags: [go]
 
 ###  背景
 
-目前所在项目是关于资产管理，经常会有更重数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。  
+目前所在项目是关于资产管理，经常会有各种数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。  
 
 由于在目前的golang 版本不支持多态， 只能人工的方式来实现。效果如下：
 ![人工泛型](https://lh3.googleusercontent.com/-5Vz_puoHe7o/WMJukhX878I/AAAAAAAADRI/9nn3cse3gkYrZ--aVfWaofUFGaRb49MtACLcB/s1600/Animation.gif)
