@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="telegraf agent 源码分析">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title>
+    
+      telegraf agent 源码分析 &middot; Reage blog
+    
+  </title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/public/css/poole.min.css" />
+  <link rel="stylesheet" type="text/css" href="/public/css/lanyon.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/pygment.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/font.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/fontawesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/public/css/timeline.min.css"/>
+  <!-- Icons -->
+  <link rel="shortcut icon" href="/public/favicon.ico"/>
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"/>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+</head>
+
+  <body>   
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>    
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">首页</a>
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">关于</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/categories.html">分类</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/message.html">留言</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/posts/">文档</a>
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/tags/">标签</a>
+        
+      
+    
+      
+        
+      
+    
+  </nav>
+  <div class="sidebar-item">
+    <p>
+      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+    </p>
+  </div>
+</div>
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Reage blog</a>
+            <small></small>
+              <a href="/atom.xml" target="_blank" class="icons" style="margin-left:15px;"><i class="fa fa-rss"></i></a>
+              <a href="https://github.com/rentiansheng" target="_blank" class="icons"><i class="fa fa-github"></i></a>
+          </h3>          
+        </div>        
+      </div>
+      <div class="container content" style="margin-top:2rem">
+        <div class="post">
+  <h1 class="post-title">telegraf agent 源码分析</h1>
+  <div class="post-date">
+    <span><i class="fa fa-clock-o"></i> 2021-11-22</span>
+  <span class="extra-right"><i class="fa fa-tags"></i> telegraf
+</span>
+  </div>
+  <h1 id="1-telegraf">1 telegraf</h1>
+
+<p>telegraf 是开源agent服务，可收集系统和服务的metric数据. 
+telegraf 从数据的collecting, processing, aggregating, and writing 都采用插件的设计，非常灵活，易扩展。
+可以通过官方和自定义插件完成业务功能。</p>
+
+<p>有四种不同类型的插件：</p>
+<ul>
+  <li>Input Plugins collect metrics from the system, services, or 3rd party APIs</li>
+  <li>Processor Plugins transform, decorate, and/or filter metrics</li>
+  <li>Aggregator Plugins create aggregate metrics (e.g. mean, min, max, quantiles, etc.)</li>
+  <li>Output Plugins write metrics to various destinations</li>
+</ul>
+
+<p>telegraf 设计是非常优秀，通过插件系统，将业务逻辑，数据差异放到不同流程的插件中处理，流程之间通过channel进行数据交互，解耦非常彻底。
+agent 只需要完成插件管理，数据流向，插件调度。</p>
+
+<h1 id="2-telegraf-agent">2 telegraf agent</h1>
+
+<h2 id="21-agent-如何管理数据">2.1 agent 如何管理数据？</h2>
+<p>telegraf/agent/agent.go  做为agent 功能核心代码。 
+主要通过 Agent,inputUnit,processorUnit,aggregatorUnit,outputUnit结构体来完成agent 的功能。
+建议看源码，注释写非常明确。</p>
+<ul>
+  <li>agent 用来管理agent 配置，</li>
+  <li>inputUnit 用来管理Input 插件</li>
+  <li>processorUnit 用来管理Processor 插件</li>
+  <li>aggregatorUnit 用来管理Aggregator 插件</li>
+  <li>outputUnit 用来管理Output 插件</li>
+</ul>
+
+<h2 id="22-agent-如何约束插件">2.2 agent 如何约束插件？</h2>
+
+<h3 id="221-agent-插件全局约束">2.2.1 agent 插件全局约束</h3>
+<p>全局约束是所有类型插件都适用的。</p>
+
+<h4 id="2211-必须约束如下">2.2.1.1 必须约束如下</h4>
+<ul>
+  <li>PluginDescriber 用来描述插件，SampleConfig()在./telegraf –sample-config 可以看到
+```go</li>
+</ul>
+
+<p>// PluginDescriber 插件描述
+type PluginDescriber interface {
+	// SampleConfig returns the default configuration of the Processor
+	SampleConfig() string</p>
+
+<pre><code>// Description returns a one-sentence description on the Processor
+Description() string } ```
+</code></pre>
+
+<h4 id="2212-可选约束">2.2.1.2 可选约束</h4>
+<ul>
+  <li>Initializer 初始化插件的操作</li>
+</ul>
+
+<pre><code class="language-go">// Initializer 插件初始化约束
+type Initializer interface {
+	// Init performs one time setup of the plugin and returns an error if the
+	// configuration is invalid.
+	Init() error
+}
+
+</code></pre>
+
+<h3 id="231-agent-插件约束">2.3.1 agent 插件约束</h3>
+
+<p>实现自定义插件的时候，需要根据插件类型的约束做实现， 
+实现后还需要注册插件， 需要配合导入包的方式。具体可以看 telegraf/{inputs/outputs/processors/aggregators}/all/aal.go</p>
+<h4 id="2311-input-插件">2.3.1.1 Input 插件</h4>
+<p>telegraf/input.go</p>
+<pre><code class="language-go">type Input interface {
+	PluginDescriber
+
+	// Gather takes in an accumulator and adds the metrics that the Input
+	// gathers. This is called every agent.interval
+	// 实现数据的收集功能，metric数据输入
+	Gather(Accumulator) error
+}
+
+</code></pre>
+
+<h4 id="2312-processor-插件">2.3.1.2 Processor 插件</h4>
+<p>telegraf/processor.go</p>
+<pre><code class="language-go">// Processor is a processor plugin interface for defining new inline processors.
+// these are extremely efficient and should be used over StreamingProcessor if
+// you do not need asynchronous metric writes.
+type Processor interface {
+	PluginDescriber
+
+	// Apply the filter to the given metric.
+	Apply(in ...Metric) []Metric
+}
+
+</code></pre>
+
+<h4 id="2313-aggregator-插件">2.3.1.3 aggregator 插件</h4>
+<p>telegraf/processor.go</p>
+<pre><code class="language-go">type Aggregator interface {
+	PluginDescriber
+
+	// Add the metric to the aggregator.
+	Add(in Metric)
+
+	// Push pushes the current aggregates to the accumulator.
+	Push(acc Accumulator)
+
+	// Reset resets the aggregators caches and aggregates.
+	Reset()
+}
+
+</code></pre>
+
+<h4 id="2314-output-插件">2.3.1.4 Output 插件</h4>
+<p>telegraf/output.go</p>
+<pre><code class="language-go">type Output interface {
+	PluginDescriber
+
+	// Connect to the Output; connect is only called once when the plugin starts
+	Connect() error
+	// Close any connections to the Output. Close is called once when the output
+	// is shutting down. Close will not be called until all writes have finished,
+	// and Write() will not be called once Close() has been, so locking is not
+	// necessary.
+	Close() error
+	// Write takes in group of points to be written to the Output
+	Write(metrics []Metric) error
+}
+
+</code></pre>
+
+<h2 id="23-agent-代码">2.3 agent 代码</h2>
+
+<p>telegraf/agent/agent.go 关于agent 的代码，需要注意插件启动顺序，插件的管理，采集异常处理。</p>
+<h3 id="231-agent-run">2.3.1 agent Run</h3>
+
+<pre><code class="language-go">// Run starts and runs the Agent until the context is done.
+func (a *Agent) Run(ctx context.Context) error {
+    // 执行插件的初始化，前提是插件实现telegraf.Initializer
+	a.initPlugins()
+    
+    // 启动ouput，这里主要是执行（*output).connectOutput 方法，
+    // 设计来源类似linux将一切皆文件的思想，connectOutput类似的open。
+	next, ou, err := a.startOutputs(ctx, a.Config.Outputs)
+	// next chan telegraf.Metric 类型，用来不同流程插件间数据交互
+
+	var apu []*processorUnit
+	var au *aggregatorUnit
+	if len(a.Config.Aggregators) != 0 {
+		aggC := next
+		if len(a.Config.AggProcessors) != 0 {
+			// startProcessors 注意processors 多个插件数据的交互，多个插件之间是有序的数据交互
+			aggC, apu, err = a.startProcessors(next, a.Config.AggProcessors)
+			// aggC 和next 一致， 注意AggProcessors与Processors 却别
+		}
+		next, au = a.startAggregators(aggC, next, a.Config.Aggregators)
+	}
+
+	var pu []*processorUnit
+	if len(a.Config.Processors) != 0 {
+	    // startProcessors 注意processors 多个插件数据的交互，多个插件之间是有序的数据交互
+		next, pu, err = a.startProcessors(next, a.Config.Processors)
+	}
+
+     // 执行插件的初始化，前提是插件实现telegraf.ServiceInput
+     // 注意input插件的init 和start区别， 
+	iu, err := a.startInputs(next, a.Config.Inputs)
+	
+	
+	a.runOutputs(ou)
+	a.runProcessors(apu)
+	a.runAggregators(startTime, au)
+	a.runProcessors(pu)
+	// runInputs 主要就是通过a.gatherLoop来实现定时收集数据
+	a.runInputs(ctx, startTime, iu)
+	
+}
+
+
+</code></pre>
+
+
+  <div class="post-affix">
+    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+  </div>
+</div>
+
+<div class="read-more">
+  
+  <div class="read-more-header">
+    <a href="/go/2021/08/19/go_fork_pipe.html" class="read-more-btn">Read More</a>
+  </div><!-- /.read-more-header -->
+  <div class="read-more-content">
+    <h3><a href="http://www.ireage.com/go/2021/08/19/go_fork_pipe.html" title="go exec.Command使用pipe做数据交换遇到的问题">go exec.Command使用pipe做数据交换遇到的问题</a></h3>
+  </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+    <div class="list-item">
+      <h4><a href="/qa/2021/04/02/qa.html" title="遇到问题集合">遇到问题集合</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-04-02</span>
+    </div><!-- /.list-item -->
+    
+    <div class="list-item">
+      <h4><a href="/monstache/2021/03/19/monstache_split_table_conf.html" title="解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch">解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-03-19</span>
+    </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+  
+</div><!-- /.read-more -->
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+      var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+          var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = window.location.href;
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://reage.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+      </div>
+    </div>
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+  </body>
+</html>
