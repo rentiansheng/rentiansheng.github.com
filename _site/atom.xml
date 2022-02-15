@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://www.ireage.com/atom.xml" rel="self"/>
  <link href="http://www.ireage.com/"/>
- <updated>2021-11-23T20:09:38+08:00</updated>
+ <updated>2022-02-15T16:16:34+08:00</updated>
  <id>http://www.ireage.com</id>
  <author>
    <name></name>
@@ -368,6 +368,11 @@ xattr -c &amp;lt;file ...&amp;gt;
 # Remove the file ACL(s)
 chmod -N &amp;lt;file ...&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;5-couldnt-start-listener-listen-tcp-ipport-bind-cant-assign-requested-address&quot;&gt;5. couldn’t start listener: listen tcp ip:port: bind: can’t assign requested address&lt;/h3&gt;
+
+&lt;p&gt;再使用goland debug的时候出现的问题。 这个问题一般是本地host中缺少了当前机器与IP的配置。 
+在终端执行 hostname， 在/etc/hosts 中新加  一行写入 127.0.0.1 （hostname 结果)&lt;/p&gt;
 </content>
  </entry>
  

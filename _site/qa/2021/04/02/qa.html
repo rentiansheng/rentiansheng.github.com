@@ -227,6 +227,11 @@ xattr -c &lt;file ...&gt;
 chmod -N &lt;file ...&gt;
 </code></pre>
 
+<h3 id="5-couldnt-start-listener-listen-tcp-ipport-bind-cant-assign-requested-address">5. couldn’t start listener: listen tcp ip:port: bind: can’t assign requested address</h3>
+
+<p>再使用goland debug的时候出现的问题。 这个问题一般是本地host中缺少了当前机器与IP的配置。 
+在终端执行 hostname， 在/etc/hosts 中新加  一行写入 127.0.0.1 （hostname 结果)</p>
+
   <div class="post-affix">
     <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
   </div>
