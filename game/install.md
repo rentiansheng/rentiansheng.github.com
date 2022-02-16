@@ -1,25 +1,62 @@
----
-layout: default
-title: 七夕玫瑰, 情人节玫瑰, 玫瑰, rose design Roman Cortes
----
-
-1. 需要按照的工具
-
- 1.1  apk 下载地址：https://dl.apkinstaller.com/download/ApkInstaller.exe
- 2.1  模拟器(建议用网易)  下载地址：https://mumu.163.com/mac/index.html 
-
-2.  游戏安装
-3.  清空收藏
-4.  收藏时空所在位置
-5.  执行 shikong.exe
-6.  结束后，关闭窗口即可
-
-7. 其他问题
-
-执行中，请勿在界面中操作，避免出现问题。
-
-操作中会出现基地转移界面，程序会自动取消相关操作
+<!DOCTYPE html>
+<!-- saved from url=(0026)http://127.0.0.1:4000/rose -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN" class="translated-ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="Reage">
+  <title></title>
 
+  <link rel="shortcut icon" href="http://127.0.0.1:4000/public/favicon.ico">
+ <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?255eea8e4f351751c55384cb560b5a53";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+<style>
+  div {
+    margin-left: 20px;
+  }
+</style>
+</head>
 
+  <body>
+  <h4>1. 需要按照的工具</h4>
+  <div>
+    <p>1.1  adb 工具<a href="https://dl.apkinstaller.com/download/ApkInstaller.exe">下载地址：</a></p>
+    <p>1.2  模拟器(建议用网易)  <a href="https://mumu.163.com/mac/index.html">下载地址：</a></p>
+    <p>1.3  下载控制脚本  <a href="https://mumu.163.com/mac/index.html">下载地址：</a></p>
+  </div>
+
+<h4>2. 游戏安装</h4>
+<h4>3. 清空收藏</h4>
+<h4>4. 收藏时空所在位置</h4>
+<h4>5. 执行 shikong.exe</h4>
+<h4>6. 结束后，关闭窗口即可</h4>
+<h4>7. 其他问题</h4>
+  <div>
+    <p>执行中，请勿在界面中操作，避免出现问题。</p>
+    <p>操作中会出现基地转移界面，程序会自动取消相关操作</p>
+  </div>
+  <h4>8. 条款</h4>
+  <div>
+    <p>程序演示go语言对android 模拟器的控制，仅供学习，请尽快删除</p>
+    <div>
+      <p>如果对你有帮助，请我喝杯水吧</p>
+      <img src="/img/wxpay.jpg" width="140" />
+      <img src="/img/alipay.jpg" width="140"/>
+    </div>
+  </div>
+  </body>
+</html>
