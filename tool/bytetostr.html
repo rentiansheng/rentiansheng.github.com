@@ -7,9 +7,9 @@
 </head>
 <body>
 <script>
+    var arrSplit = " "
 
     function inputBytes() {
-        var arrSplit = $("#split").val()
         var vals = $("#inputTxt").val().split(arrSplit)
         let outputStr = ""
         for(var i = 0; i < vals.length; ++i){
@@ -17,6 +17,12 @@
         }
         $("#outputDiv").text(outputStr)
 
+    }
+
+    function splitClick() {
+        var e = event || window.event;
+       arrSplit = e.target.value
+        console.log(arrSplit)
     }
 </script>
 <style>
@@ -55,8 +61,8 @@
     <div id="middleContent">
         <span>split char:</span>
         <div>
-            <input type="radio" id="split"  value=" " checked>space</input>
-            <input type="radio" id="split"  value="," >comma(,)</input>
+            <input type="radio" name="split" onclick="splitClick(this)" value=" " checked>space</input>
+            <input type="radio" name="split"  onclick="splitClick(this)" value="," >comma(,)</input>
         </div>
     </div>
     <div id="rightContent">
