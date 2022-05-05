@@ -12,7 +12,13 @@
         var vals = $("#inputTxt").val().split(arrSplit)
         let outputStr = ""
         for(var i = 0; i < vals.length; ++i){
-            outputStr+= (String.fromCharCode( parseInt(vals[i])));
+            let char = (String.fromCharCode( parseInt(vals[i])));
+            if (char == "" || char == "\u0000") {
+                outputStr+= vals[i]
+            } else {
+                outputStr+=char
+            }
+
         }
         $("#outputDiv").text(outputStr)
 
@@ -37,9 +43,9 @@
     }
 
     #body div {
-        min-width: 200px;
+        min-width: 400px;
         min-height: 50px;
-        max-width: 400px;
+        max-width: 600px;
         display: flow;
 
     }
@@ -60,7 +66,7 @@
     <div id="leftContent">
         <span>input byte array:</span>
         <div id="inputDiv">
-            <textarea id="inputTxt" onchange="inputBytes()" onpaste="inputBytes()" onkeypress="inputBytes()" cols="50" rows="10"></textarea>
+            <textarea id="inputTxt" onchange="inputBytes()" onpaste="inputBytes()" onkeyup="inputBytes()" cols="60" rows="10"></textarea>
         </div>
     </div>
     <div id="middleContent">
