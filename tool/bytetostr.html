@@ -8,7 +8,6 @@
 <body>
 <script>
     var arrSplit = " "
-
     function inputBytes() {
         var vals = $("#inputTxt").val().split(arrSplit)
         let outputStr = ""
@@ -24,6 +23,12 @@
        arrSplit = e.target.value
         console.log(arrSplit)
     }
+
+    $( document ).ready(function() {
+        $("#inputTxt").val("112 112")
+        inputBytes()
+    });
+
 </script>
 <style>
     #body {
