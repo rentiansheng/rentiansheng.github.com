@@ -40,6 +40,7 @@ telegraf/agent/agent.go  做为agent 功能核心代码。
 
 #### 2.2.1.1 必须约束如下
 - PluginDescriber 用来描述插件，SampleConfig()在./telegraf --sample-config 可以看到
+
 ```go
 
 // PluginDescriber 插件描述
@@ -50,6 +51,7 @@ type PluginDescriber interface {
 	// Description returns a one-sentence description on the Processor
 	Description() string
 }
+
 ```
 
 #### 2.2.1.2 可选约束
@@ -71,6 +73,8 @@ type Initializer interface {
 实现后还需要注册插件， 需要配合导入包的方式。具体可以看 telegraf/{inputs/outputs/processors/aggregators}/all/aal.go
 #### 2.3.1.1 Input 插件
 telegraf/input.go
+
+
 ```go
 type Input interface {
 	PluginDescriber
@@ -85,6 +89,7 @@ type Input interface {
 
 #### 2.3.1.2 Processor 插件
 telegraf/processor.go
+
 ```go
 // Processor is a processor plugin interface for defining new inline processors.
 // these are extremely efficient and should be used over StreamingProcessor if
