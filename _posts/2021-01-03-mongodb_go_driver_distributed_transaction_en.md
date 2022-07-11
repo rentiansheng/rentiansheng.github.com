@@ -66,13 +66,8 @@ Now that the real transaction id of mongodb is directly exposed, there may be se
 
 
 
-#### Solution discovery and implementation
+#### Solution implementation
 
-participants:
-
-[rentiansheng](https://github.com/rentiansheng)
-[wusendong](https://github.com/wusendong)
-[breezelxp](https://github.com/breezelxp)
 
 Use items:
 
