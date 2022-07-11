@@ -66,12 +66,6 @@ transaction/transaction.go
 
 #### 方案发现和落地
 
-参与人员：
-
-[rentiansheng](https://github.com/rentiansheng)
-[wusendong](https://github.com/wusendong)
-[breezelxp](https://github.com/breezelxp)
-
 使用项目：
 
 
