@@ -102,6 +102,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -135,7 +139,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -154,6 +158,37 @@
       </div>
       <div class="container content" >
         <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang/2022/08/29/metric_calculate.html">
+        golang 通用指标框架之数据展示
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2022-08-29</span>
+    背景
+最近在做一个研发效能指标展示的项目，该项目主要的功能收集第三方系统数据，按照周期计算，展示图表。
+
+系统主要业务逻辑在数据同步，周期数据聚合，数据计算，结果存储等几方面。
+
+业务需求主要是...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang/2022/08/22/golang_shallow_copy.html">
+        golang bytes.Buffer 数据浅拷贝带来的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2022-08-22</span>
+    背景
+
+项目中定时任务获取数据，在执行过程中未对cache 的内容做变更，但是值发生了变化。
+
+最后定位是浅拷贝造成，在做数据交互过程中用到bytes.Buffer 做缓存区用来，包含read,...
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -202,36 +237,6 @@ telegraf 从数据的collecting, processing, aggregat...
 使用 strace 查看...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/monstache/2021/03/19/monstache_split_table_conf.html">
-        解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-03-19</span>
-    1. 背景
-
-目前所在做的项目是做资产管理， 随着变化数据越来越多， 单一类型的资产数据无法在同一张表存储，后需经过使用多个表， 
-之前为了实现全局的全文搜索， 是通过monstache将mon...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html">
-        golang 动态结构体
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-02-10</span>
-    背景
-
-语言： golang
-
-目前项目允许业务自定自己业务下私有字段。 造成同一类型实例数据，在不同的业务下字段是不一样。 在实际处理中无法使用struct来定义。
-当实例数据在不同服务之间数...
-  </div>
-  
 </div>
 
 
@@ -275,7 +280,11 @@ telegraf 从数据的collecting, processing, aggregat...
       <a href="/blog/page9">9</a>
       
     
-  (共45篇)
+      
+      <a href="/blog/page10">10</a>
+      
+    
+  (共47篇)
 
 </div>
 

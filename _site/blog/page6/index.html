@@ -102,6 +102,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -135,7 +139,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -154,6 +158,40 @@
       </div>
       <div class="container content" style="margin-top:2rem">
         <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html">
+        net/http timeout awaiting response headers
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-10-08</span>
+    前提
+
+在做系统压测的是发现有部分接口，返回 net/http: timeout awaiting response headers 错误，
+
+分析
+
+看到错误首先想到的是http请求超时， 修...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/distributed%20lock/2018/09/02/distributedlock.html">
+        共享分布式锁
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-09-02</span>
+    前提
+
+分布式锁是在分布式系统中，我们为了保证分布式系统的效率和数据的正确性，在相同工作的多个节点中不被重复处理而采用的技术的。
+
+使用场景
+
+现在看网上的分布式锁都是现在资源限制。 锁的使用者...
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -200,43 +238,6 @@ excel 是一个包含多个xml文件目录的zip压缩文件。
    2. Cell, column suppo...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/2018/04/29/golangexceldatavalidation.html">
-        Golang EXCEL 操作类库支持列，单元格新加数据验证功能(下拉列表，数字文本长度校验)
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-04-29</span>
-    完成的功能
-
-
-  单元格，列支持下拉列表选择
-  单元格，列支持范围校验
-  打开Excel支持单元格，列数据校验读取
-
-
-需要注意的项目
-
-
-  Excel 数据校验支持设置校验字符的长度为...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/2018/03/16/godownfilecontenttype.html">
-        golang 下载文件格式错误
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-03-16</span>
-    场景
-
-最近在使用golang做一个cmdb，系统中有大量的数据需要导出下载。
-在功能开发完成后， 系统在开发和测试环境运行正常。但是部署到环境后，
-在下载数据的时候，文件下载下来会变成zip或...
-  </div>
-  
 </div>
 
 
@@ -280,7 +281,11 @@ excel 是一个包含多个xml文件目录的zip压缩文件。
       <a href="/blog/page9">9</a>
       
     
-  (共45篇)
+      
+      <a href="/blog/page10">10</a>
+      
+    
+  (共47篇)
 
 </div>
 

@@ -102,6 +102,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -135,7 +139,7 @@
   </nav>
   <div class="sidebar-item">
     <p>
-      &copy; Design by <a href="http://www.ireage.com" target="_blank">Reage</a>
+      &copy; Design by <a href="http://localhost:4000" target="_blank">Reage</a>
     </p>
   </div>
 </div>
@@ -198,17 +202,19 @@ agent 只需要完成插件管理，数据流向，插件调度。</p>
 
 <h4 id="2211-必须约束如下">2.2.1.1 必须约束如下</h4>
 <ul>
-  <li>PluginDescriber 用来描述插件，SampleConfig()在./telegraf –sample-config 可以看到
-```go</li>
+  <li>PluginDescriber 用来描述插件，SampleConfig()在./telegraf –sample-config 可以看到</li>
 </ul>
 
-<p>// PluginDescriber 插件描述
+<pre><code class="language-go">
+// PluginDescriber 插件描述
 type PluginDescriber interface {
 	// SampleConfig returns the default configuration of the Processor
-	SampleConfig() string</p>
+	SampleConfig() string
 
-<pre><code>// Description returns a one-sentence description on the Processor
-Description() string } ```
+	// Description returns a one-sentence description on the Processor
+	Description() string
+}
+
 </code></pre>
 
 <h4 id="2212-可选约束">2.2.1.2 可选约束</h4>
@@ -231,6 +237,7 @@ type Initializer interface {
 实现后还需要注册插件， 需要配合导入包的方式。具体可以看 telegraf/{inputs/outputs/processors/aggregators}/all/aal.go</p>
 <h4 id="2311-input-插件">2.3.1.1 Input 插件</h4>
 <p>telegraf/input.go</p>
+
 <pre><code class="language-go">type Input interface {
 	PluginDescriber
 
@@ -244,6 +251,7 @@ type Initializer interface {
 
 <h4 id="2312-processor-插件">2.3.1.2 Processor 插件</h4>
 <p>telegraf/processor.go</p>
+
 <pre><code class="language-go">// Processor is a processor plugin interface for defining new inline processors.
 // these are extremely efficient and should be used over StreamingProcessor if
 // you do not need asynchronous metric writes.
@@ -343,7 +351,7 @@ func (a *Agent) Run(ctx context.Context) error {
 
 
   <div class="post-affix">
-    <a href="http://www.ireage.com"> articles from reage blog -- http://www.ireage.com</a>
+    <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
   </div>
 </div>
 
@@ -353,19 +361,19 @@ func (a *Agent) Run(ctx context.Context) error {
     <a href="/go/2021/08/19/go_fork_pipe.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://www.ireage.com/go/2021/08/19/go_fork_pipe.html" title="go exec.Command使用pipe做数据交换遇到的问题">go exec.Command使用pipe做数据交换遇到的问题</a></h3>
+    <h3><a href="http://localhost:4000/golang/2022/08/29/metric_calculate.html" title="golang 通用指标框架之数据展示">golang 通用指标框架之数据展示</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/qa/2021/04/02/qa.html" title="遇到问题集合">遇到问题集合</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2021-04-02</span>
+      <h4><a href="/golang/2022/08/22/golang_shallow_copy.html" title="golang bytes.Buffer 数据浅拷贝带来的问题">golang bytes.Buffer 数据浅拷贝带来的问题</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2022-08-22</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/monstache/2021/03/19/monstache_split_table_conf.html" title="解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch">解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2021-03-19</span>
+      <h4><a href="/go/2021/08/19/go_fork_pipe.html" title="go exec.Command使用pipe做数据交换遇到的问题">go exec.Command使用pipe做数据交换遇到的问题</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2021-08-19</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
