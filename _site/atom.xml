@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2022-08-29T22:36:02+08:00</updated>
+ <updated>2022-08-29T22:41:14+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -17,7 +17,7 @@
    <link href="http://localhost:4000/golang/2022/08/29/metric_calculate.html"/>
    <updated>2022-08-29T00:00:00+08:00</updated>
    <id>http://localhost:4000/golang/2022/08/29/metric_calculate</id>
-   <content type="html">&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+   <content type="html">&lt;h2 id=&quot;1-背景&quot;&gt;1. 背景&lt;/h2&gt;
 &lt;p&gt;最近在做一个研发效能指标展示的项目，该项目主要的功能收集第三方系统数据，按照周期计算，展示图表。&lt;/p&gt;
 
 &lt;p&gt;系统主要业务逻辑在数据同步，周期数据聚合，数据计算，结果存储等几方面。&lt;/p&gt;
@@ -25,7 +25,7 @@
 &lt;p&gt;业务需求主要是在指标规则和数据范围频繁发生，变化？ 迫切需要标准化计算框架。
 降低统计指标开发难度，提高统计指标任务开发效率，实现统计流程与业务逻辑解构及指标计算过程配置化和插件化。&lt;/p&gt;
 
-&lt;h2 id=&quot;面临的问题&quot;&gt;面临的问题&lt;/h2&gt;
+&lt;h2 id=&quot;2-面临的问题&quot;&gt;2. 面临的问题&lt;/h2&gt;
 &lt;p&gt;设计面临的问题：
 &lt;img src=&quot;/img/metrics/metric_calculate_question.jpg&quot; alt=&quot;metric_calculate_question&quot; /&gt;&lt;/p&gt;
 
@@ -42,12 +42,12 @@
 数据去重
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;如何设计解决问题&quot;&gt;如何设计解决问题？&lt;/h2&gt;
+&lt;h2 id=&quot;3-如何设计解决问题&quot;&gt;3. 如何设计解决问题？&lt;/h2&gt;
 
-&lt;h3 id=&quot;采用配置流水线及插件定义完成指标计算过程&quot;&gt;采用配置，流水线及插件定义完成指标计算过程&lt;/h3&gt;
+&lt;h3 id=&quot;31-采用配置流水线及插件定义完成指标计算过程&quot;&gt;3.1 采用配置，流水线及插件定义完成指标计算过程&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&quot;/img/metrics/metric_plugins_config.png&quot; alt=&quot;metric_plugins_config&quot; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;框架设计&quot;&gt;框架设计&lt;/h3&gt;
+&lt;h3 id=&quot;32-框架设计&quot;&gt;3.2 框架设计&lt;/h3&gt;
 &lt;p&gt;在开发角度一个指标任务执行流程
 &lt;img src=&quot;/img/metrics/metric_arch.png&quot; alt=&quot;metric_calculate_arch&quot; /&gt;
 在机器的角度
@@ -56,27 +56,27 @@
 &lt;p&gt;用户参与功能及框架功能角度
 &lt;img src=&quot;/img/metrics/metric_framework_function.png&quot; alt=&quot;metric_framework_function&quot; /&gt;&lt;/p&gt;
 
-&lt;h4 id=&quot;用户参与的功能&quot;&gt;用户参与的功能&lt;/h4&gt;
+&lt;h4 id=&quot;321-用户参与的功能&quot;&gt;3.2.1 用户参与的功能&lt;/h4&gt;
 &lt;p&gt;用户参与的功能。主要是在plugins， 插件也是可以公用的.
 数据在按照collect → filter → aggregate → filter → output   单方向顺序执行
 同类型的多个插件按照顺序执行&lt;/p&gt;
 
-&lt;h5 id=&quot;数据收集collect&quot;&gt;数据收集(collect)&lt;/h5&gt;
+&lt;h5 id=&quot;3211-数据收集collect&quot;&gt;3.2.1.1 数据收集(collect)&lt;/h5&gt;
 &lt;p&gt;用来获取周期内需要统计的数据，数据来源不限，可以是mysql，es，第三方服务。&lt;/p&gt;
 
-&lt;h5 id=&quot;数据处理filter&quot;&gt;数据处理(filter)&lt;/h5&gt;
+&lt;h5 id=&quot;3211-数据处理filter&quot;&gt;3.2.1.1 数据处理(filter)&lt;/h5&gt;
 &lt;p&gt;用来实现统计数据进行转换和过滤，比如： 对已有字段拆分，合并，去重等。&lt;/p&gt;
 
-&lt;h5 id=&quot;统计数据aggregator&quot;&gt;统计数据(aggregator)&lt;/h5&gt;
+&lt;h5 id=&quot;3211-统计数据aggregator&quot;&gt;3.2.1.1 统计数据(aggregator)&lt;/h5&gt;
 &lt;p&gt;按照条件进行数据统计， 比如 计数(count), 平均(avg), 最小值(min),最大值(min)&lt;/p&gt;
 
-&lt;h5 id=&quot;数据处理filter-1&quot;&gt;数据处理(filter)&lt;/h5&gt;
+&lt;h5 id=&quot;3211-数据处理filter-1&quot;&gt;3.2.1.1 数据处理(filter)&lt;/h5&gt;
 &lt;p&gt;用来实现统计结果进行转换， 比如： 对已有字段拆分，合并等。&lt;/p&gt;
 
-&lt;h5 id=&quot;结果output&quot;&gt;结果(output)&lt;/h5&gt;
+&lt;h5 id=&quot;3211-结果output&quot;&gt;3.2.1.1 结果(output)&lt;/h5&gt;
 &lt;p&gt;将统计结果持久化。比如：mysql&lt;/p&gt;
 
-&lt;h4 id=&quot;框架功能&quot;&gt;框架功能&lt;/h4&gt;
+&lt;h4 id=&quot;322-框架功能&quot;&gt;3.2.2 框架功能&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;任务分片
 任务重试
 并发处理
@@ -86,7 +86,7 @@
 结果分表
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h4 id=&quot;代码及约束-未完成&quot;&gt;代码及约束 未完成&lt;/h4&gt;
+&lt;h2 id=&quot;4-代码及约束-未完成&quot;&gt;4 代码及约束 未完成&lt;/h2&gt;
 
 </content>
  </entry>
