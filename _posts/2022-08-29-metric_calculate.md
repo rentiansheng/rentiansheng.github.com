@@ -75,7 +75,7 @@ tags: [golang,metric]
     结果分表
 
 ## 4 代码及约束 
-[请看golang 通用指标框架之数据展示-代码约束](http://www.ireage.com/golang/2022/08/29/metric_calculate_code.html)
+[请看golang 通用指标框架之数据展示-代码约束](http://www.ireage.com/golang/2022/09/29/metric_calculate_code.html)
 
 
 

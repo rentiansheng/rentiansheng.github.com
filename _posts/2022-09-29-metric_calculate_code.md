@@ -59,6 +59,7 @@ type MetricTask struct {
    - Update() 用来提供对原始更新，设计上是留给filter来做数据处理
    - Field() 用来做统计的数据
    - UUID()  框架中用来做数据去重使用
+
 ```go
 type Record interface {
 	Data() map[string]string
@@ -70,7 +71,9 @@ type Record interface {
 ```
 
 ### 2.2 存储结果约束-MetricData
+
 传给output 插件的数据，计算的结果数据
+
 ```go
 // MetricData 计算产生的数据
 type MetricData struct {
