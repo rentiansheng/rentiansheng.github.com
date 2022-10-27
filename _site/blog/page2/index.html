@@ -161,6 +161,39 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/go/2021/08/19/go_fork_pipe.html">
+        go exec.Command使用pipe做数据交换遇到的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-08-19</span>
+    背景
+
+使用exec.Command 实现syscall.ForkExec功能，为了让master与child数据交互的能力，
+最终exec.Command.ExtraFiles 来传递pipe...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/qa/2021/04/02/qa.html">
+        遇到问题集合
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-04-02</span>
+    1. linux 执行命令卡住
+
+
+  执行ps -aux 卡住没有返回
+  执行ps -ef 卡住没有返回
+  ls -lha /proc/pid/ 卡住没有返回
+
+
+使用 strace 查看...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/monstache/2021/03/19/monstache_split_table_conf.html">
         解决monstache在启动的时候无法将mongodb分表的同步到Elasticsearch
       </a>
@@ -202,36 +235,6 @@
 目前所在项目是关于资产管理，经常会有各种数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。
 
 由于在目前的golang 版本不支持多态， 只能人工的方式来实...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/mgo.v2/2021/01/14/golang_mgo_session_timeout.html">
-        使用mgo.v2 出现 i/o timeout session 问题
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-01-14</span>
-    背景
-
-使用mgo.v2 操作数据库，一直报 i/o timeout session 问题出错如下:
-
-read tcp 127.0.0.1:42577-&gt;127.0.0.1:27017:...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2021/01/03/mongodb_go_driver_distributed_transaction_en.html">
-        Use mongodb driver to solve distributed transactions
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-01-03</span>
-    中文
-
-Use mongodb driver to solve distributed transactions
-
-Solving distributed transaction scenari...
   </div>
   
 </div>
@@ -281,7 +284,7 @@ Solving distributed transaction scenari...
       <a href="/blog/page10">10</a>
       
     
-  (共47篇)
+  (共49篇)
 
 </div>
 

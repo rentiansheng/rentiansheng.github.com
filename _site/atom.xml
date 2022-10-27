@@ -4,13 +4,266 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2022-08-29T22:41:14+08:00</updated>
+ <updated>2022-10-27T09:21:08+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>golang mapper 数据深拷贝</title>
+   <link href="http://localhost:4000/golang/2022/10/27/go_mapper.html"/>
+   <updated>2022-10-27T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2022/10/27/go_mapper</id>
+   <content type="html">&lt;h2 id=&quot;mapper&quot;&gt;Mapper&lt;/h2&gt;
+&lt;p&gt;golang 数据深拷贝的类库，支持数据自动映射。 map to struct, struct to map, struct to struct.&lt;/p&gt;
+
+&lt;h3 id=&quot;install&quot;&gt;Install&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;go get -u github.com/rentiansheng/mapper
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;getting-started&quot;&gt;Getting Started&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;
+package main
+
+import (
+	&quot;fmt&quot;
+	&quot;github.com/rentiansheng/mapper&quot;
+)
+
+type testCopyStructInline struct {
+	A string
+	b string
+}
+
+type testCopyStructSrc struct {
+	Int           int
+	AliasCopy     string `json:&quot;alias_copy&quot;`
+	privateString string
+	Strings       []string
+	testCopyStructInline
+}
+
+type testCopyStructDst struct {
+	Int           int
+	Copy          string `json:&quot;alias_copy&quot;`
+	privateString string
+	Strings       []string
+	testCopyStructInline
+}
+
+func main() {
+	src := testCopyStructSrc{
+		Int:           100,
+		AliasCopy:     &quot;alias copy&quot;,
+		privateString: &quot;private&quot;,
+		Strings:       []string{&quot;item&quot;, &quot;item&quot;},
+		testCopyStructInline: testCopyStructInline{
+			A: &quot;inline a&quot;,
+			b: &quot;inline b private&quot;,
+		},
+	}
+	dst := testCopyStructDst{}
+	err := mapper.AllMapper(src, &amp;amp;dst)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(&quot;struct.Int field&quot;, src.Int == dst.Int)
+	fmt.Println(&quot;struct.AliasCopy field&quot;, src.AliasCopy == dst.Copy)
+	fmt.Println(&quot;struct.privateString field&quot;, src.privateString == dst.privateString)
+	fmt.Println(&quot;struct.Strings field&quot;, len(src.Strings) == len(dst.Strings))
+	fmt.Println(&quot;struct.testCopyStructInline.A field&quot;, len(src.A) == len(dst.A))
+	fmt.Println(&quot;struct.testCopyStructInline.B field&quot;, len(src.b) == len(dst.b))
+
+	// test deep copy
+	src.Strings[0] = &quot;change item&quot;
+	fmt.Println(&quot;struct.Strings deep copy test&quot;, src.Strings[0] != dst.Strings[0])
+
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;features&quot;&gt;Features&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;支持struct私有字段自动映射&lt;/li&gt;
+  &lt;li&gt;支持slice 自动映射&lt;/li&gt;
+  &lt;li&gt;支持按照字段名自动映射&lt;/li&gt;
+  &lt;li&gt;支持按照tag 自动映射&lt;/li&gt;
+  &lt;li&gt;支持struct 到map 自动映射&lt;/li&gt;
+  &lt;li&gt;支持map 到 struct 自动映射&lt;/li&gt;
+  &lt;li&gt;支持[]byte to string&lt;/li&gt;
+  &lt;li&gt;数据类型自动识别&lt;/li&gt;
+  &lt;li&gt;支持 数据 to interface 自动映射&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;todo&quot;&gt;TODO:&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;实现[]*Type to []Type&lt;/li&gt;
+  &lt;li&gt;实现[]Type to []*Type&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>golang 通用指标框架之数据展示-代码约束</title>
+   <link href="http://localhost:4000/golang/2022/09/29/metric_calculate_code.html"/>
+   <updated>2022-09-29T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2022/09/29/metric_calculate_code</id>
+   <content type="html">&lt;h2 id=&quot;1-任务定义&quot;&gt;1. 任务定义&lt;/h2&gt;
+&lt;p&gt;通过对任务属性抽象和集合， 将任务定义分为， meta信息， 任务周期信息， 插件信息，任务执行动态信息&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;meta信息： 主要就是任务名字，状态&lt;/li&gt;
+  &lt;li&gt;任务周期信息： 周期类型，周期计算方式，需要计算的周期数&lt;/li&gt;
+  &lt;li&gt;插架信息： 任务需要使用到插件及插件的配置&lt;/li&gt;
+  &lt;li&gt;任务执行动态信息： 任务开始周期，最后一次执行完成时间&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/calculate_metric/blob/master/src/define/task.go&quot;&gt;代码位置 task.go&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;type MetricTask struct {
+	// 任务的名字，同时也是指标名字
+	TaskName string `json:&quot;task_name&quot;  gorm:&quot;column:task_name&quot;`
+	// 指标周期（1年，2季，3月，4周，5日，6时）（接口必须）
+	TaskCycle int8 `json:&quot;task_cycle&quot; gorm:&quot;column:task_cycle&quot;`
+	// 周期执行方式，1 周期结束后执行，2周期中每天计算一次
+	CycleMode      CycleModeType `json:&quot;cycle_mode&quot; gorm:&quot;column:cycle_mode&quot;`
+	CalculateCycle uint8         `json:&quot;calculate_cycle&quot; gorm:&quot;column:calculate_cycle&quot;`
+	// 任务状态， 1 正常，可以允许， 2. 暂停，不被执行 3. 待删除
+	TaskStatus StatusEnumType `json:&quot;task_status&quot; gorm:&quot;column:task_status&quot;`
+
+	// TaskStart 任务采集数据的开始时间， 有start+cycle 可以得到结束时间
+	TaskStart   uint64                              `json:&quot;task_start&quot; gorm:&quot;column:task_start&quot;`
+	Collect     MetricTaskPluginCollectConfig       `json:&quot;collect&quot; gorm:&quot;column:collect&quot;`
+	Filters     MetricTaskPluginConfigArr           `json:&quot;filters&quot; gorm:&quot;column:filters&quot;`
+	Aggregators MetricTaskPluginAggregatorConfigArr `json:&quot;aggregators&quot; gorm:&quot;column:aggregators&quot;`
+	// Output 使用到output 插件
+	Output      MetricTaskPluginOutputConfig        `json:&quot;output&quot; gorm:&quot;column:output&quot;`
+	//Power          MetricPower                         `json:&quot;power&quot; gorm:&quot;column:power&quot;`
+	// LastFinishTime 任务上一次完成时间 
+	LastFinishTime uint64 `json:&quot;last_finish_time&quot; gorm:&quot;column:last_finish_time&quot;`
+
+	// OutputIndexName 存储output 插件返回存储的信息
+	OutputIndexName string `json:&quot;output_index_name&quot; gorm:&quot;column:output_index_name&quot;`
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;2-插架之间数据交换约束&quot;&gt;2. 插架之间数据交换约束&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/calculate_metric/blob/master/src/define/data.go&quot;&gt;代码位置 data.go&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;将任务执行分为数据处理和存储两个阶段。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;数据处理：包含获取周期内数据，数据过滤，数据聚合&lt;/li&gt;
+  &lt;li&gt;存储结果：将指标和符合指标数据持久化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;21-数据处理约束-record&quot;&gt;2.1 数据处理约束-Record&lt;/h3&gt;
+&lt;p&gt;用来约束collect,filter,aggregator之间数据交换。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Data() 是用来做数据对比的数据&lt;/li&gt;
+  &lt;li&gt;Update() 用来提供对原始更新，设计上是留给filter来做数据处理&lt;/li&gt;
+  &lt;li&gt;Field() 用来做统计的数据&lt;/li&gt;
+  &lt;li&gt;UUID()  框架中用来做数据去重使用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;type Record interface {
+	Data() map[string]string
+	Update(key, value string) error
+	Field() map[string]float64
+	UUID() string
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;22-存储结果约束-metricdata&quot;&gt;2.2 存储结果约束-MetricData&lt;/h3&gt;
+
+&lt;p&gt;传给output 插件的数据，计算的结果数据&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;// MetricData 计算产生的数据
+type MetricData struct {
+    MetricKey string
+    Value     map[string]float64     `json:&quot;value&quot;`
+    Extra     map[string]interface{} `json:&quot;extra&quot;`
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;3--插架约束&quot;&gt;3.  插架约束&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rentiansheng/calculate_metric/blob/master/src/define/plugins.go&quot;&gt;代码位置 define.go&lt;/a&gt;
+实现自定义插件的时候，需要实现的代码约束&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;// Collect 收集数据插件
+type Collect interface {
+	// Name 插件的名字，必须全局唯一
+	Name() string
+	// Keys 用做计算的维度，可以任务是group by 中分组的名字
+	Keys(ctx context.Context) ([]string, error)
+	// Run 执行统计任务， 这个有框架控制并发执行的
+	Run(ctx context.Context, key string, start, end uint64, input chan Record) error
+
+	// SetConfig 修改配置
+	SetConfig(ctx context.Context, config []byte) error
+	// Description 用来描述配置
+	Description() string
+
+	// GetHooks 获取注入插件，用来放到流程不同流程执行
+	//GetHooks() Hooks
+}
+
+// Filter data transform
+type Filter interface {
+	// Name 插件的名字，必须全局唯一
+	Name() string
+	// Run 执行
+	Run(ctx context.Context, key string, data Record) error
+	// SetConfig 初始化的时候，用来放入配置
+	SetConfig(ctx context.Context, config []byte) error
+	// Description 用来描述配置
+	Description() string
+}
+
+// Aggregator calculate metric
+type Aggregator interface {
+	// Name 插件的名字，必须全局唯一
+	Name() string
+	// Run 执行
+	Run(ctx context.Context, key string, data Record) error
+	// SetConfig 初始化的时候，用来放入配置
+	SetConfig(ctx context.Context, config []byte) error
+	// Description 用来描述配置
+	Description() string
+	// Metric 存储的时候，获取当前插件计算的值
+	Metric(ctx context.Context) (string, float64)
+	MetricExtra(ctx context.Context) (string, interface{}, bool)
+	SetMetricMetadata(ctx context.Context, data MetricMetadata) error
+}
+
+// Output record to storage
+type Output interface {
+	// Name 插件的名字，必须全局唯一
+	Name() string
+	// Write 输出数据到目标
+	Write(ctx context.Context, data OutputData) error
+	// Exists 判断key 在周期内是否已经执行过，任务分片后，判断是否需要跳过的依据
+	Exists(ctx context.Context, metricKey string) (bool, error)
+	// Description 用来描述配置
+	Description() string
+	// IndexName string
+	IndexName(ctx context.Context) (string, error)
+	SetMetricMetadata(ctx context.Context, data MetricMetadata) error
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>golang 通用指标框架之数据展示</title>
@@ -86,7 +339,8 @@
 结果分表
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;4-代码及约束-未完成&quot;&gt;4 代码及约束 未完成&lt;/h2&gt;
+&lt;h2 id=&quot;4-代码及约束&quot;&gt;4 代码及约束&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.ireage.com/golang/2022/09/29/metric_calculate_code.html&quot;&gt;请看golang 通用指标框架之数据展示-代码约束&lt;/a&gt;&lt;/p&gt;
 
 </content>
  </entry>

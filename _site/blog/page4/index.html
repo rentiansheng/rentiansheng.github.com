@@ -161,6 +161,37 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html">
+        read preference in a transaction must be primary
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-09-20</span>
+    背景
+
+项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
+事务中的查询语句会出...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/http/2020/08/08/http_request_slow.html">
+        调用第三方接口返回过慢的分析过程
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-08-08</span>
+    背景
+
+最近在对第三方系统过程中经常某一个请求耗时很长（请求到返回超过2m）。通过验证发现请求流程中网络传输和业务逻辑处理的耗时并不长。那么时间都耗费到什么时间了？
+
+查找问题的流程
+
+按照个人...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/bk-cmdb/2020/03/06/bk_cmdb_login_plugin.html">
         蓝鲸配置平台-蓝鲸cmdb开发登录插件
       </a>
@@ -203,45 +234,6 @@ current topology: Type: ReplicaSetNoPrimary
 具体情况：
 有用户反馈，在使用系统的时候，更新数据出现网络错误。 鉴于其他操作都没有问题，
 由于是更新使用的是HTTP 的PUT 方式，怀疑...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/http/client/2019/12/31/golang_http_client.html">
-        golang  http client 遇到的问题
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-12-31</span>
-    记录最近在使用golang http client 遇到的问题
-
-response body 乱码
-
-服务线上没有问题， 但是在开发阶段调用第三服务出现返回无法解析的情况。
-
-最后发现是数据被压...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/graceful/2019/10/13/golang_http_graceful.html">
-        golang http 优雅重启
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-10-13</span>
-    目标
-
-  停止服务（正在处理HTTP 请求不受影响，需要等待其完成）
-  启动服务
-  服务不中断
-
-
-遇到的问题
-
-1. 如何知道HTTP 请求是否已经处理结束
-
-这里主要使用Server....
   </div>
   
 </div>
@@ -291,7 +283,7 @@ response body 乱码
       <a href="/blog/page10">10</a>
       
     
-  (共47篇)
+  (共49篇)
 
 </div>
 
