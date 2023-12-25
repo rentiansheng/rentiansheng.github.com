@@ -4,13 +4,178 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2022-10-27T09:21:08+08:00</updated>
+ <updated>2023-12-25T17:50:21+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>ChatGLM2-6B install</title>
+   <link href="http://localhost:4000/other/2023/12/22/chatglm2-6b-install.html"/>
+   <updated>2023-12-22T00:00:00+08:00</updated>
+   <id>http://localhost:4000/other/2023/12/22/chatglm2-6b-install</id>
+   <content type="html">&lt;h3 id=&quot;准备环境&quot;&gt;准备环境&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;python3 (miniconda)
+    &lt;h3 id=&quot;下载代码和模型&quot;&gt;下载代码和模型&lt;/h3&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;#  workspace = pwd
+git clone https://github.com/THUDM/ChatGLM2-6B
+
+cd ChatGLM2-6B
+
+mkdir THUDM
+cd THUDM
+
+# git lfs not found,  
+# brew update
+# brew install git-lfs
+git lfs install
+
+
+git clone https://huggingface.co/THUDM/chatglm2-6b
+
+# if you want to clone without large files – just their pointers
+# prepend your git clone with the following env var:
+GIT_LFS_SKIP_SMUDGE=1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;安装依赖&quot;&gt;安装依赖&lt;/h3&gt;
+
+&lt;p&gt;···&lt;/p&gt;
+
+&lt;h1 id=&quot;回到-workspace目录-也有chatglm2-6b-目录&quot;&gt;回到 ${workspace}目录， 也有ChatGLM2-6B 目录&lt;/h1&gt;
+
+&lt;p&gt;cd ..&lt;/p&gt;
+
+&lt;h1 id=&quot;如果网络不好可以切换镜像&quot;&gt;如果网络不好可以切换镜像&lt;/h1&gt;
+&lt;p&gt;pip3.9 install -r requirements.txt&lt;/p&gt;
+
+&lt;p&gt;···&lt;/p&gt;
+
+&lt;h3 id=&quot;demo-配置&quot;&gt;demo 配置&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;注意 THUDM/chatglm2-6b  表示在${workspace}目录 下路径。 如果嫌烦直接用却对路径即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;配置不同算力&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# GPU
+model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).cuda()
+
+# CPU 
+model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).float()
+
+# mac 
+# 对于搭载了 Apple Silicon 或者 AMD GPU 的Mac，可以使用 MPS 后端来在 GPU 上运行 ChatGLM-6B。需要参考 Apple 的 官方说明 安装 PyTorch-Nightly（正确的版本号应该是2.1.0.dev2023xxxx，而不是2.0.0）。
+#目前在 MacOS 上只支持从本地加载模型。将代码中的模型加载改为从本地加载，并使用 mps 后端：
+model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).half().to('mps')
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;web-ui&quot;&gt;web ui&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;# 以web_demo.py 为例子
+
+#  关注 以下两行
+
+tokenizer = AutoTokenizer.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True)
+model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).cuda()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;term&quot;&gt;term&lt;/h4&gt;
+&lt;p&gt;参考链接： https://huggingface.co/THUDM/chatglm2-6b&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;python3.9
+from transformers import AutoTokenizer, AutoModel
+tokenizer = AutoTokenizer.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True)
+model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).float()
+model = model.eval()
+response, history = model.chat(tokenizer, &quot;你好&quot;, history=[])
+print(response)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;遇到的问题&quot;&gt;遇到的问题&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;AttributeError: ‘Textbox’ object has no attribute ‘style’
+    &lt;pre&gt;&lt;code&gt;user_input = gr.Textbox(show_label=False, placeholder=&quot;Input...&quot;, lines=10).style(
+AttributeError: 'Textbox' object has no attribute 'style'
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;p&gt;解决方法：
+重新安全 gradio 为 3.50.0&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;https://github.com/THUDM/ChatGLM-6B/issues/1417&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pip3.9 uninstall gradio
+pip3.9 install gradio==3.50.0
+&lt;/code&gt;&lt;/pre&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>reflect 使用总结</title>
+   <link href="http://localhost:4000/golang/2022/12/12/go_reflect.md.html"/>
+   <updated>2022-12-12T00:00:00+08:00</updated>
+   <id>http://localhost:4000/golang/2022/12/12/go_reflect.md</id>
+   <content type="html">&lt;h2 id=&quot;1-如何确定数据类型&quot;&gt;1 如何确定数据类型&lt;/h2&gt;
+
+&lt;p&gt;使用 reflect.Kind 或者reflect.Type&lt;/p&gt;
+
+&lt;h3 id=&quot;11-reflectkind&quot;&gt;1.1 reflect.Kind&lt;/h3&gt;
+
+&lt;p&gt;go的基础类型, 类型是有限，可以被穷举。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type My string  kind=string
+type kv map[string]interface{}  kind=map
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;12--reflecttype&quot;&gt;1.2  reflect.Type&lt;/h3&gt;
+
+&lt;p&gt;用户定义的类型, 内置类型及用户type 定义类型及闭包类型，&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type myStr string   type= main.myStr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;2-如何操作数据&quot;&gt;2 如何操作数据&lt;/h2&gt;
+
+&lt;p&gt;注意： reflect 操作需要开发去考虑边界情况，出现数据类型不匹配，越界，未初始化，非类型操作函数等情况会直接panic。&lt;/p&gt;
+
+&lt;p&gt;reflect 提供一系列操作基础数据的操作 比如： GetXXX,SetXXX.&lt;/p&gt;
+
+&lt;p&gt;reflect 对一些操作做聚合，比如：Elem(),Key(), Len(),数字操作int,int8,int16,int32,int64 使用Int(), SetInt(x)&lt;/p&gt;
+
+&lt;p&gt;reflect 对数据操作是一个超集合，需要根据类型使用不同函数&lt;/p&gt;
+
+&lt;h3 id=&quot;21-访问数据需要注意&quot;&gt;2.1 访问数据需要注意&lt;/h3&gt;
+
+&lt;p&gt;Elem() ： 用来获取复杂数据类项目的值， 比如： 指针，slice，array, map 的Value,
+Map 操作： 方法 map 的key 可以用reflect.ValueOf(kv{}).Type().Key() 来确定类型， MapKeys(), MapRange(),MapIndex() 来访问
+Struct 操作： 需要注意inline 结构体及私有对象操作, 需要递归处理，无法用Field获取到对应Field&lt;/p&gt;
+
+&lt;h3 id=&quot;22-修改数据需要注意&quot;&gt;2.2 修改数据需要注意&lt;/h3&gt;
+&lt;p&gt;CanXXX 方法提供数据类型是否配置校验
+操作的对象必须是指针对象， 可以用 CanSet() 方法判读
+reflect.New 出来的是指针类型，赋值时候需要注意， 
+Array 对象操作需要注意，不能append。需要用index 修改
+Struct 操作的时候， FIeld,FieldByIndex无法处理inline struct 字段， 私有字段不允许修改，如果需要修改可以与unsafe.Pointer
+IsZero() 与IsNil() 区别。 IsZero()对所有数据类型有效，默认值及nil 为true， InNil()仅对 chan, func, interface, map, pointer, or slice 有效&lt;/p&gt;
+
+&lt;h2 id=&quot;3-使用样例&quot;&gt;3. 使用样例&lt;/h2&gt;
+
+&lt;p&gt;golang 数据深拷贝的类库，支持数据自动映射。 map to struct, struct to map, struct to struct.
+https://github.com/rentiansheng/mapper&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>golang mapper 数据深拷贝</title>
@@ -26,11 +191,12 @@
 
 &lt;h3 id=&quot;getting-started&quot;&gt;Getting Started&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;
-package main
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;package main
 
 import (
+	&quot;context&quot;
 	&quot;fmt&quot;
+
 	&quot;github.com/rentiansheng/mapper&quot;
 )
 
@@ -67,24 +233,23 @@ func main() {
 		},
 	}
 	dst := testCopyStructDst{}
-	err := mapper.AllMapper(src, &amp;amp;dst)
+	err := mapper.AllMapper(context.TODO(), src, &amp;amp;dst)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(&quot;struct.Int field&quot;, src.Int == dst.Int)
-	fmt.Println(&quot;struct.AliasCopy field&quot;, src.AliasCopy == dst.Copy)
-	fmt.Println(&quot;struct.privateString field&quot;, src.privateString == dst.privateString)
-	fmt.Println(&quot;struct.Strings field&quot;, len(src.Strings) == len(dst.Strings))
-	fmt.Println(&quot;struct.testCopyStructInline.A field&quot;, len(src.A) == len(dst.A))
-	fmt.Println(&quot;struct.testCopyStructInline.B field&quot;, len(src.b) == len(dst.b))
+	fmt.Println(&quot;struct.Int field                    &quot;, src.Int == dst.Int)
+	fmt.Println(&quot;struct.AliasCopy field              &quot;, src.AliasCopy == dst.Copy)
+	fmt.Println(&quot;struct.privateString field          &quot;, src.privateString == dst.privateString)
+	fmt.Println(&quot;struct.Strings field                &quot;, len(src.Strings) == len(dst.Strings))
+	fmt.Println(&quot;struct.testCopyStructInline.A field &quot;, len(src.A) == len(dst.A))
+	fmt.Println(&quot;struct.testCopyStructInline.B field &quot;, len(src.b) == len(dst.b))
 
 	// test deep copy
 	src.Strings[0] = &quot;change item&quot;
-	fmt.Println(&quot;struct.Strings deep copy test&quot;, src.Strings[0] != dst.Strings[0])
+	fmt.Println(&quot;struct.Strings deep copy test       &quot;, src.Strings[0] != dst.Strings[0])
 
 }
-
 
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -100,13 +265,9 @@ func main() {
   &lt;li&gt;支持[]byte to string&lt;/li&gt;
   &lt;li&gt;数据类型自动识别&lt;/li&gt;
   &lt;li&gt;支持 数据 to interface 自动映射&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;todo&quot;&gt;TODO:&lt;/h3&gt;
-
-&lt;ul&gt;
   &lt;li&gt;实现[]*Type to []Type&lt;/li&gt;
   &lt;li&gt;实现[]Type to []*Type&lt;/li&gt;
+  &lt;li&gt;使用struct tag 别名拷贝 &lt;code&gt;json:&quot;aa,copy=bb&quot;&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 </content>
@@ -780,7 +941,7 @@ https://bugs.centos.org/view.php?id=15252&lt;/p&gt;
 编译报”is replaced in go.mod, but not marked as replaced in？”
 原因：
 编译或者运行的时，使用 -mod=vendor， 在这中情况下需要更新项目的vendor 目录。
-执行 &lt;code&gt;go mod vendor&lt;/code&gt; 需要将go mod edi replace 相关的内容更新到vendor中
+执行 &lt;code&gt;go mod vendor&lt;/code&gt; 需要将go mod edit replace 相关的内容更新到vendor中
 包含modules.txt和 项目代码.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;github.com/rs/cors@v1.7.0: is explicitly required in go.mod, but not marked as explicit in vendor/modules.txt
@@ -813,6 +974,9 @@ chmod -N &amp;lt;file ...&amp;gt;
 
 &lt;p&gt;再使用goland debug的时候出现的问题。 这个问题一般是本地host中缺少了当前机器与IP的配置。 
 在终端执行 hostname， 在/etc/hosts 中新加  一行写入 127.0.0.1 （hostname 结果)&lt;/p&gt;
+
+&lt;h3 id=&quot;6-cpu-过高-pprofprofile-提示-runtimesiftdowntimer-占比比较高&quot;&gt;6. CPU 过高， pprof/profile 提示 runtime.siftdownTimer 占比比较高&lt;/h3&gt;
+&lt;p&gt;原因：Ticker 对象没有释放。 Ticker是需要手动stop的，不然它会一直在timers对象内工作，导致gc无法释放。&lt;/p&gt;
 </content>
  </entry>
  

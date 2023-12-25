@@ -106,6 +106,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -161,6 +165,35 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/golang/2022/08/22/golang_shallow_copy.html">
+        golang bytes.Buffer 数据浅拷贝带来的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2022-08-22</span>
+    背景
+
+项目中定时任务获取数据，在执行过程中未对cache 的内容做变更，但是值发生了变化。
+
+最后定位是浅拷贝造成，在做数据交互过程中用到bytes.Buffer 做缓存区用来，包含read,...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/telegraf/2021/11/22/telegraf_agent.html">
+        telegraf agent 源码分析
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-11-22</span>
+    1 telegraf
+
+telegraf 是开源agent服务，可收集系统和服务的metric数据. 
+telegraf 从数据的collecting, processing, aggregat...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/go/2021/08/19/go_fork_pipe.html">
         go exec.Command使用pipe做数据交换遇到的问题
       </a>
@@ -204,37 +237,6 @@
 
 目前所在做的项目是做资产管理， 随着变化数据越来越多， 单一类型的资产数据无法在同一张表存储，后需经过使用多个表， 
 之前为了实现全局的全文搜索， 是通过monstache将mon...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html">
-        golang 动态结构体
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-02-10</span>
-    背景
-
-语言： golang
-
-目前项目允许业务自定自己业务下私有字段。 造成同一类型实例数据，在不同的业务下字段是不一样。 在实际处理中无法使用struct来定义。
-当实例数据在不同服务之间数...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang%E6%B3%9B%E5%9E%8B/2021/01/17/golang_generics.html">
-        golang 泛型
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-01-17</span>
-    背景
-
-目前所在项目是关于资产管理，经常会有各种数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。
-
-由于在目前的golang 版本不支持多态， 只能人工的方式来实...
   </div>
   
 </div>
@@ -284,7 +286,11 @@
       <a href="/blog/page10">10</a>
       
     
-  (共49篇)
+      
+      <a href="/blog/page11">11</a>
+      
+    
+  (共51篇)
 
 </div>
 

@@ -106,6 +106,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -202,7 +206,7 @@ https://bugs.centos.org/view.php?id=15252</p>
 编译报”is replaced in go.mod, but not marked as replaced in？”
 原因：
 编译或者运行的时，使用 -mod=vendor， 在这中情况下需要更新项目的vendor 目录。
-执行 <code>go mod vendor</code> 需要将go mod edi replace 相关的内容更新到vendor中
+执行 <code>go mod vendor</code> 需要将go mod edit replace 相关的内容更新到vendor中
 包含modules.txt和 项目代码.</p>
 
 <pre><code>github.com/rs/cors@v1.7.0: is explicitly required in go.mod, but not marked as explicit in vendor/modules.txt
@@ -236,6 +240,9 @@ chmod -N &lt;file ...&gt;
 <p>再使用goland debug的时候出现的问题。 这个问题一般是本地host中缺少了当前机器与IP的配置。 
 在终端执行 hostname， 在/etc/hosts 中新加  一行写入 127.0.0.1 （hostname 结果)</p>
 
+<h3 id="6-cpu-过高-pprofprofile-提示-runtimesiftdowntimer-占比比较高">6. CPU 过高， pprof/profile 提示 runtime.siftdownTimer 占比比较高</h3>
+<p>原因：Ticker 对象没有释放。 Ticker是需要手动stop的，不然它会一直在timers对象内工作，导致gc无法释放。</p>
+
   <div class="post-affix">
     <a href="http://localhost:4000"> articles from reage blog -- http://localhost:4000</a>
   </div>
@@ -247,19 +254,19 @@ chmod -N &lt;file ...&gt;
     <a href="/monstache/2021/03/19/monstache_split_table_conf.html" class="read-more-btn">Read More</a>
   </div><!-- /.read-more-header -->
   <div class="read-more-content">
-    <h3><a href="http://localhost:4000/golang/2022/10/27/go_mapper.html" title="golang mapper 数据深拷贝">golang mapper 数据深拷贝</a></h3>
+    <h3><a href="http://localhost:4000/other/2023/12/22/chatglm2-6b-install.html" title="ChatGLM2-6B install">ChatGLM2-6B install</a></h3>
   </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
     <div class="list-item">
-      <h4><a href="/golang/2022/09/29/metric_calculate_code.html" title="golang 通用指标框架之数据展示-代码约束">golang 通用指标框架之数据展示-代码约束</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2022-09-29</span>
+      <h4><a href="/golang/2022/12/12/go_reflect.md.html" title="reflect 使用总结">reflect 使用总结</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2022-12-12</span>
     </div><!-- /.list-item -->
     
     <div class="list-item">
-      <h4><a href="/golang/2022/08/29/metric_calculate.html" title="golang 通用指标框架之数据展示">golang 通用指标框架之数据展示</a></h4>
-      <span><i class="fa fa-clock-o"></i>  2022-08-29</span>
+      <h4><a href="/golang/2022/10/27/go_mapper.html" title="golang mapper 数据深拷贝">golang mapper 数据深拷贝</a></h4>
+      <span><i class="fa fa-clock-o"></i>  2022-10-27</span>
     </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

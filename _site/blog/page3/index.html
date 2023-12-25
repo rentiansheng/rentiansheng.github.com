@@ -106,6 +106,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -161,6 +165,37 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html">
+        golang 动态结构体
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-02-10</span>
+    背景
+
+语言： golang
+
+目前项目允许业务自定自己业务下私有字段。 造成同一类型实例数据，在不同的业务下字段是不一样。 在实际处理中无法使用struct来定义。
+当实例数据在不同服务之间数...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang%E6%B3%9B%E5%9E%8B/2021/01/17/golang_generics.html">
+        golang 泛型
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-01-17</span>
+    背景
+
+目前所在项目是关于资产管理，经常会有各种数据做各种操作，比如，各类数值型Join, Sort, Unique等很多操作。
+
+由于在目前的golang 版本不支持多态， 只能人工的方式来实...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/mgo.v2/2021/01/14/golang_mgo_session_timeout.html">
         使用mgo.v2 出现 i/o timeout session 问题
       </a>
@@ -204,35 +239,6 @@ Solving distributed transaction scenari...
 本项目只能解决在mongodb 同一个replica-set 中同一个database中多个表中的分布式事务。
 
 主要...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/2020/12/23/mysql_binlog_event.html">
-        多个不兼容版本数据同步（mysql 向 mongodb 数据同步）
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-12-23</span>
-    背景
-
-客观原因项目项目多版本共存，并且用户短时间内无法迁移到新版本上面并且数据会按照一定纬度（项目中成为业务）灰度到新版使用。
-最终解决方案：业务数据未灰度前，只在旧版中对数据修改， 但是修改...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/bk-cmdb/2020/10/11/bk_cmdb_apiserver_proxy.html">
-        蓝鲸配置平台-蓝鲸cmdb接入层支持对第三方组件访问的转发开发
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-10-11</span>
-    前提
-
-蓝鲸配置平台（bk-CMDB）是一个面向资产及应用的企业级配置管理平台。
-是蓝鲸运维体系一部分，蓝鲸社区版本是免费，社区地址https://bk.tencent.com/
-并且蓝鲸很多组...
   </div>
   
 </div>
@@ -282,7 +288,11 @@ Solving distributed transaction scenari...
       <a href="/blog/page10">10</a>
       
     
-  (共49篇)
+      
+      <a href="/blog/page11">11</a>
+      
+    
+  (共51篇)
 
 </div>
 
