@@ -35,16 +35,17 @@ GIT_LFS_SKIP_SMUDGE=1
 
 ### 安装依赖
 
-···
+```
 
 # 回到 ${workspace}目录， 也有ChatGLM2-6B 目录
+``` 
 
 cd ..
 
 # 如果网络不好可以切换镜像  
 pip3.9 install -r requirements.txt
 
-···
+``` 
 
 ### demo 配置
 
