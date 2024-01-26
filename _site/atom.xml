@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2023-12-25T17:50:55+08:00</updated>
+ <updated>2024-01-26T17:37:09+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -38,26 +38,26 @@ cd THUDM
 # brew install git-lfs
 git lfs install
 
+GIT_LFS_SKIP_SMUDGE=1
+
 
 git clone https://huggingface.co/THUDM/chatglm2-6b
 
 # if you want to clone without large files – just their pointers
 # prepend your git clone with the following env var:
-GIT_LFS_SKIP_SMUDGE=1
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3 id=&quot;安装依赖&quot;&gt;安装依赖&lt;/h3&gt;
 
-&lt;p&gt;···&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+# 回到 ${workspace}目录， 也有ChatGLM2-6B 目录
+cd ..
 
-&lt;h1 id=&quot;回到-workspace目录-也有chatglm2-6b-目录&quot;&gt;回到 ${workspace}目录， 也有ChatGLM2-6B 目录&lt;/h1&gt;
+# 如果网络不好可以切换镜像  
+pip3.9 install -r requirements.txt
 
-&lt;p&gt;cd ..&lt;/p&gt;
 
-&lt;h1 id=&quot;如果网络不好可以切换镜像&quot;&gt;如果网络不好可以切换镜像&lt;/h1&gt;
-&lt;p&gt;pip3.9 install -r requirements.txt&lt;/p&gt;
-
-&lt;p&gt;···&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3 id=&quot;demo-配置&quot;&gt;demo 配置&lt;/h3&gt;
 

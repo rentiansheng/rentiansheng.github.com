@@ -25,12 +25,13 @@ cd THUDM
 # brew install git-lfs
 git lfs install
 
+GIT_LFS_SKIP_SMUDGE=1
+
 
 git clone https://huggingface.co/THUDM/chatglm2-6b
 
 # if you want to clone without large files – just their pointers
 # prepend your git clone with the following env var:
-GIT_LFS_SKIP_SMUDGE=1
 ```
 
 ### 安装依赖
@@ -38,12 +39,11 @@ GIT_LFS_SKIP_SMUDGE=1
 ```
 
 # 回到 ${workspace}目录， 也有ChatGLM2-6B 目录
-``` 
-
 cd ..
 
 # 如果网络不好可以切换镜像  
 pip3.9 install -r requirements.txt
+
 
 ``` 
 
