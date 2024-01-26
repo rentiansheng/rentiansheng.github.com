@@ -11,7 +11,7 @@ tags: [other,ai]
 - python3 (miniconda)
 ### 下载代码和模型
 
-```
+```shell
 #  workspace = pwd
 git clone https://github.com/THUDM/ChatGLM2-6B
 
@@ -36,7 +36,7 @@ git clone https://huggingface.co/THUDM/chatglm2-6b
 
 ### 安装依赖
 
-```
+```shell
 
 # 回到 ${workspace}目录， 也有ChatGLM2-6B 目录
 cd ..
@@ -56,7 +56,7 @@ pip3.9 install -r requirements.txt
 配置不同算力
 
 
-```
+```shell
 # GPU
 model = AutoModel.from_pretrained("THUDM/chatglm2-6b", trust_remote_code=True).cuda()
 
@@ -76,7 +76,7 @@ model = AutoModel.from_pretrained("THUDM/chatglm2-6b", trust_remote_code=True).h
 
 #### web ui
 
-```
+```shell
 # 以web_demo.py 为例子
 
 #  关注 以下两行
@@ -88,7 +88,7 @@ model = AutoModel.from_pretrained("THUDM/chatglm2-6b", trust_remote_code=True).c
 ####  term
 参考链接： https://huggingface.co/THUDM/chatglm2-6b
 
-```
+```shell
 python3.9
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm2-6b", trust_remote_code=True)
@@ -104,7 +104,7 @@ print(response)
 1.  AttributeError: 'Textbox' object has no attribute 'style'
 
 
-```
+```shell
 user_input = gr.Textbox(show_label=False, placeholder="Input...", lines=10).style(
 AttributeError: 'Textbox' object has no attribute 'style'
 ``` 
@@ -114,7 +114,7 @@ AttributeError: 'Textbox' object has no attribute 'style'
 
 https://github.com/THUDM/ChatGLM-6B/issues/1417
 
-```
+```shell
 pip3.9 uninstall gradio
 pip3.9 install gradio==3.50.0
 ```

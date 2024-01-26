@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2024-01-26T17:38:15+08:00</updated>
+ <updated>2024-01-26T17:40:06+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -25,7 +25,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;pre&gt;&lt;code&gt;#  workspace = pwd
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;#  workspace = pwd
 git clone https://github.com/THUDM/ChatGLM2-6B
 
 cd ChatGLM2-6B
@@ -49,7 +49,7 @@ git clone https://huggingface.co/THUDM/chatglm2-6b
 
 &lt;h3 id=&quot;安装依赖&quot;&gt;安装依赖&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;
 # 回到 ${workspace}目录， 也有ChatGLM2-6B 目录
 cd ..
 
@@ -67,7 +67,7 @@ pip3.9 install -r requirements.txt
 
 &lt;p&gt;配置不同算力&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# GPU
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;# GPU
 model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).cuda()
 
 # CPU 
@@ -82,7 +82,7 @@ model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_co
 
 &lt;h4 id=&quot;web-ui&quot;&gt;web ui&lt;/h4&gt;
 
-&lt;pre&gt;&lt;code&gt;# 以web_demo.py 为例子
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;# 以web_demo.py 为例子
 
 #  关注 以下两行
 
@@ -93,7 +93,7 @@ model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_co
 &lt;h4 id=&quot;term&quot;&gt;term&lt;/h4&gt;
 &lt;p&gt;参考链接： https://huggingface.co/THUDM/chatglm2-6b&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;python3.9
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;python3.9
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True)
 model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_code=True).float()
@@ -108,7 +108,7 @@ print(response)
   &lt;li&gt;AttributeError: ‘Textbox’ object has no attribute ‘style’&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;pre&gt;&lt;code&gt;user_input = gr.Textbox(show_label=False, placeholder=&quot;Input...&quot;, lines=10).style(
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;user_input = gr.Textbox(show_label=False, placeholder=&quot;Input...&quot;, lines=10).style(
 AttributeError: 'Textbox' object has no attribute 'style'
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -117,7 +117,7 @@ AttributeError: 'Textbox' object has no attribute 'style'
 
 &lt;p&gt;https://github.com/THUDM/ChatGLM-6B/issues/1417&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;pip3.9 uninstall gradio
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;pip3.9 uninstall gradio
 pip3.9 install gradio==3.50.0
 &lt;/code&gt;&lt;/pre&gt;
 
