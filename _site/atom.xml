@@ -4,7 +4,7 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2024-01-26T17:37:09+08:00</updated>
+ <updated>2024-01-26T17:38:15+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
@@ -81,6 +81,7 @@ model = AutoModel.from_pretrained(&quot;THUDM/chatglm2-6b&quot;, trust_remote_co
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h4 id=&quot;web-ui&quot;&gt;web ui&lt;/h4&gt;
+
 &lt;pre&gt;&lt;code&gt;# 以web_demo.py 为例子
 
 #  关注 以下两行
@@ -104,14 +105,15 @@ print(response)
 &lt;h3 id=&quot;遇到的问题&quot;&gt;遇到的问题&lt;/h3&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;AttributeError: ‘Textbox’ object has no attribute ‘style’
-    &lt;pre&gt;&lt;code&gt;user_input = gr.Textbox(show_label=False, placeholder=&quot;Input...&quot;, lines=10).style(
+  &lt;li&gt;AttributeError: ‘Textbox’ object has no attribute ‘style’&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code&gt;user_input = gr.Textbox(show_label=False, placeholder=&quot;Input...&quot;, lines=10).style(
 AttributeError: 'Textbox' object has no attribute 'style'
 &lt;/code&gt;&lt;/pre&gt;
-    &lt;p&gt;解决方法：
+
+&lt;p&gt;解决方法：
 重新安全 gradio 为 3.50.0&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
 
 &lt;p&gt;https://github.com/THUDM/ChatGLM-6B/issues/1417&lt;/p&gt;
 

@@ -75,6 +75,7 @@ model = AutoModel.from_pretrained("THUDM/chatglm2-6b", trust_remote_code=True).h
 
 
 #### web ui
+
 ```
 # 以web_demo.py 为例子
 
@@ -101,10 +102,13 @@ print(response)
 ### 遇到的问题
 
 1.  AttributeError: 'Textbox' object has no attribute 'style'
+
+
 ```
 user_input = gr.Textbox(show_label=False, placeholder="Input...", lines=10).style(
 AttributeError: 'Textbox' object has no attribute 'style'
 ``` 
+
 解决方法：
 重新安全 gradio 为 3.50.0
 
