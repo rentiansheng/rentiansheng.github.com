@@ -118,5 +118,25 @@ https://github.com/THUDM/ChatGLM-6B/issues/1417
 pip3.9 uninstall gradio
 pip3.9 install gradio==3.50.0
 ```
+2. ModuleNotFoundError: No module named 'transformers_modules.THUDM/chatglm2-6b'
+```shell
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 992, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1004, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'transformers_modules.THUDM/chatglm2-6b'
+
+```
+transformers 可能过高
+
+解决方法：
+```shell
+pip uninstall transformers
+pip install transformers==4.26.1
+```
+
 
  
