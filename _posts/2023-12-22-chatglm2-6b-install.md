@@ -116,7 +116,7 @@ https://github.com/THUDM/ChatGLM-6B/issues/1417
 
 ```shell
 pip3.9 uninstall gradio
-pip3.9 install gradio==3.50.0
+pip3.9 install gradio==3.40.0
 ```
 2. ModuleNotFoundError: No module named 'transformers_modules.THUDM/chatglm2-6b'
 ```shell
