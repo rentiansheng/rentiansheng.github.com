@@ -165,6 +165,20 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/golang/mysql/2019/04/29/golang_mysql_conn_err.html">
+        mysql this authentication plugin is not supported
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-04-29</span>
+    出现这个是因为你使用MySql 5.7及以上的版本。如果不是就不用继续看了。这篇文章对你没有帮助。
+
+出现问题原因：
+mysql5.7中user表的password字段已被取消，取而代之的事 a...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/web/2019/04/24/web_error_design.html">
         web 服务error的设计
       </a>
@@ -229,23 +243,6 @@ git commit messge 消息格式
   git...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/2018/10/08/golang_net_http_timeout_awaiting_response_headers.html">
-        net/http timeout awaiting response headers
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2018-10-08</span>
-    前提
-
-在做系统压测的是发现有部分接口，返回 net/http: timeout awaiting response headers 错误，
-
-分析
-
-看到错误首先想到的是http请求超时， 修...
-  </div>
-  
 </div>
 
 
@@ -297,7 +294,7 @@ git commit messge 消息格式
       <a href="/blog/page11">11</a>
       
     
-  (共51篇)
+  (共52篇)
 
 </div>
 
