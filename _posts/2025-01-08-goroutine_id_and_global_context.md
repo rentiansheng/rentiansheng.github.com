@@ -77,8 +77,8 @@ func GoSetValue(key string, v any) {
 
 
 func newproc1(fn *funcval, callergp *g, callerpc uintptr, parked bool, waitreason waitReason) *g {
-	...
-	newg.context = callergp.context
+    ...
+    newg.context = callergp.context
     return newg
 }
 ```

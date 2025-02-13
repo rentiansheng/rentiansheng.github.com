@@ -44,7 +44,7 @@ func execute(gp *g, inheritTime bool) {
     if goIsDone(gp) {
         throw("execute: goroutine is done")
     }
-	...
+    ...
 }
 
 /***  控制方法 ***/
@@ -86,7 +86,7 @@ func goIsDone(gp *g) bool {
 func newproc1(fn *funcval, callergp *g, callerpc uintptr, parked bool, waitreason waitReason) *g {
 	...
 	newg.done = callergp.done
-    return newg
+	return newg
 }
 ```
 
