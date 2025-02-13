@@ -29,7 +29,7 @@ cd src
 
 协程定义在 $GOPATH/src/go/src/runtime/runtime2.go 文件中。我们需要未他加一个字段，用来存储上下文信息
 
-协程管理在 $GOPATH/src/go/src/runtime/proc.go 文件中。我们需要在创建协程的时候，创建协程的时候将上下文信息传递给协程。
+协程管理在 $GOPATH/src/go/src/runtime/proc.go 文件中。我们需要在创建协程的时候将上下文信息传递给协程。
 
 
 具体修改如下：
@@ -77,8 +77,8 @@ func GoSetValue(key string, v any) {
 
 
 func newproc1(fn *funcval, callergp *g, callerpc uintptr, parked bool, waitreason waitReason) *g {
-	    ...
-    gp.context = callergp.context
+	...
+	newg.context = callergp.context
     return newg
 }
 ```

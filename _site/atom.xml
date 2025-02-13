@@ -4,13 +4,122 @@
  <title>Reage blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2025-02-08T17:08:30+08:00</updated>
+ <updated>2025-02-13T14:16:25+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>通过修改GO 源代码，支持goroutine  自动done</title>
+   <link href="http://localhost:4000/go/2025/02/13/goroutine_auto_done.html"/>
+   <updated>2025-02-13T00:00:00+08:00</updated>
+   <id>http://localhost:4000/go/2025/02/13/goroutine_auto_done</id>
+   <content type="html">&lt;h2 id=&quot;1-原理&quot;&gt;1. 原理&lt;/h2&gt;
+
+&lt;p&gt;在goroutine 执行过程中，在做协程调度的时候，我们需要判断协程是否执行完成。如果没有执行完成，我们需要继续调度。如果执行完成，抛出异常。&lt;/p&gt;
+
+&lt;h2 id=&quot;2实现&quot;&gt;2.实现&lt;/h2&gt;
+
+&lt;h3 id=&quot;21-在runtime2go-文件中添加字段-用来帮助调度协程是否执行完成&quot;&gt;2.1 在runtime2.go 文件中添加字段 用来帮助调度协程是否执行完成&lt;/h3&gt;
+
+&lt;p&gt;文件具体位置在 $GOPATH/src/go/src/runtime/runtime2.go 文件中&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;
+type g struct {
+    ...
+	//  done chan
+	done goroutineDoneFn
+}
+
+
+type goroutineDoneFn func() &amp;lt;-chan struct{}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;22-在procgo-文件中添加控制方法和自动检查逻辑&quot;&gt;2.2 在proc.go 文件中添加控制方法和自动检查逻辑&lt;/h3&gt;
+
+&lt;p&gt;文件具体位置在 $GOPATH/src/go/src/runtime/proc.go 文件中。我们需要在创建协程的时候，继承来自父协程的done chan。&lt;/p&gt;
+
+&lt;p&gt;在调用的时候，我们需要判断done chan 是否关闭。如果关闭，说明协程执行完成，发出异常。否则继续调度。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-go&quot;&gt;
+/*** goroutine schedule check is done ***/
+
+func execute(gp *g, inheritTime bool) {
+    ...
+    if goIsDone(gp) {
+        throw(&quot;execute: goroutine is done&quot;)
+    }
+	...
+}
+
+/***  控制方法 ***/
+
+
+//go:nosplit
+func GoSpilt() {
+    ...
+    getg().done = nil
+}
+
+//go:nosplit
+func GoWithDone(fn goroutineDoneFn) {
+    getg().done = fn
+}
+
+//go:nosplit
+func GoIsDone() bool {
+    return goIsDone(getg())
+}
+
+//go:nosplit
+func goIsDone(gp *g) bool {
+    if gp.done == nil {
+        return false
+    }
+    select {
+        case &amp;lt;-gp.done():
+            return true
+        default:
+    }
+    
+    return false
+}
+
+
+/***  创建协程时候，继承数据 ***/
+
+func newproc1(fn *funcval, callergp *g, callerpc uintptr, parked bool, waitreason waitReason) *g {
+	...
+	newg.done = callergp.done
+    return newg
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;4编译源代码&quot;&gt;4.编译源代码&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;cd $GOPATH/src/go/src
+./make.bash
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;5测试example&quot;&gt;5.测试example&lt;/h2&gt;
+
+&lt;p&gt;测试样例在 $GOPATH/src/go/reage/main.go 文件中&lt;/p&gt;
+
+&lt;p&gt;执行的时候 会抛出异常，说明协程执行完成。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Hello, word 1
+Hello, word 18 test
+Hello, word 19 &amp;lt;nil&amp;gt;
+Hello, word 20 &amp;lt;nil&amp;gt;
+fatal error: execute: goroutine is done
+
+&lt;/code&gt;&lt;/pre&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>通过修改GO 源代码，支持获取goroutine id 和 协程调用链全局上下文</title>
@@ -39,7 +148,7 @@ cd src
 
 &lt;p&gt;协程定义在 $GOPATH/src/go/src/runtime/runtime2.go 文件中。我们需要未他加一个字段，用来存储上下文信息&lt;/p&gt;
 
-&lt;p&gt;协程管理在 $GOPATH/src/go/src/runtime/proc.go 文件中。我们需要在创建协程的时候，创建协程的时候将上下文信息传递给协程。&lt;/p&gt;
+&lt;p&gt;协程管理在 $GOPATH/src/go/src/runtime/proc.go 文件中。我们需要在创建协程的时候将上下文信息传递给协程。&lt;/p&gt;
 
 &lt;p&gt;具体修改如下：&lt;/p&gt;
 &lt;ol&gt;
@@ -88,8 +197,8 @@ func GoSetValue(key string, v any) {
 
 
 func newproc1(fn *funcval, callergp *g, callerpc uintptr, parked bool, waitreason waitReason) *g {
-	    ...
-    gp.context = callergp.context
+	...
+	newg.context = callergp.context
     return newg
 }
 &lt;/code&gt;&lt;/pre&gt;

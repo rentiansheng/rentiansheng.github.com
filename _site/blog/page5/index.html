@@ -165,6 +165,20 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/http/2020/09/20/mongodb_read_preference_in_a_transaction_must_be_primary.html">
+        read preference in a transaction must be primary
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2020-09-20</span>
+    背景
+
+项目中mongodb数据库负载比较高，现在想将读请求放到secondary节点中， 但是将ReadPreference设置为SecondaryPreferred， 
+事务中的查询语句会出...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/http/2020/08/08/http_request_slow.html">
         调用第三方接口返回过慢的分析过程
       </a>
@@ -226,23 +240,6 @@ current topology: Type: ReplicaSetNoPrimary
 由于是更新使用的是HTTP 的PUT 方式，怀疑...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang/http/client/2019/12/31/golang_http_client.html">
-        golang  http client 遇到的问题
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2019-12-31</span>
-    记录最近在使用golang http client 遇到的问题
-
-response body 乱码
-
-服务线上没有问题， 但是在开发阶段调用第三服务出现返回无法解析的情况。
-
-最后发现是数据被压...
-  </div>
-  
 </div>
 
 
@@ -294,7 +291,7 @@ response body 乱码
       <a href="/blog/page11">11</a>
       
     
-  (共53篇)
+  (共54篇)
 
 </div>
 

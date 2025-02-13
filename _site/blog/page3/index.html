@@ -165,6 +165,20 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/go/2021/08/19/go_fork_pipe.html">
+        go exec.Command使用pipe做数据交换遇到的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-08-19</span>
+    背景
+
+使用exec.Command 实现syscall.ForkExec功能，为了让master与child数据交互的能力，
+最终exec.Command.ExtraFiles 来传递pipe...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/qa/2021/04/02/qa.html">
         遇到问题集合
       </a>
@@ -227,21 +241,6 @@
 由于在目前的golang 版本不支持多态， 只能人工的方式来实...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/mgo.v2/2021/01/14/golang_mgo_session_timeout.html">
-        使用mgo.v2 出现 i/o timeout session 问题
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-01-14</span>
-    背景
-
-使用mgo.v2 操作数据库，一直报 i/o timeout session 问题出错如下:
-
-read tcp 127.0.0.1:42577-&gt;127.0.0.1:27017:...
-  </div>
-  
 </div>
 
 
@@ -293,7 +292,7 @@ read tcp 127.0.0.1:42577-&gt;127.0.0.1:27017:...
       <a href="/blog/page11">11</a>
       
     
-  (共53篇)
+  (共54篇)
 
 </div>
 
