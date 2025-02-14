@@ -51,7 +51,7 @@ func execute(gp *g, inheritTime bool) {
 
 
 //go:nosplit
-func GoSpilt() {
+func GoSplit() {
     ...
     getg().done = nil
 }

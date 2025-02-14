@@ -54,7 +54,7 @@ func GoID() uint64 {
 }
 
 //go:nosplit
-func GoSpilt() {
+func GoSplit() {
     getg().context = map[string]any{}
 }
 
