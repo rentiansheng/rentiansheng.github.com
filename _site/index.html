@@ -169,6 +169,21 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/go/2025/03/12/go_code_compare.html">
+        Golang  精准测试-找到两次部署差异协助测试
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2025-03-12</span>
+    背景
+
+在测试过程中，同一需求可能会经历多次部署，但部分部署的代码改动较小。如果每次都进行全量测试，成本较高。因此，我们希望通过代码分析来判断之前的测试或审查是否仍然有效。
+
+在代码对比过程中，...
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/go/2025/03/09/go_code_instrument.html">
         go  插桩技术
       </a>
@@ -220,27 +235,6 @@
     1.背景
 
 在开发过程中，我们经常需要获取goroutine id 和全局上下文。但是go runtime 并没有提供这样的接口。我们可以通过修改go runtime 源码，添加这样的接口。
-
-...
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/code%20anaylsis/2024/05/11/function-call-trace.html">
-        通过LSP分析代码函数调用链路
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2024-05-11</span>
-    背景
-在衡量测试质量时候，需要考虑核心链路是否被覆盖。避免核心链路出现问题。
-需要通过入API 路由找到所有被调用的含漱液。
-
-目前函数调用链数实现方案：
-
-
-  代码静态分析
-  日志分析
 
 ...
   </div>
@@ -300,7 +294,7 @@
       <a href="/blog/page12">12</a>
       
     
-  (共56篇)
+  (共57篇)
 
 </div>
 
