@@ -110,6 +110,10 @@
     
       
         
+      
+    
+      
+        
           <a class="sidebar-nav-item" href="/categories.html">分类</a>
         
       
@@ -162,6 +166,21 @@
       </div>
       <div class="container content" style="margin-top:2rem">
         <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/golang/2022/08/22/golang_shallow_copy.html">
+        golang bytes.Buffer 数据浅拷贝带来的问题
+      </a>
+    </h1>
+    
+    <span class="post-date"><i class="fa fa-clock-o"></i> 2022-08-22</span>
+    背景
+
+项目中定时任务获取数据，在执行过程中未对cache 的内容做变更，但是值发生了变化。
+
+最后定位是浅拷贝造成，在做数据交互过程中用到bytes.Buffer 做缓存区用来，包含read,...
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -224,22 +243,6 @@ telegraf 从数据的collecting, processing, aggregat...
 之前为了实现全局的全文搜索， 是通过monstache将mon...
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/golang%20%E5%8A%A8%E6%80%81%E7%BB%93%E6%9E%84%E4%BD%93/2021/02/10/golang_dynamic_struct.html">
-        golang 动态结构体
-      </a>
-    </h1>
-    
-    <span class="post-date"><i class="fa fa-clock-o"></i> 2021-02-10</span>
-    背景
-
-语言： golang
-
-目前项目允许业务自定自己业务下私有字段。 造成同一类型实例数据，在不同的业务下字段是不一样。 在实际处理中无法使用struct来定义。
-当实例数据在不同服务之间数...
-  </div>
-  
 </div>
 
 
@@ -291,7 +294,11 @@ telegraf 从数据的collecting, processing, aggregat...
       <a href="/blog/page11">11</a>
       
     
-  (共55篇)
+      
+      <a href="/blog/page12">12</a>
+      
+    
+  (共56篇)
 
 </div>
 
