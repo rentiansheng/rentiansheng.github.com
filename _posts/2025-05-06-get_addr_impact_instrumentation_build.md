@@ -18,10 +18,10 @@ tags: [""]
 /usr/local/go/pkg/tool/linux_amd64/compile -o $WORK/b965/_pkg_.a -trimpath "$WORK/b919=>" -p package -lang=go1.15 -complete -buildid xxx -goversion go1.15.15 -D "" -importcfg $WORK/b919/importcfg -pack -c=4 ./cover.go
 ````
 
-2. 通过 compile  命令中的-p 参数， 可以看到是编译的package
-3. 分析这个package 下的代码
+2.通过 compile  命令中的-p 参数， 可以看到是编译的 package
+3.分析这个package 下的代码
 发现是插桩后生成代码， 这里主要记录文件与block的关系。 由于业务代码比较大。这个文件在6m左右；
-```go
+```bash
 var  allFiles = []string{.......}
 var blocks = []struct{
     Loc ....
