@@ -1,5 +1,3 @@
-package _posts
-
 ---
 layout: post
 title:  Golang  取地址对编译速度的影响
