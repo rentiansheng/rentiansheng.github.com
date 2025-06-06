@@ -91,7 +91,7 @@ export HTTPS_PROXY=http://127.0.0.1:8888
 
 ### 5. 自定义net.Transport 处理异常场景
 
-没有设置Proxy 或者 Proxy = nil 字段，则不会走代理。
+没有设置Proxy或者 Proxy = nil 字段，则不会走代理。
 
 ```go 
 tr := &http.Transport{
